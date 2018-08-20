@@ -7,5 +7,4 @@ config_file_path = os.path.realpath(
     os.path.join(settings_directory_path, "config.txt"))
 cp.read(config_file_path)
 
-LOG_DIRECTORY                 = eval(cp.get("general", "LOG_DIRECTORY"))
-DEBUGGING_DIRECTORY           = eval(cp.get("general", "DEBUGGING_DIRECTORY"))
+LOG_DIRECTORY = eval(cp.get("general", "LOG_DIRECTORY"))

@@ -3,17 +3,26 @@ from audiotagger.data.fields import Fields as fld
 
 
 class AudioTaggerUtils(object):
-    def __init__(self, logger):
-        self.log = logger
+    def __init__(self):
+        pass
 
-    def apply_utf8(self, x):
+    @staticmethod
+    def apply_utf8(x):
         return x.encode("utf-8").decode("utf-8")
 
-    def convert_to_audio_object(self, file_paths):
+    @staticmethod
+    def convert_to_m4a(file_paths):
         return [MP4(path) for path in file_paths]
 
-    def is_m4a(self, filename):
+    @staticmethod
+    def is_m4a(filename):
         return True if filename.split(".")[-1] == "m4a" else False
 
-    def rename_columns(self, df):
+    @staticmethod
+    def rename_columns(df):
         return df.rename(columns=fld.TAG_MAP)
+
+    @staticmethod
+    def filter_by_artist(df, artist):
+        ret = df
+        return ret.loc[df[fld.ARTIST] == artist]
