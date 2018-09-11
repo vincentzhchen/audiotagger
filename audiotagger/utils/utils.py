@@ -20,7 +20,7 @@ class AudioTaggerUtils(object):
 
     @staticmethod
     def rename_columns(df):
-        return df.rename(columns=fld.TAG_MAP)
+        return df.rename(columns=fld.ID3_to_field)
 
     @staticmethod
     def filter_by_artist(df, artist):

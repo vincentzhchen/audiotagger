@@ -4,7 +4,7 @@ from audiotagger.utils.utils import AudioTaggerUtils
 
 
 class AudioTaggerInput(object):
-    def __init__(self, root, logger):
+    def __init__(self, root, logger, xl_input_file=None):
         self.log = logger
         self.root = root
         self.utils = AudioTaggerUtils()

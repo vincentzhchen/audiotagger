@@ -6,6 +6,8 @@ import os
 import sys
 # from audiotagger.settings import settings as at_settings
 from audiotagger.core.generate_config import generate_config
+from audiotagger.core.clear_tags import ClearTags
+from audiotagger.core.excel_tagger import ExcelTagger
 from audiotagger.core.paths import audiotagger_config_path
 from audiotagger.data.input import AudioTaggerInput
 from customlogging import CustomLogging as cl
@@ -28,11 +30,35 @@ def get_options():
     )
 
     parser.add_option(
+        "-t",
+        "--tag",
+        action="store_true",
+        dest="tag_file",
+        help="Writes tags to the audio file."
+    )
+
+    parser.add_option(
         "-l",
         action="store",
         dest="log_dir",
         help="Set log directory."
     )
+
+    parser.add_option(
+        "-c",
+        "--clear_tags",
+        action="store_true",
+        dest="is_clear_tags",
+        help="Clears the tags for a given directory."
+    )
+
+    parser.add_option(
+        "--xl",
+        action="store",
+        dest="xl_input_file",
+        help="Read tags from specially formatted Excel file."
+    )
+
     parser.add_option(
         "--generate-config",
         action="store_true",
@@ -48,7 +74,8 @@ class AudioTagger(object):
         self.log = logger
         self.root = options.root
         self.options = options
-        self.input = AudioTaggerInput(root=self.root, logger=self.log)
+        self.input = AudioTaggerInput(root=self.root, logger=self.log,
+                                      xl_input_file=options.xl_input_file)
 
     def main(self):
         # all_songs = self.input.get_all_audio()
@@ -83,6 +110,12 @@ if __name__ == "__main__":
     logger = cl(log_dir=log_dir, name="audiotagger.log")
     logger.info(options)
 
+    if options.xl_input_file is not None:
+        et = ExcelTagger(logger=logger, xl_input_file=options.xl_input_file)
+        if options.tag_file:
+            et.tag_audio_files()
+        sys.exit(0)
+
     # need a root directory to run the program
     if options.root is None:
         logger.error("Must include root directory containing audio files.")
@@ -92,5 +125,7 @@ if __name__ == "__main__":
             logger.error("{} does not exist".format(options.root))
             sys.exit(1)
 
-    at = AudioTagger(logger=logger, options=options)
-    print(at)
+        if options.is_clear_tags:
+            ct = ClearTags(root=options.root, logger=logger)
+            ct.clear_tags()
+            sys.exit(1)
