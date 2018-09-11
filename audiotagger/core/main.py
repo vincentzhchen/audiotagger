@@ -16,10 +16,10 @@ from customlogging import CustomLogging as cl
 def get_options():
     parser = optparse.OptionParser()
     parser.add_option(
-        "-r",
+        "-p",
         action="store",
         dest="root",
-        help="Root directory for all audio files."
+        help="Root directory or path for all audio files."
     )
 
     parser.add_option(
@@ -50,6 +50,14 @@ def get_options():
         action="store_true",
         dest="is_clear_tags",
         help="Clears the tags for a given directory."
+    )
+
+    parser.add_option(
+        "-r",
+        "--rename_path",
+        action="store_true",
+        dest="rename_path",
+        help="Renames the path to the audio file."
     )
 
     parser.add_option(
@@ -114,6 +122,9 @@ if __name__ == "__main__":
         et = ExcelTagger(logger=logger, xl_input_file=options.xl_input_file)
         if options.tag_file:
             et.tag_audio_files()
+
+        if options.rename_path:
+            et.rename_file()
         sys.exit(0)
 
     # need a root directory to run the program
@@ -129,3 +140,6 @@ if __name__ == "__main__":
             ct = ClearTags(root=options.root, logger=logger)
             ct.clear_tags()
             sys.exit(1)
+
+        at = AudioTaggerInput(root=options.root, logger=logger)
+        print(at.get_metadata())

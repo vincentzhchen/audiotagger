@@ -27,7 +27,9 @@ class Fields(object):
 
     # TUPLES OF INTEGERS
     TRACK_NUMBER                               = "TRACK_NUMBER"
+    TRACK_NO                                   = "TRACK_NO"
     DISC_NUMBER                                = "DISC_NUMBER"
+    DISC_NO                                    = "DISC_NO"
 
     # OTHER
     COVER                                      = "COVER"

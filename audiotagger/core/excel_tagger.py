@@ -11,15 +11,6 @@ class ExcelTagger(object):
         self.utils = AudioTaggerUtils()
 
     def get_metadata(self):
-        self.metadata[fld.TRACK_NUMBER] = self.metadata[
-            ["TRACK_NO", "TOTAL_TRACKS"]].apply(tuple, axis="columns")
-        self.metadata[fld.DISC_NUMBER] = self.metadata[
-            ["DISC_NO", "TOTAL_DISCS"]].apply(tuple, axis="columns")
-        self.metadata.drop(["TRACK_NO", "TOTAL_TRACKS",
-                            "DISC_NO", "TOTAL_DISCS"],
-                           axis="columns", inplace=True)
-        self.metadata[fld.YEAR] = self.metadata[fld.YEAR].astype(str)
-        self.metadata = self.metadata.applymap(lambda x: [x])
         return self.metadata
 
     def get_audio_files(self):
@@ -28,6 +19,16 @@ class ExcelTagger(object):
         return m4a_obj
 
     def metadata_to_tags(self, df_metadata):
+        df_metadata[fld.TRACK_NUMBER] = df_metadata[
+            ["TRACK_NO", "TOTAL_TRACKS"]].apply(tuple, axis="columns")
+        df_metadata[fld.DISC_NUMBER] = df_metadata[
+            ["DISC_NO", "TOTAL_DISCS"]].apply(tuple, axis="columns")
+        df_metadata.drop(["TRACK_NO", "TOTAL_TRACKS",
+                          "DISC_NO", "TOTAL_DISCS"],
+                         axis="columns", inplace=True)
+        df_metadata[fld.YEAR] = df_metadata[fld.YEAR].astype(str)
+        df_metadata = df_metadata.applymap(lambda x: [x])
+
         tag_dict = {}
         df_metadata.columns = [
             fld.field_to_ID3.get(c, c) for c in df_metadata.columns]
@@ -45,3 +46,14 @@ class ExcelTagger(object):
         for k in tag_dict:
             self.log.info(f"Saving {tag_dict[k]} to {k}")
             tag_dict[k].save(k)
+
+    def rename_file(self):
+        metadata = self.get_metadata()
+
+        import os
+        base_dir = metadata["PATH"].apply(os.path.dirname)
+        metadata["NEW_FILE_NAME"] = metadata[fld.DISC_NO].astype(str) + "-" + \
+                                    metadata[fld.TRACK_NO].astype(str) + " " + \
+                                    metadata[fld.TITLE] + ".m4a"
+
+        print(metadata)
