@@ -16,10 +16,10 @@ from customlogging import CustomLogging as cl
 def get_options():
     parser = optparse.OptionParser()
     parser.add_option(
-        "-p",
+        "-s",
         action="store",
-        dest="root",
-        help="Root directory or path for all audio files."
+        dest="src",
+        help="Source directory or path for all audio files."
     )
 
     parser.add_option(
@@ -31,7 +31,7 @@ def get_options():
 
     parser.add_option(
         "-t",
-        "--tag",
+        "--tag_file",
         action="store_true",
         dest="tag_file",
         help="Writes tags to the audio file."
@@ -61,10 +61,17 @@ def get_options():
     )
 
     parser.add_option(
-        "--xl",
+        "--xl_in",
         action="store",
         dest="xl_input_file",
-        help="Read tags from specially formatted Excel file."
+        help="Specially formatted Excel file to read tags from."
+    )
+
+    parser.add_option(
+        "--xl_out",
+        action="store",
+        dest="xl_output_file",
+        help="Output file to write tags to."
     )
 
     parser.add_option(
@@ -80,9 +87,9 @@ def get_options():
 class AudioTagger(object):
     def __init__(self, logger, options, **kwargs):
         self.log = logger
-        self.root = options.root
+        self.src = options.src
         self.options = options
-        self.input = AudioTaggerInput(root=self.root, logger=self.log,
+        self.input = AudioTaggerInput(src=self.src, logger=self.log,
                                       xl_input_file=options.xl_input_file)
 
     def main(self):
@@ -118,28 +125,19 @@ if __name__ == "__main__":
     logger = cl(log_dir=log_dir, name="audiotagger.log")
     logger.info(options)
 
-    if options.xl_input_file is not None:
-        et = ExcelTagger(logger=logger, xl_input_file=options.xl_input_file)
-        if options.tag_file:
-            et.tag_audio_files()
+    input_data = AudioTaggerInput(src=options.src, logger=logger,
+                                  xl_input_file=options.xl_input_file)
+    et = ExcelTagger(logger=logger, input_data=input_data)
 
-        if options.rename_path:
-            et.rename_file()
-        sys.exit(0)
+    if options.tag_file:
+        et.save_tags_to_audio_files()
 
-    # need a root directory to run the program
-    if options.root is None:
-        logger.error("Must include root directory containing audio files.")
-        sys.exit(1)
-    else:
-        if not os.path.isdir(options.root):
-            logger.error("{} does not exist".format(options.root))
-            sys.exit(1)
+    if options.rename_path:
+        et.rename_file()
 
-        if options.is_clear_tags:
-            ct = ClearTags(root=options.root, logger=logger)
-            ct.clear_tags()
-            sys.exit(1)
+    if options.is_clear_tags:
+        ct = ClearTags(root=options.src, logger=logger)
+        ct.clear_tags()
 
-        at = AudioTaggerInput(root=options.root, logger=logger)
-        print(at.get_metadata())
+    if options.write_to_excel:
+        input_data.write_to_excel(options.xl_output_file)

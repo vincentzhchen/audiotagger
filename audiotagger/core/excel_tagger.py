@@ -5,16 +5,13 @@ from audiotagger.utils.utils import AudioTaggerUtils
 
 
 class ExcelTagger(object):
-    def __init__(self, logger, xl_input_file):
+    def __init__(self, logger, input_data):
         self.log = logger
-        self.metadata = pd.read_excel(xl_input_file)
+        self.metadata = input_data.get_metadata()
         self.utils = AudioTaggerUtils()
 
-    def get_metadata(self):
-        return self.metadata
-
     def get_audio_files(self):
-        paths = self.get_metadata()["PATH"].tolist()
+        paths = self.metadata["PATH"].tolist()
         m4a_obj = self.utils.convert_to_m4a(paths)
         return m4a_obj
 
@@ -40,15 +37,15 @@ class ExcelTagger(object):
             tag_dict.update({path: tags})
         return tag_dict
 
-    def tag_audio_files(self):
-        metadata = self.get_metadata()
+    def save_tags_to_audio_files(self):
+        metadata = self.metadata
         tag_dict = self.metadata_to_tags(df_metadata=metadata)
         for k in tag_dict:
             self.log.info(f"Saving {tag_dict[k]} to {k}")
             tag_dict[k].save(k)
 
     def rename_file(self):
-        metadata = self.get_metadata()
+        metadata = self.metadata
 
         import os
         base_dir = metadata["PATH"].apply(os.path.dirname)

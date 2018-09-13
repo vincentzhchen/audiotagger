@@ -1,13 +1,22 @@
 import os
 import pandas as pd
+from audiotagger.data.fields import Fields as fld
 from audiotagger.utils.utils import AudioTaggerUtils
 
 
 class AudioTaggerInput(object):
-    def __init__(self, root, logger, xl_input_file=None):
+    def __init__(self, src, logger, xl_input_file=None):
         self.log = logger
-        self.root = root
+        self.src = src
         self.utils = AudioTaggerUtils()
+
+        if self.src is None and xl_input_file is None:
+            raise ValueError("Must include root directory "
+                             "containing audio files.")
+
+        if xl_input_file is not None:
+            self.read_from_excel(file_path=xl_input_file)
+            return
 
         # load inputs
         self._load_all_file_paths()
@@ -20,7 +29,7 @@ class AudioTaggerInput(object):
         """
         self.log.info("Loading all file paths...")
         all_file_paths = []
-        for root, dirs, files in os.walk(self.root):
+        for root, dirs, files in os.walk(self.src):
             for file in files:
                 file_path = os.path.join(root, file)
                 all_file_paths.append(file_path)
@@ -61,10 +70,17 @@ class AudioTaggerInput(object):
         self.log.info("Loading all audio file metadata into dataframe...")
         all_audio_obj = []
         all_audio_obj += self.m4a_obj  # add flac / mp3/ etc. here
-        all_audio_obj = [
-            dict(song.tags, **{"SONG": [song]}) for song in all_audio_obj]
+        all_audio_obj = [dict(song.tags) for song in all_audio_obj]
+            # dict(song.tags, **{"SONG": [song]}) for song in all_audio_obj]
         metadata = pd.DataFrame(all_audio_obj)
         metadata = self.utils.rename_columns(metadata)
+        metadata = metadata.applymap(lambda x: x[0])
+        metadata["TRACK_NO"] = metadata[fld.TRACK_NUMBER].apply(lambda x: x[0])
+        metadata["TOTAL_TRACKS"] = metadata[fld.TRACK_NUMBER].apply(lambda x: x[1])
+        metadata["DISC_NO"] = metadata[fld.DISC_NUMBER].apply(lambda x: x[0])
+        metadata["TOTAL_DISCS"] = metadata[fld.DISC_NUMBER].apply(lambda x: x[1])
+        metadata = metadata.drop([fld.TRACK_NUMBER, fld.DISC_NUMBER],
+                                 axis="columns")
         self.metadata = metadata
 
     def get_all_audio_file_paths(self):
@@ -73,14 +89,20 @@ class AudioTaggerInput(object):
     def get_metadata(self):
         return self.metadata
 
-    def write_to_excel(self, filepath):
+    def read_from_excel(self, file_path):
+        df = pd.read_excel(file_path, sheet_name="metadata")
+        self.metadata = df
+
+    def write_to_excel(self, file_path):
         """
         Writes input data to Excel for debugging.
 
-        :param filepath: output filepath to write the data to
+        Args:
+            file_path (str): output file_path to write the data to.
+
         """
         self.log.info("Saving initial audio tags to Excel...")
-        writer = pd.ExcelWriter(filepath, date_format="YYYY-MM-DD",
+        writer = pd.ExcelWriter(file_path, date_format="YYYY-MM-DD",
                                 datetime_format="YYYY-MM-DD")
 
         for m in dir(self):
