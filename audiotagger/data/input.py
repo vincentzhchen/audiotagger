@@ -34,7 +34,7 @@ class AudioTaggerInput(object):
                 file_path = os.path.join(root, file)
                 all_file_paths.append(file_path)
         self.all_file_paths = all_file_paths
-        self.log.info("LOADED {} file paths.".format(len(self.all_file_paths)))
+        self.log.info(f"LOADED {len(self.all_file_paths)} file paths.")
 
         self._load_all_audio_file_paths()
 
@@ -48,8 +48,7 @@ class AudioTaggerInput(object):
         m4a_file_paths = [x for x in self.all_file_paths if x.endswith(".m4a")]
         if m4a_file_paths:
             self.m4a_file_paths = m4a_file_paths
-            self.log.info("LOADED {} m4a file paths."
-                          .format(len(self.m4a_file_paths)))
+            self.log.info(f"LOADED {len(self.m4a_file_paths)} m4a file paths.")
             self.all_audio_file_paths += m4a_file_paths
 
     def _load_all_m4a_files(self):
@@ -58,7 +57,7 @@ class AudioTaggerInput(object):
         """
         self.log.info("Loading all m4a objects...")
         self.m4a_obj = self.utils.convert_to_m4a(self.m4a_file_paths)
-        self.log.info("LOADED {} m4a objects.".format(len(self.m4a_obj)))
+        self.log.info(f"LOADED {len(self.m4a_obj)} m4a objects.")
 
     def _load_all_audio_files_into_df(self):
         """Load all audio file into a dataframe.
@@ -70,8 +69,8 @@ class AudioTaggerInput(object):
         self.log.info("Loading all audio file metadata into dataframe...")
         all_audio_obj = []
         all_audio_obj += self.m4a_obj  # add flac / mp3/ etc. here
-        all_audio_obj = [dict(song.tags) for song in all_audio_obj]
-            # dict(song.tags, **{"SONG": [song]}) for song in all_audio_obj]
+        all_audio_obj = [dict(song.tags, **{"PATH": [path]})
+                         for path, song in all_audio_obj]
         metadata = pd.DataFrame(all_audio_obj)
         metadata = self.utils.rename_columns(metadata)
         metadata = metadata.applymap(lambda x: x[0])
@@ -90,7 +89,7 @@ class AudioTaggerInput(object):
         return self.metadata
 
     def read_from_excel(self, file_path):
-        df = pd.read_excel(file_path, sheet_name="metadata")
+        df = pd.read_excel(file_path)
         self.metadata = df
 
     def write_to_excel(self, file_path):
@@ -101,15 +100,15 @@ class AudioTaggerInput(object):
             file_path (str): output file_path to write the data to.
 
         """
-        self.log.info("Saving initial audio tags to Excel...")
-        writer = pd.ExcelWriter(file_path, date_format="YYYY-MM-DD",
+        writer = pd.ExcelWriter(file_path,
+                                date_format="YYYY-MM-DD",
                                 datetime_format="YYYY-MM-DD")
 
         for m in dir(self):
             if "__" not in m:
                 attr = getattr(self, m)
                 if attr.__class__ == pd.DataFrame and not attr.empty:
-                    self.log.info("Saving {} in Excel".format(m))
+                    self.log.info(f"Saving {m} to Excel.")
                     attr.to_excel(writer, sheet_name=m, index=False,
                                   encoding="utf-8")
 

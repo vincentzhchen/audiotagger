@@ -10,6 +10,7 @@ from audiotagger.core.clear_tags import ClearTags
 from audiotagger.core.excel_tagger import ExcelTagger
 from audiotagger.core.paths import audiotagger_config_path
 from audiotagger.data.input import AudioTaggerInput
+from audiotagger.core.rename_file import RenameFile
 from customlogging import CustomLogging as cl
 
 
@@ -54,10 +55,18 @@ def get_options():
 
     parser.add_option(
         "-r",
-        "--rename_path",
+        "--rename_file",
         action="store_true",
-        dest="rename_path",
-        help="Renames the path to the audio file."
+        dest="rename_file",
+        help="Renames the audio file path."
+    )
+
+    parser.add_option(
+        "-d",
+        "--rename_dst",
+        action="store_true",
+        dest="rename_dst",
+        help="Base destination directory for file rename."
     )
 
     parser.add_option(
@@ -112,16 +121,20 @@ if __name__ == "__main__":
         generate_config()
         sys.exit(0)
 
-    # Setup logging.
+    # Setup constants.
     log_dir = options.log_dir
+    rename_dst = options.rename_dst
     if os.path.exists(audiotagger_config_path()):
         import importlib.util
         spec = importlib.util.spec_from_file_location("audiotagger",
                                                       audiotagger_config_path())
         c = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(c)
-        log_dir = c.LOG_DIRECTORY
 
+        log_dir = c.LOG_DIRECTORY
+        rename_dst = c.AUDIO_DIRECTORY
+
+    # Setup logging.
     logger = cl(log_dir=log_dir, name="audiotagger.log")
     logger.info(options)
 
@@ -132,8 +145,10 @@ if __name__ == "__main__":
     if options.tag_file:
         et.save_tags_to_audio_files()
 
-    if options.rename_path:
-        et.rename_file()
+    if options.rename_file:
+        rf = RenameFile(base_dst_dir=rename_dst, logger=logger,
+                        input_data=input_data)
+        rf.rename_file()
 
     if options.is_clear_tags:
         ct = ClearTags(root=options.src, logger=logger)

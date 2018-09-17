@@ -12,7 +12,7 @@ class AudioTaggerUtils(object):
 
     @staticmethod
     def convert_to_m4a(file_paths):
-        return [MP4(path) for path in file_paths]
+        return [(path, MP4(path)) for path in file_paths]
 
     @staticmethod
     def is_m4a(filename):
