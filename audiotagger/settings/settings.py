@@ -1,10 +1,17 @@
+import importlib.util
 import os
-import configparser
+import sys
+from audiotagger.core.paths import audiotagger_config_path
 
-cp = configparser.ConfigParser()
-settings_directory_path = os.path.dirname(os.path.realpath(__file__))
-config_file_path = os.path.realpath(
-    os.path.join(settings_directory_path, "config.txt"))
-cp.read(config_file_path)
+if os.path.exists(audiotagger_config_path()):
+    spec = importlib.util.spec_from_file_location("audiotagger",
+                                                  audiotagger_config_path())
+    c = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(c)
 
-LOG_DIRECTORY = eval(cp.get("general", "LOG_DIRECTORY"))
+    # Setup constants.
+    LOG_DIRECTORY = c.LOG_DIRECTORY
+    AUDIO_DIRECTORY = c.AUDIO_DIRECTORY
+else:
+    print("No configuration file found... exiting process...")
+    sys.exit(1)

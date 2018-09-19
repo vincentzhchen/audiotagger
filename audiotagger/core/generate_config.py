@@ -16,5 +16,6 @@ def generate_config():
 
     if overwrite != "n":
         with open(config_file, "w") as f:
-            f.write("LOG_DIRECTORY = '{}'".format(audiotagger_config_dir()))
-        print("Generated config at {}".format(audiotagger_config_dir()))
+            f.write(f"LOG_DIRECTORY='{audiotagger_config_dir()}'\n"
+                    f"AUDIO_DIRECTORY=None"'\n')
+        print(f"Generated config at {audiotagger_config_dir()}")
