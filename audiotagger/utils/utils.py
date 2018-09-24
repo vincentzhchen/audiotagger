@@ -1,6 +1,9 @@
 import os
 from mutagen.easymp4 import MP4
 from mutagen.mp4 import MP4Tags
+
+import pandasdateutils as pdu
+from audiotagger.core.paths import audiotagger_log_dir
 from audiotagger.data.fields import Fields as fld
 
 
@@ -115,3 +118,13 @@ class AudioTaggerUtils(object):
                 all_file_paths.append(file_path)
 
         return all_file_paths
+
+    @staticmethod
+    def dry_run(df, prefix=None):
+        out_file = os.path.join(audiotagger_log_dir(),
+                                f"dry_run_{pdu.now(as_string=True)}.xlsx")
+        if prefix is not None:
+            out_file = os.path.join(audiotagger_log_dir(),
+                                    prefix + "_" +
+                                    f"dry_run_{pdu.now(as_string=True)}.xlsx")
+        df.to_excel(out_file, index=False)

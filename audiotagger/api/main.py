@@ -3,6 +3,7 @@
 
 import optparse
 import sys
+
 from audiotagger.core.generate_config import generate_config
 from customlogging import CustomLogging as cl
 
@@ -56,10 +57,11 @@ def get_options():
 
     parser.add_option(
         "-d",
-        "--rename_dst",
+        "--output_dst",
         action="store_true",
-        dest="rename_dst",
-        help="Base destination directory for file rename."
+        dest="output_dst",
+        help="Base destination directory for file output (e.g. from "
+             "file renaming or playlist generation."
     )
 
     parser.add_option(
@@ -77,10 +79,24 @@ def get_options():
     )
 
     parser.add_option(
+        "--dry-run",
+        action="store_true",
+        dest="dry_run",
+        help="Writes potential changes to Excel before committing."
+    )
+
+    parser.add_option(
         "--generate-config",
         action="store_true",
         dest="generate_config",
         help="Create configuration file for the application."
+    )
+
+    parser.add_option(
+        "--generate-playlist",
+        action="store",
+        dest="playlist_filters",
+        help="Creates a playlist for the given set of filters."
     )
 
     return parser

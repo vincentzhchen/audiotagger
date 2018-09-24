@@ -1,14 +1,16 @@
 import os
 import pandas as pd
+
 from audiotagger.data.fields import Fields as fld
 from audiotagger.utils.utils import AudioTaggerUtils
 
 
 class AudioTaggerInput(object):
-    def __init__(self, src, logger, xl_input_file=None):
+    def __init__(self, src, logger, xl_input_file=None, is_dry_run=False):
         self.log = logger
         self.src = src
         self.utils = AudioTaggerUtils()
+        self.is_dry_run = is_dry_run
 
         if self.src is None and xl_input_file is None:
             raise ValueError("Must include root directory "
@@ -76,9 +78,11 @@ class AudioTaggerInput(object):
         metadata = self.utils.rename_columns(metadata)
         metadata = metadata.applymap(lambda x: x[0])
         metadata["TRACK_NO"] = metadata[fld.TRACK_NUMBER].apply(lambda x: x[0])
-        metadata["TOTAL_TRACKS"] = metadata[fld.TRACK_NUMBER].apply(lambda x: x[1])
+        metadata["TOTAL_TRACKS"] = metadata[fld.TRACK_NUMBER].apply(
+            lambda x: x[1])
         metadata["DISC_NO"] = metadata[fld.DISC_NUMBER].apply(lambda x: x[0])
-        metadata["TOTAL_DISCS"] = metadata[fld.DISC_NUMBER].apply(lambda x: x[1])
+        metadata["TOTAL_DISCS"] = metadata[fld.DISC_NUMBER].apply(
+            lambda x: x[1])
         metadata = metadata.drop([fld.TRACK_NUMBER, fld.DISC_NUMBER],
                                  axis="columns")
         self.metadata = metadata

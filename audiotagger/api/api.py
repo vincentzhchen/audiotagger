@@ -16,7 +16,15 @@ class AudioTagger(object):
         self.options = options
         self.input_data = AudioTaggerInput(src=self.options.src,
                                            logger=self.log,
-                                           xl_input_file=options.xl_input_file)
+                                           xl_input_file=options.xl_input_file,
+                                           is_dry_run=options.dry_run)
+
+        if self.options.write_to_excel:
+            # write input data to Excel for debugging
+            base_dir = audiotagger_log_dir()
+            file_path = os.path.join(
+                base_dir, f"input_{pdu.now(as_string=True)}.xlsx")
+            self.input_data.write_to_excel(file_path)
 
     def run(self):
         if self.options.tag_file:
@@ -24,8 +32,8 @@ class AudioTagger(object):
             et.save_tags_to_audio_files()
 
         if self.options.rename_file:
-            if self.options.rename_dst is not None:
-                rename_dst = self.options.rename_dst
+            if self.options.output_dst is not None:
+                rename_dst = self.options.output_dst
             else:
                 rename_dst = settings.AUDIO_DIRECTORY
 
@@ -36,10 +44,3 @@ class AudioTagger(object):
         if self.options.is_clear_tags:
             ct = ClearTags(logger=self.log, input_data=self.input_data)
             ct.clear_all_tags()
-
-        if self.options.write_to_excel:
-            # write input data to Excel for debugging
-            base_dir = audiotagger_log_dir()
-            file_path = os.path.join(
-                base_dir, f"input_{pdu.now(as_string=True)}.xlsx")
-            self.input_data.write_to_excel(file_path)

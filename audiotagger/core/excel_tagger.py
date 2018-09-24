@@ -1,23 +1,28 @@
-import pandas as pd
-from mutagen.mp4 import MP4Tags
-from audiotagger.data.fields import Fields as fld
 from audiotagger.utils.utils import AudioTaggerUtils
 
 
 class ExcelTagger(object):
     def __init__(self, logger, input_data):
         self.log = logger
-        self.metadata = input_data.get_metadata()
-        self.utils = AudioTaggerUtils()
+        self.input_data = input_data
 
-    def get_audio_files(self):
-        paths = self.metadata["PATH"].tolist()
-        m4a_obj = self.utils.convert_to_mp4_obj(paths)
-        return m4a_obj
+        self.metadata = input_data.get_metadata()
+        self.modified_metadata = self._apply_modifiers()
+
+    def _apply_modifiers(self):
+        modified_metadata = self.metadata
+        return modified_metadata
 
     def save_tags_to_audio_files(self):
-        metadata = self.metadata
-        tag_dict = self.utils.metadata_to_tags(df_metadata=metadata)
+        metadata = self.modified_metadata
+        if self.input_data.is_dry_run:
+            self.log.info("Dry run... saving to {out_file}.")
+            AudioTaggerUtils.dry_run(df=self.modified_metadata,
+                                     prefix=self.__str__())
+            self.log.info("Data saved to {out_file}")
+            return
+
+        tag_dict = AudioTaggerUtils.metadata_to_tags(df_metadata=metadata)
         for k in tag_dict:
             self.log.info(f"Saving {tag_dict[k]} to {k}")
             tag_dict[k].save(k)

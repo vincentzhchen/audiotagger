@@ -1,6 +1,7 @@
 import importlib.util
 import os
 import sys
+
 from audiotagger.core.paths import audiotagger_config_path
 
 if os.path.exists(audiotagger_config_path()):
