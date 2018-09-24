@@ -20,3 +20,8 @@ def audiotagger_config_dir():
 def audiotagger_config_path():
     """Get the config file path for audiotagger."""
     return os.path.join(audiotagger_config_dir(), "audiotagger_config.py")
+
+
+def audiotagger_log_dir():
+    """Default directory to hold logs and input / output debugging files."""
+    return os.path.join(audiotagger_config_dir(), "logs")

@@ -1,5 +1,9 @@
+import os
+import pandasdateutils as pdu
+
 from audiotagger.core.clear_tags import ClearTags
 from audiotagger.core.excel_tagger import ExcelTagger
+from audiotagger.core.paths import audiotagger_log_dir
 from audiotagger.core.rename_file import RenameFile
 from audiotagger.data.input import AudioTaggerInput
 from audiotagger.settings import settings as settings
@@ -34,4 +38,8 @@ class AudioTagger(object):
             ct.clear_all_tags()
 
         if self.options.write_to_excel:
-            self.input_data.write_to_excel(self.options.xl_output_file)
+            # write input data to Excel for debugging
+            base_dir = audiotagger_log_dir()
+            file_path = os.path.join(
+                base_dir, f"input_{pdu.now(as_string=True)}.xlsx")
+            self.input_data.write_to_excel(file_path)

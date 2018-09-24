@@ -3,9 +3,7 @@
 
 import optparse
 import sys
-from audiotagger.api.api import AudioTagger
 from audiotagger.core.generate_config import generate_config
-from audiotagger.settings import settings as settings
 from customlogging import CustomLogging as cl
 
 
@@ -100,10 +98,12 @@ if __name__ == "__main__":
     if options.log_dir is not None:
         log_dir = options.log_dir
     else:
-        log_dir = settings.LOG_DIRECTORY
+        from audiotagger.settings.settings import LOG_DIRECTORY
+        log_dir = LOG_DIRECTORY
     logger = cl(log_dir=log_dir, name="audiotagger.log")
     logger.info(options)
 
     # Run main program.
+    from audiotagger.api.api import AudioTagger
     at = AudioTagger(logger=logger, options=options)
     at.run()
