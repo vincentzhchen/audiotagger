@@ -19,44 +19,45 @@ class AudioTaggerInput(object):
             return
 
         # load inputs
-        self._load_all_file_paths()
-        self._load_all_m4a_files()
+        self._load_all_audio_file_paths()
+        self._load_all_m4a_tuples()
         self._load_all_audio_files_into_df()
 
     def _load_all_file_paths(self):
         """Loads all file paths in the given root directory.
 
+        The files can be of any kind (e.g. text, xlsx, ...) and not
+        just audio files (m4a, mp3, flac, ...) at this point.
+
         """
         self.log.info("Loading all file paths...")
-        all_file_paths = []
-        for root, dirs, files in os.walk(self.src):
-            for file in files:
-                file_path = os.path.join(root, file)
-                all_file_paths.append(file_path)
-        self.all_file_paths = all_file_paths
+        self.all_file_paths = self.utils.traverse_directory(self.src)
         self.log.info(f"LOADED {len(self.all_file_paths)} file paths.")
-
-        self._load_all_audio_file_paths()
 
     def _load_all_audio_file_paths(self):
         """Loads all audio file paths into memory.
 
         """
+        self._load_all_file_paths()
         self.all_audio_file_paths = []
 
         # M4A
-        m4a_file_paths = [x for x in self.all_file_paths if x.endswith(".m4a")]
+        m4a_file_paths = self.utils.filter_m4a_files(self.all_file_paths)
         if m4a_file_paths:
+            self.log.info("Loading all m4a file paths...")
             self.m4a_file_paths = m4a_file_paths
             self.log.info(f"LOADED {len(self.m4a_file_paths)} m4a file paths.")
             self.all_audio_file_paths += m4a_file_paths
 
-    def _load_all_m4a_files(self):
+    def _load_all_m4a_tuples(self):
         """Loads all m4a file paths into memory.
+
+        The file path is used to create an MP4 object and is stored
+        as a (file_path, MP4 obj) tuple.
 
         """
         self.log.info("Loading all m4a objects...")
-        self.m4a_obj = self.utils.convert_to_m4a(self.m4a_file_paths)
+        self.m4a_obj = self.utils.convert_to_mp4_obj(self.m4a_file_paths)
         self.log.info(f"LOADED {len(self.m4a_obj)} m4a objects.")
 
     def _load_all_audio_files_into_df(self):
@@ -69,8 +70,8 @@ class AudioTaggerInput(object):
         self.log.info("Loading all audio file metadata into dataframe...")
         all_audio_obj = []
         all_audio_obj += self.m4a_obj  # add flac / mp3/ etc. here
-        all_audio_obj = [dict(song.tags, **{"PATH": [path]})
-                         for path, song in all_audio_obj]
+        all_audio_obj = [dict(song.tags, **{"PATH": [song.filename]})
+                         for song in all_audio_obj]
         metadata = pd.DataFrame(all_audio_obj)
         metadata = self.utils.rename_columns(metadata)
         metadata = metadata.applymap(lambda x: x[0])
@@ -108,9 +109,10 @@ class AudioTaggerInput(object):
             if "__" not in m:
                 attr = getattr(self, m)
                 if attr.__class__ == pd.DataFrame and not attr.empty:
-                    self.log.info(f"Saving {m} to Excel.")
+                    self.log.info(f"Saving [{m}] to Excel.")
                     attr.to_excel(writer, sheet_name=m, index=False,
                                   encoding="utf-8")
 
         writer.save()
+        self.log.info(f"Compiled input data saved in {file_path}")
         return

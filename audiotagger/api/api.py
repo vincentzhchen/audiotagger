@@ -14,7 +14,7 @@ class AudioTagger(object):
                                            logger=self.log,
                                            xl_input_file=options.xl_input_file)
 
-    def main(self):
+    def run(self):
         if self.options.tag_file:
             et = ExcelTagger(logger=self.log, input_data=self.input_data)
             et.save_tags_to_audio_files()
@@ -30,8 +30,8 @@ class AudioTagger(object):
             rf.rename_file()
 
         if self.options.is_clear_tags:
-            ct = ClearTags(root=self.options.src, logger=self.log)
-            ct.clear_tags()
+            ct = ClearTags(logger=self.log, input_data=self.input_data)
+            ct.clear_all_tags()
 
         if self.options.write_to_excel:
             self.input_data.write_to_excel(self.options.xl_output_file)

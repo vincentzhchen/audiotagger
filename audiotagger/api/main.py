@@ -22,7 +22,7 @@ def get_options():
         "-x",
         action="store_true",
         dest="write_to_excel",
-        help="Write data to Excel."
+        help="Write metadata to Excel."
     )
 
     parser.add_option(
@@ -30,7 +30,7 @@ def get_options():
         "--tag_file",
         action="store_true",
         dest="tag_file",
-        help="Writes tags to the audio file."
+        help="Write tags to the audio file."
     )
 
     parser.add_option(
@@ -96,15 +96,14 @@ if __name__ == "__main__":
         generate_config()
         sys.exit(0)
 
-    # Setup constants.
+    # Set up logging.
     if options.log_dir is not None:
         log_dir = options.log_dir
     else:
         log_dir = settings.LOG_DIRECTORY
-
-    # Setup logging.
     logger = cl(log_dir=log_dir, name="audiotagger.log")
     logger.info(options)
 
+    # Run main program.
     at = AudioTagger(logger=logger, options=options)
-    at.main()
+    at.run()

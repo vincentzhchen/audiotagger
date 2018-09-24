@@ -27,9 +27,7 @@ class Fields(object):
 
     # TUPLES OF INTEGERS
     TRACK_NUMBER                               = "TRACK_NUMBER"
-    TRACK_NO                                   = "TRACK_NO"
     DISC_NUMBER                                = "DISC_NUMBER"
-    DISC_NO                                    = "DISC_NO"
 
     # OTHER
     COVER                                      = "COVER"
@@ -46,6 +44,15 @@ class Fields(object):
     CDDB_DISC_ID                               = "CDDB_DISC_ID"
     DYNAMIC_RANGE_DR                           = "DYNAMIC_RANGE_DR"
     DYNAMIC_RANGE_R128                         = "DYNAMIC_RANGE_R128"
+
+    # CUSTOM
+    TRACK_NO                                   = "TRACK_NO"
+    TOTAL_TRACKS                               = "TOTAL_TRACKS"
+    DISC_NO                                    = "DISC_NO"
+    TOTAL_DISCS                                = "TOTAL_DISCS"
+
+    MAIN_FIELDS = [TITLE, TRACK_NO, TOTAL_TRACKS, DISC_NO, TOTAL_DISCS, ARTIST,
+                   ALBUM_ARTIST, YEAR, ALBUM, GENRE, RATING]
 
     ID3_to_field = {
         "\xa9nam": TITLE,

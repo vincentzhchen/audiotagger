@@ -30,9 +30,9 @@ class RenameFile(object):
             df_metadata[fld.ALBUM_ARTIST],
             df_metadata[fld.YEAR],
             df_metadata[fld.ALBUM],
-            df_metadata["DISC_NO"].astype(str),
-            df_metadata["TRACK_NO"].astype(str).str.pad(2, side="left",
-                                                        fillchar="0"),
+            df_metadata[fld.DISC_NO].astype(str),
+            df_metadata[fld.TRACK_NO].astype(str).str.pad(2, side="left",
+                                                          fillchar="0"),
             df_metadata[fld.TITLE],
             df_metadata["PATH"].apply(lambda x: os.path.splitext(x)[1])
         ))
