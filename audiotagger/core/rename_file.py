@@ -2,7 +2,7 @@ import os
 from shutil import copy2
 
 from audiotagger.data.fields import Fields as fld
-from audiotagger.utils.utils import AudioTaggerUtils
+from audiotagger.utils.utils import FileUtils
 
 
 class RenameFile(object):
@@ -27,6 +27,15 @@ class RenameFile(object):
         return "rename_file"
 
     def _join_metadata_path(self, metadata_tuple):
+        """Helper function to create the new path.
+
+        Args:
+            metadata_tuple (tuple): A tuple of metadata fields to be included
+                in the file path.
+
+        Returns:
+            anonymous (str): Returns a destination path for the file.
+        """
         artist, year, album, disc, track, title, ext = metadata_tuple
         return os.path.join(self.base_dst_dir,
                             artist,
@@ -34,7 +43,7 @@ class RenameFile(object):
                             disc + "." + track + " " + title + ext)
 
     def generate_new_file_path_from_metadata(self, df_metadata):
-        df_metadata["NEW_PATH"] = list(zip(
+        df_metadata["NEW_PATH"] = tuple(zip(
             df_metadata[fld.ALBUM_ARTIST],
             df_metadata[fld.YEAR],
             df_metadata[fld.ALBUM],
@@ -50,7 +59,7 @@ class RenameFile(object):
         return df_metadata[["PATH", "NEW_PATH"]]
 
     def _rename_file(self):
-        df = self.generate_new_file_path_from_metadata(self.modified_metadata)
+        df = self.modified_metadata
         pairs = list(zip(df["PATH"], df["NEW_PATH"]))
         for old, new in pairs:
             new_dir = os.path.dirname(new)
@@ -63,8 +72,8 @@ class RenameFile(object):
     def rename_file(self):
         if self.input_data.is_dry_run:
             self.log.info("Dry run... saving to {out_file}.")
-            AudioTaggerUtils.dry_run(df=self.modified_metadata,
-                                     prefix=self.__str__())
+            FileUtils.dry_run(df=self.modified_metadata,
+                              prefix=self.__str__())
             self.log.info("Data saved to {out_file}")
             return
         else:
