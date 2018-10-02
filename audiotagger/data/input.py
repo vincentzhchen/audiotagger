@@ -2,14 +2,13 @@ import os
 import pandas as pd
 
 from audiotagger.data.fields import Fields as fld
-from audiotagger.utils.utils import AudioTaggerUtils
+from audiotagger.utils.utils import FileUtils, TagUtils
 
 
 class AudioTaggerInput(object):
     def __init__(self, src, logger, xl_input_file=None, is_dry_run=False):
         self.log = logger
         self.src = src
-        self.utils = AudioTaggerUtils()
         self.is_dry_run = is_dry_run
 
         if self.src is None and xl_input_file is None:
@@ -33,7 +32,7 @@ class AudioTaggerInput(object):
 
         """
         self.log.info("Loading all file paths...")
-        self.all_file_paths = self.utils.traverse_directory(self.src)
+        self.all_file_paths = FileUtils.traverse_directory(self.src)
         self.log.info(f"LOADED {len(self.all_file_paths)} file paths.")
 
     def _load_all_audio_file_paths(self):
@@ -44,7 +43,7 @@ class AudioTaggerInput(object):
         self.all_audio_file_paths = []
 
         # M4A
-        m4a_file_paths = self.utils.filter_m4a_files(self.all_file_paths)
+        m4a_file_paths = FileUtils.filter_m4a_files(self.all_file_paths)
         if m4a_file_paths:
             self.log.info("Loading all m4a file paths...")
             self.m4a_file_paths = m4a_file_paths
@@ -59,7 +58,7 @@ class AudioTaggerInput(object):
 
         """
         self.log.info("Loading all m4a objects...")
-        self.m4a_obj = self.utils.convert_to_mp4_obj(self.m4a_file_paths)
+        self.m4a_obj = FileUtils.convert_to_mp4_obj(self.m4a_file_paths)
         self.log.info(f"LOADED {len(self.m4a_obj)} m4a objects.")
 
     def _load_all_audio_files_into_df(self):
@@ -75,14 +74,20 @@ class AudioTaggerInput(object):
         all_audio_obj = [dict(song.tags, **{"PATH": [song.filename]})
                          for song in all_audio_obj]
         metadata = pd.DataFrame(all_audio_obj)
-        metadata = self.utils.rename_columns(metadata)
-        metadata = metadata.applymap(lambda x: x[0])
-        metadata["TRACK_NO"] = metadata[fld.TRACK_NUMBER].apply(lambda x: x[0])
-        metadata["TOTAL_TRACKS"] = metadata[fld.TRACK_NUMBER].apply(
-            lambda x: x[1])
-        metadata["DISC_NO"] = metadata[fld.DISC_NUMBER].apply(lambda x: x[0])
-        metadata["TOTAL_DISCS"] = metadata[fld.DISC_NUMBER].apply(
-            lambda x: x[1])
+        metadata = TagUtils.rename_columns(metadata)
+
+        # TODO: hack to drop cover since that fails UTF-8 encoding
+        if "COVER" in metadata.columns:
+            metadata = metadata.drop("COVER", axis="columns")
+
+        # metadata = metadata.applymap(lambda x: x.encode('unicode_escape').
+        #                              decode('utf-8') if isinstance(x,
+        #                                                            str) else x)
+
+        f = lambda x: x[0] if isinstance(x, list) else x
+        metadata = metadata.applymap(f)
+
+        metadata = TagUtils.split_track_and_disc_tuples(df=metadata)
         metadata = metadata.drop([fld.TRACK_NUMBER, fld.DISC_NUMBER],
                                  axis="columns")
         self.metadata = metadata
@@ -91,7 +96,8 @@ class AudioTaggerInput(object):
         return self.all_audio_file_paths
 
     def get_metadata(self):
-        return self.metadata
+        df = TagUtils.enforce_dtypes(self.metadata)
+        return df
 
     def read_from_excel(self, file_path):
         df = pd.read_excel(file_path)

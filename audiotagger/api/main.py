@@ -58,7 +58,7 @@ def get_options():
     parser.add_option(
         "-d",
         "--output_dst",
-        action="store_true",
+        action="store",
         dest="output_dst",
         help="Base destination directory for file output (e.g. from "
              "file renaming or playlist generation."
@@ -94,9 +94,9 @@ def get_options():
 
     parser.add_option(
         "--generate-playlist",
-        action="store",
-        dest="playlist_filters",
-        help="Creates a playlist for the given set of filters."
+        action="store_true",
+        dest="generate_playlist",
+        help="Generates a playlist based on input path file."
     )
 
     return parser

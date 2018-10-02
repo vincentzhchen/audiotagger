@@ -140,3 +140,14 @@ class TagUtils(object):
     def enforce_dtypes(cls, df):
         df[fld.ALBUM] = df[fld.ALBUM].astype(str)
         return df
+
+    @classmethod
+    def split_track_and_disc_tuples(cls, df):
+        df[fld.TRACK_NO] = df[fld.TRACK_NUMBER].apply(lambda x: x[0])
+        df[fld.TOTAL_TRACKS] = df[fld.TRACK_NUMBER].apply(lambda x: x[1])
+
+        if fld.DISC_NUMBER in df.columns:
+            df[fld.DISC_NO] = df[fld.DISC_NUMBER].apply(lambda x: x[0])
+            df[fld.TOTAL_DISCS] = df[fld.DISC_NUMBER].apply(lambda x: x[1])
+
+        return df

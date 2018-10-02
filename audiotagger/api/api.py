@@ -5,6 +5,7 @@ from audiotagger.core.clear_tags import ClearTags
 from audiotagger.core.excel_tagger import ExcelTagger
 from audiotagger.core.paths import audiotagger_log_dir
 from audiotagger.core.rename_file import RenameFile
+from audiotagger.core.create_playlist import CreatePlaylist
 from audiotagger.data.input import AudioTaggerInput
 from audiotagger.settings import settings as settings
 
@@ -44,3 +45,8 @@ class AudioTagger(object):
         if self.options.is_clear_tags:
             ct = ClearTags(logger=self.log, input_data=self.input_data)
             ct.clear_all_tags()
+
+        if self.options.generate_playlist:
+            cp = CreatePlaylist(playlist_dst_dir=self.options.output_dst,
+                                logger=self.log, input_data=self.input_data)
+            cp.create_playlist()

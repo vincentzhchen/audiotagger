@@ -1,7 +1,7 @@
 import pytest
 from audiotagger.core.paths import (audiotagger_config_dir,
                                     audiotagger_config_path)
-from audiotagger.utils.utils import AudioTaggerUtils
+from audiotagger.utils.utils import FileUtils
 
 
 @pytest.mark.parametrize("src, min_output_length", [
@@ -18,6 +18,6 @@ from audiotagger.utils.utils import AudioTaggerUtils
     (audiotagger_config_path(), 0),
 ])
 def test_traverse_directory(src, min_output_length):
-    all_file_paths = AudioTaggerUtils.traverse_directory(src)
+    all_file_paths = FileUtils.traverse_directory(src)
     assert all_file_paths.__class__ == list
     assert len(all_file_paths) > min_output_length
