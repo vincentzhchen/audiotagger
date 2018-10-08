@@ -29,7 +29,8 @@ def get_options():
         "--tag_file",
         action="store_true",
         dest="tag_file",
-        help="Write tags to the audio file."
+        help="A .xlsx metadata file containing tags and the audio file "
+             "paths of the files associated ."
     )
 
     parser.add_option(
@@ -57,9 +58,9 @@ def get_options():
 
     parser.add_option(
         "-d",
-        "--output_dst",
+        "--dst",
         action="store",
-        dest="output_dst",
+        dest="dst",
         help="Base destination directory for file output (e.g. from "
              "file renaming or playlist generation."
     )
@@ -103,7 +104,8 @@ def get_options():
 
 
 if __name__ == "__main__":
-    options, args = get_options().parse_args()
+    parser = get_options()
+    options, args = parser.parse_args()
 
     # Get app configurations.
     if options.generate_config:

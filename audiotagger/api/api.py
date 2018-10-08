@@ -29,13 +29,20 @@ class AudioTagger(object):
 
     def run(self):
         if self.options.tag_file:
+            # Given an Excel metadata sheet, tag the audio files listed
+            # by the paths in the sheet.
             et = ExcelTagger(logger=self.log, input_data=self.input_data)
             et.save_tags_to_audio_files()
 
         if self.options.rename_file:
-            if self.options.output_dst is not None:
-                rename_dst = self.options.output_dst
+            # Renames the audio file path using a pre-defined format.
+            # If a destination directory is passed, the renamed file
+            # will be saved into the destination, leaving the original
+            # file untouched.
+            if self.options.dst is not None:
+                rename_dst = self.options.dst
             else:
+                # TODO: for now, always save to the audio directory.
                 rename_dst = settings.AUDIO_DIRECTORY
 
             rf = RenameFile(base_dst_dir=rename_dst, logger=self.log,
