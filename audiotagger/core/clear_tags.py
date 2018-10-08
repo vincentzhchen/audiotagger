@@ -18,7 +18,7 @@ class ClearTags(object):
 
     def clear_non_main_tags(self):
         metadata = self.input_data.get_metadata()
-        metadata = metadata[fld.MAIN_FIELDS]
+        metadata = metadata[fld.BASE_METADATA_COLS]
         tag_dict = TagUtils.metadata_to_tags(df_metadata=metadata)
         for k in tag_dict:
             self.log.info(f"Saving {tag_dict[k]} to {k}")

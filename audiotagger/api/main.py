@@ -1,10 +1,12 @@
-#!/usr/bin/env python
+# !/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import optparse
 import sys
 
 from audiotagger.core.generate_config import generate_config
+from audiotagger.core.generate_metadata_template import \
+    generate_metadata_template
 from customlogging import CustomLogging as cl
 
 
@@ -100,6 +102,13 @@ def get_options():
         help="Generates a playlist based on input path file."
     )
 
+    parser.add_option(
+        "--generate-metadata-template",
+        action="store_true",
+        dest="generate_metadata_template",
+        help="Generates a .xlsx metadata template file."
+    )
+
     return parser
 
 
@@ -112,16 +121,22 @@ if __name__ == "__main__":
         generate_config()
         sys.exit(0)
 
+    if options.generate_metadata_template:
+        generate_metadata_template(dst_dir=options.dst)
+        sys.exit(0)
+
     # Set up logging.
     if options.log_dir is not None:
         log_dir = options.log_dir
     else:
         from audiotagger.settings.settings import LOG_DIRECTORY
+
         log_dir = LOG_DIRECTORY
     logger = cl(log_dir=log_dir, name="audiotagger.log")
     logger.info(options)
 
     # Run main program.
     from audiotagger.api.api import AudioTagger
+
     at = AudioTagger(logger=logger, options=options)
     at.run()

@@ -50,9 +50,10 @@ class Fields(object):
     TOTAL_TRACKS                               = "TOTAL_TRACKS"
     DISC_NO                                    = "DISC_NO"
     TOTAL_DISCS                                = "TOTAL_DISCS"
+    PATH                                       = "PATH"
 
-    MAIN_FIELDS = [TITLE, TRACK_NO, TOTAL_TRACKS, DISC_NO, TOTAL_DISCS, ARTIST,
-                   ALBUM_ARTIST, YEAR, ALBUM, GENRE, RATING]
+    BASE_METADATA_COLS = [TITLE, TRACK_NO, TOTAL_TRACKS, DISC_NO, TOTAL_DISCS,
+                          ARTIST, ALBUM_ARTIST, YEAR, ALBUM, GENRE, RATING]
 
     ID3_to_field = {
         "\xa9nam": TITLE,
