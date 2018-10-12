@@ -17,6 +17,7 @@ class AudioTaggerInput(object):
 
         if xl_input_file is not None:
             self.read_from_excel(file_path=xl_input_file)
+            self.metadata = self._clean_metadata(self.metadata)
             return
 
         # load inputs
@@ -76,9 +77,17 @@ class AudioTaggerInput(object):
         metadata = pd.DataFrame(all_audio_obj)
         metadata = TagUtils.rename_columns(metadata)
 
+        metadata = self._clean_metadata(metadata)
+        self.metadata = metadata
+
+    def _clean_metadata(self, metadata):
         # TODO: hack to drop cover since that fails UTF-8 encoding
         if "COVER" in metadata.columns:
             metadata = metadata.drop("COVER", axis="columns")
+
+        if fld.RATING in metadata.columns:
+            metadata[fld.RATING].fillna("", inplace=True)
+            metadata[fld.RATING] = metadata[fld.RATING].astype(str)
 
         # metadata = metadata.applymap(lambda x: x.encode('unicode_escape').
         #                              decode('utf-8') if isinstance(x,
@@ -88,9 +97,7 @@ class AudioTaggerInput(object):
         metadata = metadata.applymap(f)
 
         metadata = TagUtils.split_track_and_disc_tuples(df=metadata)
-        metadata = metadata.drop([fld.TRACK_NUMBER, fld.DISC_NUMBER],
-                                 axis="columns")
-        self.metadata = metadata
+        return metadata
 
     def get_all_audio_file_paths(self):
         return self.all_audio_file_paths

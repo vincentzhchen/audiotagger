@@ -126,7 +126,7 @@ class Fields(object):
         # "----:com.apple.iTunes:CTDBDISCCONFIDENCE": DISC_CONFIDENCE,
         # "----:com.apple.iTunes:CTDBTRACKCONFIDENCE": TRACK_CONFIDENCE,
         # "----:com.apple.iTunes:added_timestamp": ADDED_TIMESTAMP,
-        # "----:com.apple.iTunes:rating": RATING,
+        RATING: "----:com.apple.iTunes:rating",
         # "----:com.apple.iTunes:replaygain_album_gain": REPLAYGAIN_ALBUM_GAIN,
         # "----:com.apple.iTunes:replaygain_album_peak": REPLAYGAIN_ALBUM_PEAK,
         # "----:com.apple.iTunes:replaygain_track_gain": REPLAYGAIN_TRACK_GAIN,
