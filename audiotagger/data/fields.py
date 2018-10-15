@@ -20,6 +20,7 @@ class Fields(object):
     COMPOSER_SORT_ORDER                        = "COMPOSER_SORT_ORDER"
     WORK                                       = "WORK"
     MOVEMENT                                   = "MOVEMENT"
+    PLAY_COUNT                                 = "PLAY_COUNT"
 
     # BOOLEAN
     IS_COMPILATION                             = "IS_COMPILATION"
@@ -29,11 +30,15 @@ class Fields(object):
     TRACK_NUMBER                               = "TRACK_NUMBER"
     DISC_NUMBER                                = "DISC_NUMBER"
 
+    # DATETIME
+    ADDED_TIMESTAMP                            = "ADDED_TIMESTAMP"
+    FIRST_PLAYED_TIMESTAMP                     = "FIRST_PLAYED_TIMESTAMP"
+    LAST_PLAYED_TIMESTAMP                      = "LAST_PLAYED_TIMESTAMP"
+
     # OTHER
     COVER                                      = "COVER"
     DISC_CONFIDENCE                            = "DISC_CONFIDENCE"
     TRACK_CONFIDENCE                           = "TRACK_CONFIDENCE"
-    ADDED_TIMESTAMP                            = "ADDED_TIMESTAMP"
     RATING                                     = "RATING"
     REPLAYGAIN_ALBUM_GAIN                      = "REPLAYGAIN_ALBUM_GAIN"
     REPLAYGAIN_ALBUM_PEAK                      = "REPLAYGAIN_ALBUM_PEAK"
@@ -84,6 +89,9 @@ class Fields(object):
         "----:com.apple.iTunes:CTDBDISCCONFIDENCE": DISC_CONFIDENCE,
         "----:com.apple.iTunes:CTDBTRACKCONFIDENCE": TRACK_CONFIDENCE,
         "----:com.apple.iTunes:added_timestamp": ADDED_TIMESTAMP,
+        "----:com.apple.iTunes:first_played_timestamp": FIRST_PLAYED_TIMESTAMP,
+        "----:com.apple.iTunes:last_played_timestamp": LAST_PLAYED_TIMESTAMP,
+        "----:com.apple.iTunes:play_count": PLAY_COUNT,
         "----:com.apple.iTunes:rating": RATING,
         "----:com.apple.iTunes:replaygain_album_gain": REPLAYGAIN_ALBUM_GAIN,
         "----:com.apple.iTunes:replaygain_album_peak": REPLAYGAIN_ALBUM_PEAK,
@@ -126,6 +134,9 @@ class Fields(object):
         # "----:com.apple.iTunes:CTDBDISCCONFIDENCE": DISC_CONFIDENCE,
         # "----:com.apple.iTunes:CTDBTRACKCONFIDENCE": TRACK_CONFIDENCE,
         # "----:com.apple.iTunes:added_timestamp": ADDED_TIMESTAMP,
+        FIRST_PLAYED_TIMESTAMP: "----:com.apple.iTunes:first_played_timestamp",
+        LAST_PLAYED_TIMESTAMP: "----:com.apple.iTunes:last_played_timestamp",
+        PLAY_COUNT: "----:com.apple.iTunes:play_count",
         RATING: "----:com.apple.iTunes:rating",
         # "----:com.apple.iTunes:replaygain_album_gain": REPLAYGAIN_ALBUM_GAIN,
         # "----:com.apple.iTunes:replaygain_album_peak": REPLAYGAIN_ALBUM_PEAK,
