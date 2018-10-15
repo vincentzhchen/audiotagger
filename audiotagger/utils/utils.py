@@ -87,6 +87,19 @@ class FileUtils(object):
 
         return all_file_paths
 
+    @classmethod
+    def is_xlsx(cls, path_to_some_file):
+        """Checks if a file is an Excel (.xlsx) file.
+
+        Args:
+            path_to_some_file (str): Path to the file.
+
+        Returns:
+            Returns True if the file is an xlsx file else False.
+        """
+        file_extension = FileUtils.get_file_extension(path_to_some_file)
+        return True if file_extension == ".xlsx" else False
+
 
 class TagUtils(object):
     def __init__(self):

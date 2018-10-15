@@ -21,3 +21,17 @@ def test_traverse_directory(src, min_output_length):
     all_file_paths = FileUtils.traverse_directory(src)
     assert all_file_paths.__class__ == list
     assert len(all_file_paths) > min_output_length
+
+
+@pytest.mark.parametrize("input_path, expected_result", [
+    # not a path; expect to return False
+    pytest.param("/fake/path", False),
+
+    # potentially real path, expect True
+    pytest.param("~/file.xlsx", True),
+
+    # not an Excel file, expect False
+    pytest.param("~/file.csv", False),
+])
+def test_is_xlsx(input_path, expected_result):
+    assert FileUtils.is_xlsx(input_path) == expected_result
