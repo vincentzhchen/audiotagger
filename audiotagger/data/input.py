@@ -6,18 +6,13 @@ from audiotagger.utils.utils import FileUtils, TagUtils
 
 
 class AudioTaggerInput(object):
-    def __init__(self, src, logger, xl_input_file=None, is_dry_run=False):
+    def __init__(self, src, logger, is_dry_run=False):
         self.log = logger
         self.src = src
         self.is_dry_run = is_dry_run
 
-        if self.src is None and xl_input_file is None:
-            raise ValueError("Must include root directory "
-                             "containing audio files.")
-
-        if xl_input_file is not None:
-            self.read_from_excel(file_path=xl_input_file)
-            self.metadata = self._clean_metadata(self.metadata)
+        if FileUtils.is_xlsx(self.src):
+            self.read_from_excel(file_path=self.src)
             return
 
         # load inputs
@@ -107,7 +102,7 @@ class AudioTaggerInput(object):
         return df
 
     def read_from_excel(self, file_path):
-        df = pd.read_excel(file_path)
+        df = pd.read_excel(file_path, sheet_name="metadata")
         self.metadata = df
 
     def write_to_excel(self, file_path):

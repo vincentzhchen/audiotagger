@@ -135,7 +135,7 @@ if __name__ == "__main__":
     logger = cl(log_dir=log_dir, name="audiotagger.log")
     logger.info(options)
 
-    # Run main program.
+    # RUN MAIN PROGRAM HERE.
     from audiotagger.api.api import AudioTagger
 
     at = AudioTagger(logger=logger, options=options)

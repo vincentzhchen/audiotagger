@@ -17,7 +17,6 @@ class AudioTagger(object):
         self.options = options
         self.input_data = AudioTaggerInput(src=self.options.src,
                                            logger=self.log,
-                                           xl_input_file=options.xl_input_file,
                                            is_dry_run=options.dry_run)
 
         if self.options.write_to_excel:
