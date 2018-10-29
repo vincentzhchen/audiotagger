@@ -46,7 +46,7 @@ def get_options():
         "-c",
         "--clear_tags",
         action="store_true",
-        dest="is_clear_tags",
+        dest="clear_tags",
         help="Clears the tags for a given directory."
     )
 

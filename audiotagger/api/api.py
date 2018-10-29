@@ -27,6 +27,10 @@ class AudioTagger(object):
             self.input_data.write_to_excel(file_path)
 
     def run(self):
+        if self.input_data.get_metadata().empty:
+            self.log.warn("METADATA dataframe is empty... EXITING PROCESS.")
+            return
+
         if self.options.tag_file:
             # Given an Excel metadata sheet, tag the audio files listed
             # by the paths in the sheet.
@@ -48,7 +52,7 @@ class AudioTagger(object):
                             input_data=self.input_data)
             rf.rename_file()
 
-        if self.options.is_clear_tags:
+        if self.options.clear_tags:
             ct = ClearTags(logger=self.log, input_data=self.input_data)
             ct.clear_all_tags()
 
