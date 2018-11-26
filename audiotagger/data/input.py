@@ -11,14 +11,24 @@ class AudioTaggerInput(object):
         self.src = src
         self.is_dry_run = is_dry_run
 
+        # for Excel metadata files
         if FileUtils.is_xlsx(self.src):
             self.read_from_excel(file_path=self.src)
-            return
 
-        # load inputs
-        self._load_all_audio_file_paths()
-        self._load_all_m4a_tuples()
-        self._load_all_audio_files_into_df()
+        # for directory of audio files or a single audio file
+        elif os.path.isdir(self.src) or os.path.isfile(self.src):
+            if not os.path.exists(self.src):
+                raise ValueError(f"{self.src} does not exist.")
+
+            # load inputs
+            self._load_all_audio_file_paths()
+            self._load_all_m4a_tuples()
+            self._load_all_audio_files_into_df()
+
+        else:
+            raise Exception("INVALID SOURCE")
+
+        self.metadata = TagUtils.clean_metadata(df_metadata=self.metadata)
 
     def _load_all_file_paths(self):
         """Loads all file paths in the given root directory.
@@ -70,29 +80,9 @@ class AudioTaggerInput(object):
         all_audio_obj = [dict(song.tags, **{"PATH": [song.filename]})
                          for song in all_audio_obj]
         metadata = pd.DataFrame(all_audio_obj)
-        metadata = TagUtils.rename_columns(metadata)
-
-        metadata = self._clean_metadata(metadata)
+        # mutagen stores all tags in lists; flatten them
+        metadata = TagUtils.flatten_list_values(metadata)
         self.metadata = metadata
-
-    def _clean_metadata(self, metadata):
-        # TODO: hack to drop cover since that fails UTF-8 encoding
-        if "COVER" in metadata.columns:
-            metadata = metadata.drop("COVER", axis="columns")
-
-        if fld.RATING in metadata.columns:
-            metadata[fld.RATING].fillna("", inplace=True)
-            metadata[fld.RATING] = metadata[fld.RATING].astype(str)
-
-        # metadata = metadata.applymap(lambda x: x.encode('unicode_escape').
-        #                              decode('utf-8') if isinstance(x,
-        #                                                            str) else x)
-
-        f = lambda x: x[0] if isinstance(x, list) else x
-        metadata = metadata.applymap(f)
-
-        metadata = TagUtils.split_track_and_disc_tuples(df=metadata)
-        return metadata
 
     def get_all_audio_file_paths(self):
         return self.all_audio_file_paths
@@ -102,7 +92,28 @@ class AudioTaggerInput(object):
         return df
 
     def read_from_excel(self, file_path):
-        df = pd.read_excel(file_path, sheet_name="metadata")
+        # TODO: this assumes the input sheet only has certain columns.
+        df = pd.read_excel(file_path, sheet_name="metadata",
+                           converters={fld.ADDED_TIMESTAMP: str,
+                                       fld.FIRST_PLAYED_TIMESTAMP: str,
+                                       fld.LAST_PLAYED_TIMESTAMP: str,
+                                       fld.PLAY_COUNT: str,
+                                       fld.RATING: int,
+                                       fld.REPLAYGAIN_ALBUM_GAIN: str,
+                                       fld.REPLAYGAIN_ALBUM_PEAK: str,
+                                       fld.REPLAYGAIN_TRACK_GAIN: str,
+                                       fld.REPLAYGAIN_TRACK_PEAK: str,
+                                       fld.PATH: str,
+                                       fld.ALBUM_ARTIST: str,
+                                       fld.ARTIST: str,
+                                       fld.ALBUM: str,
+                                       fld.YEAR: str,
+                                       fld.GENRE: str,
+                                       fld.TITLE: str,
+                                       fld.TRACK_NO: int,
+                                       fld.TOTAL_TRACKS: int,
+                                       fld.DISC_NO: int,
+                                       fld.TOTAL_DISCS: int})
         self.metadata = df
 
     def write_to_excel(self, file_path):

@@ -18,7 +18,7 @@ class ExcelTagger(object):
         if self.input_data.is_dry_run:
             self.log.info("Dry run... saving to {out_file}.")
             TagUtils.dry_run(df=self.modified_metadata,
-                              prefix=self.__str__())
+                             prefix=self.__str__())
             self.log.info("Data saved to {out_file}")
             return
 

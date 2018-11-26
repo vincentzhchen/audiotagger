@@ -115,6 +115,22 @@ class TagUtils(object):
         return ret.loc[df[fld.ARTIST] == artist]
 
     @classmethod
+    def clean_metadata(cls, df_metadata):
+        df_metadata = TagUtils.rename_columns(df_metadata)
+
+        # TODO: hack to drop cover since that fails UTF-8 encoding
+        if "COVER" in df_metadata.columns:
+            df_metadata = df_metadata.drop("COVER", axis="columns")
+
+        # mutagen stores ratings as a byte; maintain this
+        if fld.RATING in df_metadata.columns:
+            df_metadata[fld.RATING].fillna(0, inplace=True)
+            df_metadata[fld.RATING] = df_metadata[fld.RATING].astype(bytes)
+
+        df_metadata = TagUtils.split_track_and_disc_tuples(df=df_metadata)
+        return df_metadata
+
+    @classmethod
     def metadata_to_tags(cls, df_metadata):
         df_metadata[fld.TRACK_NUMBER] = df_metadata[
             [fld.TRACK_NO, fld.TOTAL_TRACKS]].apply(tuple, axis="columns")
@@ -131,7 +147,11 @@ class TagUtils(object):
             fld.field_to_ID3.get(c, c) for c in df_metadata.columns]
         metadata_dicts = df_metadata.to_dict(orient="records")
         for d in metadata_dicts:
-            path = d.pop("PATH")[0]
+            path = d.pop(fld.PATH)[0]
+            # do not include this field if the rating is 0
+            # TODO: the field_to_ID3 is not clean... fix this later
+            if d[fld.field_to_ID3[fld.RATING]] == [0]:
+                d.pop(fld.field_to_ID3[fld.RATING])
             tags = MP4Tags()
             tags.update(d)
             tag_dict.update({path: tags})
@@ -167,3 +187,20 @@ class TagUtils(object):
             df = df.drop(fld.DISC_NUMBER, axis="columns")
 
         return df
+
+    @classmethod
+    def flatten_list_values(cls, df_metadata):
+        """Takes the first element of all list objects in dataframe.
+
+        Args:
+            df_metadata (dataframe): A metadata dataframe from parsing
+                audio files.
+
+        Returns:
+            anonymous (dataframe): Returns the metadata dataframe with
+                no list objects in the cells.
+        """
+        f = lambda x: x[0] if isinstance(x, list) else x
+        df_metadata = df_metadata.applymap(f)
+
+        return df_metadata
