@@ -7,8 +7,12 @@ from audiotagger.utils.utils import FileUtils, TagUtils
 
 class AudioTaggerInput(object):
     def __init__(self, src, logger, is_dry_run=False):
+        if src is None:
+            raise Exception("INVALID SOURCE")
+        else:
+            self.src = src
+
         self.log = logger
-        self.src = src
         self.is_dry_run = is_dry_run
 
         # for Excel metadata files
@@ -93,27 +97,13 @@ class AudioTaggerInput(object):
 
     def read_from_excel(self, file_path):
         # TODO: this assumes the input sheet only has certain columns.
-        df = pd.read_excel(file_path, sheet_name="metadata",
-                           converters={fld.ADDED_TIMESTAMP: str,
-                                       fld.FIRST_PLAYED_TIMESTAMP: str,
-                                       fld.LAST_PLAYED_TIMESTAMP: str,
-                                       fld.PLAY_COUNT: str,
-                                       fld.RATING: int,
-                                       fld.REPLAYGAIN_ALBUM_GAIN: str,
-                                       fld.REPLAYGAIN_ALBUM_PEAK: str,
-                                       fld.REPLAYGAIN_TRACK_GAIN: str,
-                                       fld.REPLAYGAIN_TRACK_PEAK: str,
-                                       fld.PATH: str,
-                                       fld.ALBUM_ARTIST: str,
-                                       fld.ARTIST: str,
-                                       fld.ALBUM: str,
-                                       fld.YEAR: str,
-                                       fld.GENRE: str,
-                                       fld.TITLE: str,
-                                       fld.TRACK_NO: int,
-                                       fld.TOTAL_TRACKS: int,
-                                       fld.DISC_NO: int,
-                                       fld.TOTAL_DISCS: int})
+        df = pd.read_excel(file_path, sheet_name="metadata", dtype=str)
+        df[fld.RATING] = df[fld.RATING].astype(int)
+        df[fld.TRACK_NO] = df[fld.RATING].astype(int)
+        df[fld.TOTAL_TRACKS] = df[fld.TOTAL_TRACKS].astype(int)
+        df[fld.DISC_NO] = df[fld.DISC_NO].astype(int)
+        df[fld.TOTAL_DISCS] = df[fld.TOTAL_DISCS].astype(int)
+        df = df.replace("nan", "")
         self.metadata = df
 
     def write_to_excel(self, file_path):

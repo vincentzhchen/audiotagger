@@ -13,9 +13,8 @@ from audiotagger.settings import settings as settings
 class AudioTagger(object):
     def __init__(self, logger, options, **kwargs):
         self.log = logger
-        self.src = options.src
         self.options = options
-        self.input_data = AudioTaggerInput(src=self.options.src,
+        self.input_data = AudioTaggerInput(src=options.src,
                                            logger=self.log,
                                            is_dry_run=options.dry_run)
 

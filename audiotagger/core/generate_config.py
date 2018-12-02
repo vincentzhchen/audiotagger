@@ -29,6 +29,6 @@ def generate_config():
         with open(config_file, "w") as f:
             f.write(f"LOG_DIRECTORY='{audiotagger_log_dir()}'\n"
                     f"AUDIO_DIRECTORY=None"'\n')
-        print(f"Generated config at {audiotagger_config_dir()}")
+        print(f"Generated config at {audiotagger_config_path()}")
     else:
         print("No configuration was generated.")

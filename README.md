@@ -8,11 +8,12 @@ Cross platform metadata editor and manager for audio files.
     higher.  May work for earlier versions.
 - [openpyxl](https://bitbucket.org/openpyxl/openpyxl/src): Developed on 2.5.11
     and higher.  May work for earlier versions.
+- [xlrd](): Developed on 1.1.0 and higher.  May work for earlier versions.
 
 ## Setup
 All commands are executed from `audiotagger.audiotagger.api.main`.  First run
 the following to generate a configuration file.
-```buildoutcfg
+```text
 --generate-config
 ```
 This generates a configuration file in the `~/.audiotagger` directory.
