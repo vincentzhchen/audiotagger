@@ -1,151 +1,530 @@
 class Fields(object):
-    # STRING
-    TITLE                                      = "TITLE"
-    ALBUM                                      = "ALBUM"
-    ARTIST                                     = "ARTIST"
-    ALBUM_ARTIST                               = "ALBUM_ARTIST"
-    COMPOSER                                   = "COMPOSER"
-    YEAR                                       = "YEAR"
-    COMMENT                                    = "COMMENT"
-    DESCRIPTION                                = "DESCRIPTION"
-    GROUPING                                   = "GROUPING"
-    GENRE                                      = "GENRE"
-    LYRICS                                     = "LYRICS"
-    ENCODED_BY                                 = "ENCODED_BY"
-    COPYRIGHT                                  = "COPYRIGHT"
-    ALBUM_SORT_ORDER                           = "ALBUM_SORT_ORDER"
-    ALBUM_ARTIST_SORT_ORDER                    = "ALBUM_ARTIST_SORT_ORDER"
-    ARTIST_SORT_ORDER                          = "ARTIST_SORT_ORDER"
-    TITLE_SORT_ORDER                           = "TITLE_SORT_ORDER"
-    COMPOSER_SORT_ORDER                        = "COMPOSER_SORT_ORDER"
-    WORK                                       = "WORK"
-    MOVEMENT                                   = "MOVEMENT"
-    PLAY_COUNT                                 = "PLAY_COUNT"
+    PATH = type(
+        "PATH", (),
+        {
+            "ID3": "PATH",
+            "CID": "PATH",
+            "TYPE": str
+        }
+    )
 
-    # BOOLEAN
-    IS_COMPILATION                             = "IS_COMPILATION"
-    IS_GAPLESS_ALBUM                           = "IS_GAPLESS_ALBUM"
+    # BASE METADATA COLS
+    TITLE = type(
+        "TITLE", (),
+        {
+            "ID3": "\xa9nam",
+            "CID": "TITLE",
+            "TYPE": str
+        }
+    )
 
-    # TUPLES OF INTEGERS
-    TRACK_NUMBER                               = "TRACK_NUMBER"
-    DISC_NUMBER                                = "DISC_NUMBER"
+    TRACK_NO = type(
+        "TRACK_NO", (),
+        {
+            "ID3": "TRACK_NO",
+            "CID": "TRACK_NO",
+            "TYPE": int
+        }
+    )
 
-    # DATETIME
-    ADDED_TIMESTAMP                            = "ADDED_TIMESTAMP"
-    FIRST_PLAYED_TIMESTAMP                     = "FIRST_PLAYED_TIMESTAMP"
-    LAST_PLAYED_TIMESTAMP                      = "LAST_PLAYED_TIMESTAMP"
+    TOTAL_TRACKS = type(
+        "TOTAL_TRACKS", (),
+        {
+            "ID3": "TOTAL_TRACKS",
+            "CID": "TOTAL_TRACKS",
+            "TYPE": int
+        }
+    )
 
-    # OTHER
-    COVER                                      = "COVER"
-    DISC_CONFIDENCE                            = "DISC_CONFIDENCE"
-    TRACK_CONFIDENCE                           = "TRACK_CONFIDENCE"
-    RATING                                     = "RATING"
-    REPLAYGAIN_ALBUM_GAIN                      = "REPLAYGAIN_ALBUM_GAIN"
-    REPLAYGAIN_ALBUM_PEAK                      = "REPLAYGAIN_ALBUM_PEAK"
-    REPLAYGAIN_TRACK_GAIN                      = "REPLAYGAIN_TRACK_GAIN"
-    REPLAYGAIN_TRACK_PEAK                      = "REPLAYGAIN_TRACK_PEAK"
-    ACCURATE_RIP_DISC_ID                       = "ACCURATE_RIP_DISC_ID"
-    ACCURATE_RIP_RESULT                        = "ACCURATE_RIP_RESULT"
-    CDDB_DISC_ID                               = "CDDB_DISC_ID"
-    DYNAMIC_RANGE_DR                           = "DYNAMIC_RANGE_DR"
-    DYNAMIC_RANGE_R128                         = "DYNAMIC_RANGE_R128"
+    TRACK_NUMBER = type(
+        "TRACK_NUMBER", (),
+        {
+            "ID3": "trkn",
+            "CID": "TRACK_NUMBER",
+            "TYPE": tuple  # tuple of integer
+        }
+    )
 
-    # CUSTOM
-    TRACK_NO                                   = "TRACK_NO"
-    TOTAL_TRACKS                               = "TOTAL_TRACKS"
-    DISC_NO                                    = "DISC_NO"
-    TOTAL_DISCS                                = "TOTAL_DISCS"
-    PATH                                       = "PATH"
+    DISC_NO = type(
+        "DISC_NO", (),
+        {
+            "ID3": "DISC_NO",
+            "CID": "DISC_NO",
+            "TYPE": int
+        }
+    )
 
-    BASE_METADATA_COLS = [TITLE, TRACK_NO, TOTAL_TRACKS, DISC_NO, TOTAL_DISCS,
-                          ARTIST, ALBUM_ARTIST, YEAR, ALBUM, GENRE, RATING]
+    TOTAL_DISCS = type(
+        "TOTAL_DISCS", (),
+        {
+            "ID3": "TOTAL_DISCS",
+            "CID": "TOTAL_DISCS",
+            "TYPE": int
+        }
+    )
 
+    DISC_NUMBER = type(
+        "DISC_NUMBER", (),
+        {
+            "ID3": "disk",
+            "CID": "DISC_NUMBER",
+            "TYPE": tuple  # tuple of integer
+        }
+    )
+
+    ARTIST = type(
+        "ARTIST", (),
+        {
+            "ID3": "\xa9ART",
+            "CID": "ARTIST",
+            "TYPE": str
+        }
+    )
+
+    ALBUM_ARTIST = type(
+        "ALBUM_ARTIST", (),
+        {
+            "ID3": "aART",
+            "CID": "ALBUM_ARTIST",
+            "TYPE": str
+        }
+    )
+
+    YEAR = type(
+        "YEAR", (), {
+            "ID3": "\xa9day",
+            "CID": "YEAR",
+            "TYPE": str
+        }
+    )
+
+    ALBUM = type(
+        "ALBUM", (),
+        {
+            "ID3": "\xa9alb",
+            "CID": "ALBUM",
+            "TYPE": str
+        }
+    )
+
+    GENRE = type(
+        "GENRE", (),
+        {
+            "ID3": "\xa9gen",
+            "CID": "GENRE",
+            "TYPE": str
+        }
+    )
+
+    RATING = type(
+        "RATING", (),
+        {
+            "ID3": "----:com.apple.iTunes:rating",
+            "CID": "RATING",
+            "TYPE": bytes
+        }
+    )
+
+    BASE_METADATA_COLS = [
+        TITLE.CID, TRACK_NO.CID, TOTAL_TRACKS.CID, DISC_NO.CID,
+        TOTAL_DISCS.CID, ARTIST.CID, ALBUM_ARTIST.CID, YEAR.CID,
+        ALBUM.CID, GENRE.CID, RATING.CID]
+
+    # ADDITIONAL METADATA COLS
+    COMPOSER = type(
+        "COMPOSER", (),
+        {
+            "ID3": "\xa9wrt",
+            "CID": "COMPOSER",
+            "TYPE": str
+        }
+    )
+
+    COMMENT = type(
+        "COMMENT", (),
+        {
+            "ID3": "\xa9cmt",
+            "CID": "COMMENT",
+            "TYPE": str
+        }
+    )
+
+    PLAY_COUNT = type(
+        "PLAY_COUNT", (),
+        {
+            "ID3": "----:com.apple.iTunes:play_count",
+            "CID": "PLAY_COUNT",
+            "TYPE": str
+        }
+    )
+
+    LYRICS = type(
+        "LYRICS", (),
+        {
+            "ID3": "\xa9lyr",
+            "CID": "LYRICS",
+            "TYPE": str
+        }
+    )
+
+    DESCRIPTION = type(
+        "DESCRIPTION", (),
+        {
+            "ID3": "desc",
+            "CID": "DESCRIPTION",
+            "TYPE": str
+        }
+    )
+
+    GROUPING = type(
+        "GROUPING", (),
+        {
+            "ID3": "\xa9grp",
+            "CID": "GROUPING",
+            "TYPE": str
+        }
+    )
+
+    ENCODED_BY = type(
+        "ENCODED_BY", (),
+        {
+            "ID3": "\xa9too",
+            "CID": "ENCODED_BY",
+            "TYPE": str
+        }
+    )
+
+    ENCODED_BY_ITUNES = type(
+        "ENCODED_BY", (),
+        {
+            "ID3": "----:com.apple.iTunes:Encoder",
+            "CID": "ENCODED_BY",
+            "TYPE": str
+        }
+    )
+
+    COPYRIGHT = type(
+        "COPYRIGHT", (),
+        {
+            "ID3": "cprt",
+            "CID": "COPYRIGHT",
+            "TYPE": str
+        }
+    )
+
+    ALBUM_SORT_ORDER = type(
+        "ALBUM_SORT_ORDER", (),
+        {
+            "ID3": "soal",
+            "CID": "ALBUM_SORT_ORDER",
+            "TYPE": str
+        }
+    )
+
+    ALBUM_ARTIST_SORT_ORDER = type(
+        "ALBUM_ARTIST_SORT_ORDER", (),
+        {
+            "ID3": "soaa",
+            "CID": "ALBUM_ARTIST_SORT_ORDER",
+            "TYPE": str
+        }
+    )
+
+    ARTIST_SORT_ORDER = type(
+        "ARTIST_SORT_ORDER", (),
+        {
+            "ID3": "soar",
+            "CID": "ARTIST_SORT_ORDER",
+            "TYPE": str
+        }
+    )
+
+    TITLE_SORT_ORDER = type(
+        "TITLE_SORT_ORDER", (),
+        {
+            "ID3": "sonm",
+            "CID": "TITLE_SORT_ORDER",
+            "TYPE": str
+        }
+    )
+
+    COMPOSER_SORT_ORDER = type(
+        "COMPOSER_SORT_ORDER", (),
+        {
+            "ID3": "soco",
+            "CID": "COMPOSER_SORT_ORDER",
+            "TYPE": str
+        }
+    )
+
+    WORK = type(
+        "WORK", (),
+        {
+            "ID3": "\xa9wrk",
+            "CID": "WORK",
+            "TYPE": str
+        }
+    )
+
+    MOVEMENT = type(
+        "MOVEMENT", (),
+        {
+            "ID3": "\xa9mvn",
+            "CID": "MOVEMENT",
+            "TYPE": str
+        }
+    )
+
+    ADDED_TIMESTAMP = type(
+        "ADDED_TIMESTAMP", (),
+        {
+            "ID3": "----:com.apple.iTunes:added_timestamp",
+            "CID": "ADDED_TIMESTAMP",
+            "TYPE": str
+        }
+    )
+
+    FIRST_PLAYED_TIMESTAMP = type(
+        "FIRST_PLAYED_TIMESTAMP", (),
+        {
+            "ID3": "----:com.apple.iTunes:first_played_timestamp",
+            "CID": "FIRST_PLAYED_TIMESTAMP",
+            "TYPE": str
+        }
+    )
+
+    LAST_PLAYED_TIMESTAMP = type(
+        "LAST_PLAYED_TIMESTAMP", (),
+        {
+            "ID3": "----:com.apple.iTunes:last_played_timestamp",
+            "CID": "LAST_PLAYED_TIMESTAMP",
+            "TYPE": str
+        }
+    )
+
+    DISC_CONFIDENCE = type(
+        "DISC_CONFIDENCE", (),
+        {
+            "ID3": "----:com.apple.iTunes:CTDBDISCCONFIDENCE",
+            "CID": "DISC_CONFIDENCE",
+            "TYPE": str
+        }
+    )
+
+    TRACK_CONFIDENCE = type(
+        "TRACK_CONFIDENCE", (),
+        {
+            "ID3": "----:com.apple.iTunes:CTDBTRACKCONFIDENCE",
+            "CID": "TRACK_CONFIDENCE",
+            "TYPE": str
+        }
+    )
+
+    REPLAYGAIN_ALBUM_GAIN = type(
+        "REPLAYGAIN_ALBUM_GAIN", (),
+        {
+            "ID3": "----:com.apple.iTunes:replaygain_album_gain",
+            "CID": "REPLAYGAIN_ALBUM_GAIN",
+            "TYPE": str
+        }
+    )
+
+    REPLAYGAIN_ALBUM_PEAK = type(
+        "REPLAYGAIN_ALBUM_PEAK", (),
+        {
+            "ID3": "----:com.apple.iTunes:replaygain_album_peak",
+            "CID": "REPLAYGAIN_ALBUM_PEAK",
+            "TYPE": str
+        }
+    )
+
+    REPLAYGAIN_TRACK_GAIN = type(
+        "REPLAYGAIN_TRACK_GAIN", (),
+        {
+            "ID3": "----:com.apple.iTunes:replaygain_track_gain",
+            "CID": "REPLAYGAIN_TRACK_GAIN",
+            "TYPE": str
+        }
+    )
+
+    REPLAYGAIN_TRACK_PEAK = type(
+        "REPLAYGAIN_TRACK_PEAK", (),
+        {
+            "ID3": "----:com.apple.iTunes:replaygain_track_peak",
+            "CID": "REPLAYGAIN_TRACK_PEAK",
+            "TYPE": str
+        }
+    )
+
+    ACCURATE_RIP_DISC_ID = type(
+        "ACCURATE_RIP_DISC_ID", (),
+        {
+            "ID3": "----:com.apple.iTunes:AccurateRipDiscID",
+            "CID": "ACCURATE_RIP_DISC_ID",
+            "TYPE": str
+        }
+    )
+
+    ACCURATE_RIP_RESULT = type(
+        "ACCURATE_RIP_RESULT", (),
+        {
+            "ID3": "----:com.apple.iTunes:AccurateRipResult",
+            "CID": "ACCURATE_RIP_RESULT",
+            "TYPE": str
+        }
+    )
+
+    CDDB_DISC_ID = type(
+        "CDDB_DISC_ID", (),
+        {
+            "ID3": "----:com.apple.iTunes:CDDB Disc ID",
+            "CID": "CDDB_DISC_ID",
+            "TYPE": str
+        }
+    )
+
+    DYNAMIC_RANGE_DR = type(
+        "DYNAMIC_RANGE_DR", (),
+        {
+            "ID3": "----:com.apple.iTunes:Dynamic Range (DR)",
+            "CID": "DYNAMIC_RANGE_DR",
+            "TYPE": str
+        }
+    )
+
+    DYNAMIC_RANGE_R128 = type(
+        "DYNAMIC_RANGE_R128", (),
+        {
+            "ID3": "----:com.apple.iTunes:Dynamic Range (R128)",
+            "CID": "DYNAMIC_RANGE_R128",
+            "TYPE": str
+        }
+    )
+
+    IS_COMPILATION = type(
+        "IS_COMPILATION", (),
+        {
+            "ID3": "cpll",
+            "CID": "IS_COMPILATION",
+            "TYPE": bool
+        }
+    )
+
+    IS_GAPLESS_ALBUM = type(
+        "IS_GAPLESS_ALBUM", (),
+        {
+            "ID3": "pgap",
+            "CID": "IS_GAPLESS_ALBUM",
+            "TYPE": bool
+        }
+    )
+
+    COVER = type(
+        "COVER", (),
+        {
+            "ID3": "covr",
+            "CID": "COVER",
+            "TYPE": None
+        }
+    )
+
+    # MAPS
     ID3_to_field = {
-        "\xa9nam": TITLE,
-        "\xa9alb": ALBUM,
-        "\xa9ART": ARTIST,
-        "aART": ALBUM_ARTIST,
-        "\xa9wrt": COMPOSER,
-        "\xa9day": YEAR,
-        "\xa9cmt": COMMENT,
-        "desc": DESCRIPTION,
-        "\xa9grp": GROUPING,
-        "\xa9gen": GENRE,
-        "\xa9lyr": LYRICS,
-        "\xa9too": ENCODED_BY,
-        "cprt": COPYRIGHT,
-        "soal": ALBUM_SORT_ORDER,
-        "soaa": ALBUM_ARTIST_SORT_ORDER,
-        "soar": ARTIST_SORT_ORDER,
-        "sonm": TITLE_SORT_ORDER,
-        "soco": COMPOSER_SORT_ORDER,
-        "\xa9wrk": WORK,
-        "\xa9mvn": MOVEMENT,
-        "cpll": IS_COMPILATION,
-        "pgap": IS_GAPLESS_ALBUM,
-        "trkn": TRACK_NUMBER,
-        "disk": DISC_NUMBER,
-        "covr": COVER,
-        "----:com.apple.iTunes:CTDBDISCCONFIDENCE": DISC_CONFIDENCE,
-        "----:com.apple.iTunes:CTDBTRACKCONFIDENCE": TRACK_CONFIDENCE,
-        "----:com.apple.iTunes:added_timestamp": ADDED_TIMESTAMP,
-        "----:com.apple.iTunes:first_played_timestamp": FIRST_PLAYED_TIMESTAMP,
-        "----:com.apple.iTunes:last_played_timestamp": LAST_PLAYED_TIMESTAMP,
-        "----:com.apple.iTunes:play_count": PLAY_COUNT,
-        "----:com.apple.iTunes:rating": RATING,
-        "----:com.apple.iTunes:replaygain_album_gain": REPLAYGAIN_ALBUM_GAIN,
-        "----:com.apple.iTunes:replaygain_album_peak": REPLAYGAIN_ALBUM_PEAK,
-        "----:com.apple.iTunes:replaygain_track_gain": REPLAYGAIN_TRACK_GAIN,
-        "----:com.apple.iTunes:replaygain_track_peak": REPLAYGAIN_TRACK_PEAK,
-        "----:com.apple.iTunes:AccurateRipDiscID": ACCURATE_RIP_DISC_ID,
-        "----:com.apple.iTunes:AccurateRipResult": ACCURATE_RIP_RESULT,
-        "----:com.apple.iTunes:CDDB Disc ID": CDDB_DISC_ID,
-        "----:com.apple.iTunes:Dynamic Range (DR)": DYNAMIC_RANGE_DR,
-        "----:com.apple.iTunes:Dynamic Range (R128)": DYNAMIC_RANGE_R128,
-        "----:com.apple.iTunes:Encoder": ENCODED_BY,
+        PATH.ID3: PATH.CID,
+        TITLE.ID3: TITLE.CID,
+        TRACK_NO.ID3: TRACK_NO.CID,
+        TOTAL_TRACKS.ID3: TOTAL_TRACKS.CID,
+        TRACK_NUMBER.ID3: TRACK_NUMBER.CID,
+        DISC_NO.ID3: DISC_NO.CID,
+        TOTAL_DISCS.ID3: TOTAL_DISCS.CID,
+        DISC_NUMBER.ID3: DISC_NUMBER.CID,
+        ARTIST.ID3: ARTIST.CID,
+        ALBUM_ARTIST.ID3: ALBUM_ARTIST.CID,
+        YEAR.ID3: YEAR.CID,
+        ALBUM.ID3: ALBUM.CID,
+        GENRE.ID3: GENRE.CID,
+        RATING.ID3: RATING.CID,
+        COMPOSER.ID3: COMPOSER.CID,
+        COMMENT.ID3: COMMENT.CID,
+        PLAY_COUNT.ID3: PLAY_COUNT.CID,
+        LYRICS.ID3: LYRICS.CID,
+        DESCRIPTION.ID3: DESCRIPTION.CID,
+        GROUPING.ID3: GROUPING.CID,
+        ENCODED_BY.ID3: ENCODED_BY.CID,
+        ENCODED_BY_ITUNES.ID3: ENCODED_BY_ITUNES.CID,
+        COPYRIGHT.ID3: COPYRIGHT.CID,
+        ALBUM_SORT_ORDER.ID3: ALBUM_SORT_ORDER.CID,
+        ALBUM_ARTIST_SORT_ORDER.ID3: ALBUM_ARTIST_SORT_ORDER.CID,
+        ARTIST_SORT_ORDER.ID3: ARTIST_SORT_ORDER.CID,
+        TITLE_SORT_ORDER.ID3: TITLE_SORT_ORDER.CID,
+        COMPOSER_SORT_ORDER.ID3: COMPOSER_SORT_ORDER.CID,
+        WORK.ID3: WORK.CID,
+        MOVEMENT.ID3: MOVEMENT.CID,
+        ADDED_TIMESTAMP.ID3: ADDED_TIMESTAMP.CID,
+        FIRST_PLAYED_TIMESTAMP.ID3: FIRST_PLAYED_TIMESTAMP.CID,
+        LAST_PLAYED_TIMESTAMP.ID3: LAST_PLAYED_TIMESTAMP.CID,
+        DISC_CONFIDENCE.ID3: DISC_CONFIDENCE.CID,
+        TRACK_CONFIDENCE.ID3: TRACK_CONFIDENCE.CID,
+        REPLAYGAIN_ALBUM_GAIN.ID3: REPLAYGAIN_ALBUM_GAIN.CID,
+        REPLAYGAIN_ALBUM_PEAK.ID3: REPLAYGAIN_ALBUM_PEAK.CID,
+        REPLAYGAIN_TRACK_GAIN.ID3: REPLAYGAIN_TRACK_GAIN.CID,
+        REPLAYGAIN_TRACK_PEAK.ID3: REPLAYGAIN_TRACK_PEAK.CID,
+        ACCURATE_RIP_DISC_ID.ID3: ACCURATE_RIP_DISC_ID.CID,
+        ACCURATE_RIP_RESULT.ID3: ACCURATE_RIP_RESULT.CID,
+        CDDB_DISC_ID.ID3: CDDB_DISC_ID.CID,
+        DYNAMIC_RANGE_DR.ID3: DYNAMIC_RANGE_DR.CID,
+        DYNAMIC_RANGE_R128.ID3: DYNAMIC_RANGE_R128.CID,
+        IS_COMPILATION.ID3: IS_COMPILATION.CID,
+        IS_GAPLESS_ALBUM.ID3: IS_GAPLESS_ALBUM.CID,
+        COVER.ID3: COVER.CID,
     }
 
     field_to_ID3 = {
-        TITLE: "\xa9nam",
-        ALBUM: "\xa9alb",
-        ARTIST: "\xa9ART",
-        ALBUM_ARTIST: "aART",
-        COMPOSER: "\xa9wrt",
-        YEAR: "\xa9day",
-        COMMENT: "\xa9cmt",
-        DESCRIPTION: "desc",
-        GROUPING: "\xa9grp",
-        GENRE: "\xa9gen",
-        LYRICS: "\xa9lyr",
-        ENCODED_BY: "\xa9too",
-        COPYRIGHT: "cprt",
-        ALBUM_SORT_ORDER: "soal",
-        ALBUM_ARTIST_SORT_ORDER: "soaa",
-        ARTIST_SORT_ORDER: "soar",
-        TITLE_SORT_ORDER: "sonm",
-        COMPOSER_SORT_ORDER: "soco",
-        WORK: "\xa9wrk",
-        MOVEMENT: "\xa9mvn",
-        IS_COMPILATION: "cpll",
-        IS_GAPLESS_ALBUM: "pgap",
-        TRACK_NUMBER: "trkn",
-        DISC_NUMBER: "disk",
-        COVER: "covr",
-        # "----:com.apple.iTunes:CTDBDISCCONFIDENCE": DISC_CONFIDENCE,
-        # "----:com.apple.iTunes:CTDBTRACKCONFIDENCE": TRACK_CONFIDENCE,
-        # "----:com.apple.iTunes:added_timestamp": ADDED_TIMESTAMP,
-        FIRST_PLAYED_TIMESTAMP: "----:com.apple.iTunes:first_played_timestamp",
-        LAST_PLAYED_TIMESTAMP: "----:com.apple.iTunes:last_played_timestamp",
-        PLAY_COUNT: "----:com.apple.iTunes:play_count",
-        RATING: "----:com.apple.iTunes:rating",
-        # "----:com.apple.iTunes:replaygain_album_gain": REPLAYGAIN_ALBUM_GAIN,
-        # "----:com.apple.iTunes:replaygain_album_peak": REPLAYGAIN_ALBUM_PEAK,
-        # "----:com.apple.iTunes:replaygain_track_gain": REPLAYGAIN_TRACK_GAIN,
-        # "----:com.apple.iTunes:replaygain_track_peak": REPLAYGAIN_TRACK_PEAK,
-        # "----:com.apple.iTunes:AccurateRipDiscID": ACCURATE_RIP_DISC_ID,
-        # "----:com.apple.iTunes:AccurateRipResult": ACCURATE_RIP_RESULT,
-        # "----:com.apple.iTunes:CDDB Disc ID": CDDB_DISC_ID,
-        # "----:com.apple.iTunes:Dynamic Range (DR)": DYNAMIC_RANGE_DR,
-        # "----:com.apple.iTunes:Dynamic Range (R128)": DYNAMIC_RANGE_R128,
-        # "----:com.apple.iTunes:Encoder": ENCODED_BY,
+        PATH.CID: PATH.ID3,
+        TITLE.CID: TITLE.ID3,
+        TRACK_NO.CID: TRACK_NO.ID3,
+        TOTAL_TRACKS.CID: TOTAL_TRACKS.ID3,
+        TRACK_NUMBER.CID: TRACK_NUMBER.ID3,
+        DISC_NO.CID: DISC_NO.ID3,
+        TOTAL_DISCS.CID: TOTAL_DISCS.ID3,
+        DISC_NUMBER.CID: DISC_NUMBER.ID3,
+        ARTIST.CID: ARTIST.ID3,
+        ALBUM_ARTIST.CID: ALBUM_ARTIST.ID3,
+        YEAR.CID: YEAR.ID3,
+        ALBUM.CID: ALBUM.ID3,
+        GENRE.CID: GENRE.ID3,
+        RATING.CID: RATING.ID3,
+        COMPOSER.CID: COMPOSER.ID3,
+        COMMENT.CID: COMMENT.ID3,
+        PLAY_COUNT.CID: PLAY_COUNT.ID3,
+        LYRICS.CID: LYRICS.ID3,
+        DESCRIPTION.CID: DESCRIPTION.ID3,
+        GROUPING.CID: GROUPING.ID3,
+        ENCODED_BY.CID: ENCODED_BY.ID3,
+        ENCODED_BY_ITUNES.CID: ENCODED_BY_ITUNES.ID3,
+        COPYRIGHT.CID: COPYRIGHT.ID3,
+        ALBUM_SORT_ORDER.CID: ALBUM_SORT_ORDER.ID3,
+        ALBUM_ARTIST_SORT_ORDER.CID: ALBUM_ARTIST_SORT_ORDER.ID3,
+        ARTIST_SORT_ORDER.CID: ARTIST_SORT_ORDER.ID3,
+        TITLE_SORT_ORDER.CID: TITLE_SORT_ORDER.ID3,
+        COMPOSER_SORT_ORDER.CID: COMPOSER_SORT_ORDER.ID3,
+        WORK.CID: WORK.ID3,
+        MOVEMENT.CID: MOVEMENT.ID3,
+        ADDED_TIMESTAMP.CID: ADDED_TIMESTAMP.ID3,
+        FIRST_PLAYED_TIMESTAMP.CID: FIRST_PLAYED_TIMESTAMP.ID3,
+        LAST_PLAYED_TIMESTAMP.CID: LAST_PLAYED_TIMESTAMP.ID3,
+        DISC_CONFIDENCE.CID: DISC_CONFIDENCE.ID3,
+        TRACK_CONFIDENCE.CID: TRACK_CONFIDENCE.ID3,
+        REPLAYGAIN_ALBUM_GAIN.CID: REPLAYGAIN_ALBUM_GAIN.ID3,
+        REPLAYGAIN_ALBUM_PEAK.CID: REPLAYGAIN_ALBUM_PEAK.ID3,
+        REPLAYGAIN_TRACK_GAIN.CID: REPLAYGAIN_TRACK_GAIN.ID3,
+        REPLAYGAIN_TRACK_PEAK.CID: REPLAYGAIN_TRACK_PEAK.ID3,
+        ACCURATE_RIP_DISC_ID.CID: ACCURATE_RIP_DISC_ID.ID3,
+        ACCURATE_RIP_RESULT.CID: ACCURATE_RIP_RESULT.ID3,
+        CDDB_DISC_ID.CID: CDDB_DISC_ID.ID3,
+        DYNAMIC_RANGE_DR.CID: DYNAMIC_RANGE_DR.ID3,
+        DYNAMIC_RANGE_R128.CID: DYNAMIC_RANGE_R128.ID3,
+        IS_COMPILATION.CID: IS_COMPILATION.ID3,
+        IS_GAPLESS_ALBUM.CID: IS_GAPLESS_ALBUM.ID3,
+        COVER.CID: COVER.ID3,
     }

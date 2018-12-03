@@ -112,7 +112,7 @@ class TagUtils(object):
     @classmethod
     def filter_by_artist(cls, df, artist):
         ret = df
-        return ret.loc[df[fld.ARTIST] == artist]
+        return ret.loc[df[fld.ARTIST.CID] == artist]
 
     @classmethod
     def clean_metadata(cls, df_metadata):
@@ -124,34 +124,35 @@ class TagUtils(object):
 
         # mutagen stores ratings as a byte; maintain this
         if fld.RATING in df_metadata.columns:
-            df_metadata[fld.RATING].fillna(0, inplace=True)
-            df_metadata[fld.RATING] = df_metadata[fld.RATING].astype(bytes)
+            df_metadata[fld.RATING.CID].fillna(bytes(0), inplace=True)
 
         df_metadata = TagUtils.split_track_and_disc_tuples(df=df_metadata)
         return df_metadata
 
     @classmethod
     def metadata_to_tags(cls, df_metadata):
-        df_metadata[fld.TRACK_NUMBER] = df_metadata[
-            [fld.TRACK_NO, fld.TOTAL_TRACKS]].apply(tuple, axis="columns")
-        df_metadata[fld.DISC_NUMBER] = df_metadata[
-            [fld.DISC_NO, fld.TOTAL_DISCS]].apply(tuple, axis="columns")
-        df_metadata.drop([fld.TRACK_NO, fld.TOTAL_TRACKS,
-                          fld.DISC_NO, fld.TOTAL_DISCS],
+        df_metadata[fld.TRACK_NUMBER.CID] = df_metadata[
+            [fld.TRACK_NO.CID, fld.TOTAL_TRACKS.CID]].apply(tuple, axis="columns")
+        df_metadata[fld.DISC_NUMBER.CID] = df_metadata[
+            [fld.DISC_NO.CID, fld.TOTAL_DISCS.CID]].apply(tuple, axis="columns")
+        df_metadata.drop([fld.TRACK_NO.CID, fld.TOTAL_TRACKS.CID,
+                          fld.DISC_NO.CID, fld.TOTAL_DISCS.CID],
                          axis="columns", inplace=True)
-        df_metadata[fld.YEAR] = df_metadata[fld.YEAR].astype(str)
+        df_metadata[fld.YEAR.CID] = df_metadata[fld.YEAR.CID].astype(str)
         df_metadata = df_metadata.applymap(lambda x: [x])
 
         tag_dict = {}
+        # convert all fields back to ID3 values for tagging
         df_metadata.columns = [
             fld.field_to_ID3.get(c, c) for c in df_metadata.columns]
+
+        # generate the metadata tag dictionaries
         metadata_dicts = df_metadata.to_dict(orient="records")
         for d in metadata_dicts:
-            path = d.pop(fld.PATH)[0]
+            path = d.pop(fld.PATH.CID)[0]
             # do not include this field if the rating is 0
-            # TODO: the field_to_ID3 is not clean... fix this later
-            if d[fld.field_to_ID3[fld.RATING]] == [0]:
-                d.pop(fld.field_to_ID3[fld.RATING])
+            if d[fld.RATING.ID3] == [bytes(0)]:
+                d.pop(fld.RATING.ID3)
             tags = MP4Tags()
             tags.update(d)
             tag_dict.update({path: tags})
@@ -170,21 +171,20 @@ class TagUtils(object):
         df.to_excel(out_file, index=False)
 
     @classmethod
-    def enforce_dtypes(cls, df):
-        df[fld.ALBUM] = df[fld.ALBUM].astype(str)
-        return df
-
-    @classmethod
     def split_track_and_disc_tuples(cls, df):
-        if fld.TRACK_NUMBER in df.columns:
-            df[fld.TRACK_NO] = df[fld.TRACK_NUMBER].apply(lambda x: x[0])
-            df[fld.TOTAL_TRACKS] = df[fld.TRACK_NUMBER].apply(lambda x: x[1])
-            df = df.drop(fld.TRACK_NUMBER, axis="columns")
+        if fld.TRACK_NUMBER.CID in df.columns:
+            df[fld.TRACK_NO.CID] = df[fld.TRACK_NUMBER.CID].apply(
+                lambda x: x[0])
+            df[fld.TOTAL_TRACKS.CID] = df[fld.TRACK_NUMBER.CID].apply(
+                lambda x: x[1])
+            df = df.drop(fld.TRACK_NUMBER.CID, axis="columns")
 
-        if fld.DISC_NUMBER in df.columns:
-            df[fld.DISC_NO] = df[fld.DISC_NUMBER].apply(lambda x: x[0])
-            df[fld.TOTAL_DISCS] = df[fld.DISC_NUMBER].apply(lambda x: x[1])
-            df = df.drop(fld.DISC_NUMBER, axis="columns")
+        if fld.DISC_NUMBER.CID in df.columns:
+            df[fld.DISC_NO.CID] = df[fld.DISC_NUMBER.CID].apply(
+                lambda x: x[0])
+            df[fld.TOTAL_DISCS.CID] = df[fld.DISC_NUMBER.CID].apply(
+                lambda x: x[1])
+            df = df.drop(fld.DISC_NUMBER.CID, axis="columns")
 
         return df
 

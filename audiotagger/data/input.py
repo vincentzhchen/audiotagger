@@ -92,17 +92,14 @@ class AudioTaggerInput(object):
         return self.all_audio_file_paths
 
     def get_metadata(self):
-        df = TagUtils.enforce_dtypes(self.metadata)
+        df = self.metadata
         return df
 
     def read_from_excel(self, file_path):
         # TODO: this assumes the input sheet only has certain columns.
-        df = pd.read_excel(file_path, sheet_name="metadata", dtype=str)
-        df[fld.RATING] = df[fld.RATING].astype(int)
-        df[fld.TRACK_NO] = df[fld.RATING].astype(int)
-        df[fld.TOTAL_TRACKS] = df[fld.TOTAL_TRACKS].astype(int)
-        df[fld.DISC_NO] = df[fld.DISC_NO].astype(int)
-        df[fld.TOTAL_DISCS] = df[fld.TOTAL_DISCS].astype(int)
+        df = pd.read_excel(file_path, sheet_name="metadata")
+        for col in df:
+            df[col] = df[col].astype(eval(f"fld.{col}.TYPE"))
         df = df.replace("nan", "")
         self.metadata = df
 

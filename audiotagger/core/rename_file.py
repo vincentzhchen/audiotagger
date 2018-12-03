@@ -44,23 +44,23 @@ class RenameFile(object):
 
     def generate_new_file_path_from_metadata(self, df_metadata):
         df_metadata["NEW_PATH"] = tuple(zip(
-            df_metadata[fld.ALBUM_ARTIST],
-            df_metadata[fld.YEAR],
-            df_metadata[fld.ALBUM],
-            df_metadata[fld.DISC_NO].astype(str),
-            df_metadata[fld.TRACK_NO].astype(str).str.pad(2, side="left",
-                                                          fillchar="0"),
-            df_metadata[fld.TITLE],
+            df_metadata[fld.ALBUM_ARTIST.CID],
+            df_metadata[fld.YEAR.CID],
+            df_metadata[fld.ALBUM.CID],
+            df_metadata[fld.DISC_NO.CID].astype(str),
+            df_metadata[fld.TRACK_NO.CID].astype(str).str.pad(2, side="left",
+                                                              fillchar="0"),
+            df_metadata[fld.TITLE.CID],
             df_metadata["PATH"].apply(lambda x: os.path.splitext(x)[1])
         ))
         df_metadata["NEW_PATH"] = df_metadata["NEW_PATH"].apply(
             self._join_metadata_path)
         df_metadata = df_metadata.sort_values("NEW_PATH")
-        return df_metadata[["PATH", "NEW_PATH"]]
+        return df_metadata[[fld.PATH.CID, "NEW_PATH"]]
 
     def _rename_file(self):
         df = self.modified_metadata
-        pairs = list(zip(df["PATH"], df["NEW_PATH"]))
+        pairs = list(zip(df[fld.PATH.CID], df["NEW_PATH"]))
         for old, new in pairs:
             new_dir = os.path.dirname(new)
             if not os.path.isdir(new_dir):

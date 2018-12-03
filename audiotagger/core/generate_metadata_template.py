@@ -14,7 +14,7 @@ def generate_metadata_template(dst_dir=None):
         dst = os.path.join(dst_dir, f"metadata_{now}.xlsx")
         print(f"Generating metadata file at {dst} ... ", end="")
 
-        df = pd.DataFrame(columns=[fld.PATH] + fld.BASE_METADATA_COLS)
+        df = pd.DataFrame(columns=[fld.PATH.CID] + fld.BASE_METADATA_COLS)
         df.to_excel(dst, sheet_name="metadata", index=False)
         print("done.")
     else:
