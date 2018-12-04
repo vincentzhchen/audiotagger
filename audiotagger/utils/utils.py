@@ -139,13 +139,25 @@ class TagUtils(object):
                           fld.DISC_NO.CID, fld.TOTAL_DISCS.CID],
                          axis="columns", inplace=True)
         df_metadata[fld.YEAR.CID] = df_metadata[fld.YEAR.CID].astype(str)
+
+        # apply correct typing
+        for col in df_metadata:
+            t = eval(f"fld.{col}.OUTPUT_TYPE")
+            if t == "utf-8":
+                df_metadata[col] = df_metadata[col].apply(
+                    lambda x: x.encode("utf-8"))
+            else:
+                df_metadata[col] = df_metadata[col].astype(t)
+        df_metadata = df_metadata.replace("nan", "")
+
+        # put all values back into a list for MP4Tags
         df_metadata = df_metadata.applymap(lambda x: [x])
 
-        tag_dict = {}
-        # convert all fields back to ID3 values for tagging
+        # convert all fields back to ID3 values for MP4Tags
         df_metadata.columns = [
             fld.field_to_ID3.get(c, c) for c in df_metadata.columns]
 
+        tag_dict = {}
         # generate the metadata tag dictionaries
         metadata_dicts = df_metadata.to_dict(orient="records")
         for d in metadata_dicts:

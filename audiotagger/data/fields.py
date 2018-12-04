@@ -4,7 +4,8 @@ class Fields(object):
         {
             "ID3": "PATH",
             "CID": "PATH",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": str
         }
     )
 
@@ -14,7 +15,8 @@ class Fields(object):
         {
             "ID3": "\xa9nam",
             "CID": "TITLE",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": str
         }
     )
 
@@ -23,7 +25,8 @@ class Fields(object):
         {
             "ID3": "TRACK_NO",
             "CID": "TRACK_NO",
-            "TYPE": int
+            "INPUT_TYPE": int,
+            "OUTPUT_TYPE": int
         }
     )
 
@@ -32,7 +35,8 @@ class Fields(object):
         {
             "ID3": "TOTAL_TRACKS",
             "CID": "TOTAL_TRACKS",
-            "TYPE": int
+            "INPUT_TYPE": int,
+            "OUTPUT_TYPE": int
         }
     )
 
@@ -41,7 +45,8 @@ class Fields(object):
         {
             "ID3": "trkn",
             "CID": "TRACK_NUMBER",
-            "TYPE": tuple  # tuple of integer
+            "INPUT_TYPE": tuple,  # tuple of integer
+            "OUTPUT_TYPE": tuple  # tuple of integer
         }
     )
 
@@ -50,7 +55,8 @@ class Fields(object):
         {
             "ID3": "DISC_NO",
             "CID": "DISC_NO",
-            "TYPE": int
+            "INPUT_TYPE": int,
+            "OUTPUT_TYPE": int
         }
     )
 
@@ -59,7 +65,8 @@ class Fields(object):
         {
             "ID3": "TOTAL_DISCS",
             "CID": "TOTAL_DISCS",
-            "TYPE": int
+            "INPUT_TYPE": int,
+            "OUTPUT_TYPE": int
         }
     )
 
@@ -68,7 +75,8 @@ class Fields(object):
         {
             "ID3": "disk",
             "CID": "DISC_NUMBER",
-            "TYPE": tuple  # tuple of integer
+            "INPUT_TYPE": tuple,  # tuple of integer
+            "OUTPUT_TYPE": tuple  # tuple of integer
         }
     )
 
@@ -77,7 +85,8 @@ class Fields(object):
         {
             "ID3": "\xa9ART",
             "CID": "ARTIST",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": str
         }
     )
 
@@ -86,7 +95,8 @@ class Fields(object):
         {
             "ID3": "aART",
             "CID": "ALBUM_ARTIST",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": str
         }
     )
 
@@ -94,7 +104,8 @@ class Fields(object):
         "YEAR", (), {
             "ID3": "\xa9day",
             "CID": "YEAR",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": str
         }
     )
 
@@ -103,7 +114,8 @@ class Fields(object):
         {
             "ID3": "\xa9alb",
             "CID": "ALBUM",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": str
         }
     )
 
@@ -112,7 +124,8 @@ class Fields(object):
         {
             "ID3": "\xa9gen",
             "CID": "GENRE",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": str
         }
     )
 
@@ -121,7 +134,8 @@ class Fields(object):
         {
             "ID3": "----:com.apple.iTunes:rating",
             "CID": "RATING",
-            "TYPE": bytes
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": "utf-8"
         }
     )
 
@@ -136,7 +150,8 @@ class Fields(object):
         {
             "ID3": "\xa9wrt",
             "CID": "COMPOSER",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": str
         }
     )
 
@@ -145,7 +160,8 @@ class Fields(object):
         {
             "ID3": "\xa9cmt",
             "CID": "COMMENT",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": str
         }
     )
 
@@ -154,7 +170,8 @@ class Fields(object):
         {
             "ID3": "----:com.apple.iTunes:play_count",
             "CID": "PLAY_COUNT",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": "utf-8"
         }
     )
 
@@ -163,7 +180,8 @@ class Fields(object):
         {
             "ID3": "\xa9lyr",
             "CID": "LYRICS",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": str
         }
     )
 
@@ -172,7 +190,8 @@ class Fields(object):
         {
             "ID3": "desc",
             "CID": "DESCRIPTION",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": str
         }
     )
 
@@ -181,7 +200,8 @@ class Fields(object):
         {
             "ID3": "\xa9grp",
             "CID": "GROUPING",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": str
         }
     )
 
@@ -190,16 +210,18 @@ class Fields(object):
         {
             "ID3": "\xa9too",
             "CID": "ENCODED_BY",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": str
         }
     )
 
-    ENCODED_BY_ITUNES = type(
-        "ENCODED_BY", (),
+    ENCODER = type(
+        "ENCODER", (),
         {
             "ID3": "----:com.apple.iTunes:Encoder",
-            "CID": "ENCODED_BY",
-            "TYPE": str
+            "CID": "ENCODER",
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": "utf-8"
         }
     )
 
@@ -208,7 +230,8 @@ class Fields(object):
         {
             "ID3": "cprt",
             "CID": "COPYRIGHT",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": str
         }
     )
 
@@ -217,7 +240,8 @@ class Fields(object):
         {
             "ID3": "soal",
             "CID": "ALBUM_SORT_ORDER",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": str
         }
     )
 
@@ -226,7 +250,8 @@ class Fields(object):
         {
             "ID3": "soaa",
             "CID": "ALBUM_ARTIST_SORT_ORDER",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": str
         }
     )
 
@@ -235,7 +260,8 @@ class Fields(object):
         {
             "ID3": "soar",
             "CID": "ARTIST_SORT_ORDER",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": str
         }
     )
 
@@ -244,7 +270,8 @@ class Fields(object):
         {
             "ID3": "sonm",
             "CID": "TITLE_SORT_ORDER",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": str
         }
     )
 
@@ -253,7 +280,8 @@ class Fields(object):
         {
             "ID3": "soco",
             "CID": "COMPOSER_SORT_ORDER",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": str
         }
     )
 
@@ -262,7 +290,8 @@ class Fields(object):
         {
             "ID3": "\xa9wrk",
             "CID": "WORK",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": str
         }
     )
 
@@ -271,7 +300,8 @@ class Fields(object):
         {
             "ID3": "\xa9mvn",
             "CID": "MOVEMENT",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": str
         }
     )
 
@@ -280,7 +310,8 @@ class Fields(object):
         {
             "ID3": "----:com.apple.iTunes:added_timestamp",
             "CID": "ADDED_TIMESTAMP",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": "utf-8"
         }
     )
 
@@ -289,7 +320,8 @@ class Fields(object):
         {
             "ID3": "----:com.apple.iTunes:first_played_timestamp",
             "CID": "FIRST_PLAYED_TIMESTAMP",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": "utf-8"
         }
     )
 
@@ -298,7 +330,8 @@ class Fields(object):
         {
             "ID3": "----:com.apple.iTunes:last_played_timestamp",
             "CID": "LAST_PLAYED_TIMESTAMP",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": "utf-8"
         }
     )
 
@@ -307,7 +340,8 @@ class Fields(object):
         {
             "ID3": "----:com.apple.iTunes:CTDBDISCCONFIDENCE",
             "CID": "DISC_CONFIDENCE",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": "utf-8"
         }
     )
 
@@ -316,7 +350,8 @@ class Fields(object):
         {
             "ID3": "----:com.apple.iTunes:CTDBTRACKCONFIDENCE",
             "CID": "TRACK_CONFIDENCE",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": "utf-8"
         }
     )
 
@@ -325,7 +360,8 @@ class Fields(object):
         {
             "ID3": "----:com.apple.iTunes:replaygain_album_gain",
             "CID": "REPLAYGAIN_ALBUM_GAIN",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": "utf-8"
         }
     )
 
@@ -334,7 +370,8 @@ class Fields(object):
         {
             "ID3": "----:com.apple.iTunes:replaygain_album_peak",
             "CID": "REPLAYGAIN_ALBUM_PEAK",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": "utf-8"
         }
     )
 
@@ -343,7 +380,8 @@ class Fields(object):
         {
             "ID3": "----:com.apple.iTunes:replaygain_track_gain",
             "CID": "REPLAYGAIN_TRACK_GAIN",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": "utf-8"
         }
     )
 
@@ -352,7 +390,8 @@ class Fields(object):
         {
             "ID3": "----:com.apple.iTunes:replaygain_track_peak",
             "CID": "REPLAYGAIN_TRACK_PEAK",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": "utf-8"
         }
     )
 
@@ -361,7 +400,8 @@ class Fields(object):
         {
             "ID3": "----:com.apple.iTunes:AccurateRipDiscID",
             "CID": "ACCURATE_RIP_DISC_ID",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": "utf-8"
         }
     )
 
@@ -370,7 +410,8 @@ class Fields(object):
         {
             "ID3": "----:com.apple.iTunes:AccurateRipResult",
             "CID": "ACCURATE_RIP_RESULT",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": "utf-8"
         }
     )
 
@@ -379,7 +420,8 @@ class Fields(object):
         {
             "ID3": "----:com.apple.iTunes:CDDB Disc ID",
             "CID": "CDDB_DISC_ID",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": "utf-8"
         }
     )
 
@@ -388,7 +430,8 @@ class Fields(object):
         {
             "ID3": "----:com.apple.iTunes:Dynamic Range (DR)",
             "CID": "DYNAMIC_RANGE_DR",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": "utf-8"
         }
     )
 
@@ -397,7 +440,8 @@ class Fields(object):
         {
             "ID3": "----:com.apple.iTunes:Dynamic Range (R128)",
             "CID": "DYNAMIC_RANGE_R128",
-            "TYPE": str
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": "utf-8"
         }
     )
 
@@ -406,7 +450,8 @@ class Fields(object):
         {
             "ID3": "cpll",
             "CID": "IS_COMPILATION",
-            "TYPE": bool
+            "INPUT_TYPE": bool,
+            "OUTPUT_TYPE": bool
         }
     )
 
@@ -415,7 +460,8 @@ class Fields(object):
         {
             "ID3": "pgap",
             "CID": "IS_GAPLESS_ALBUM",
-            "TYPE": bool
+            "INPUT_TYPE": bool,
+            "OUTPUT_TYPE": bool
         }
     )
 
@@ -424,7 +470,8 @@ class Fields(object):
         {
             "ID3": "covr",
             "CID": "COVER",
-            "TYPE": None
+            "INPUT_TYPE": None,
+            "OUTPUT_TYPE": None
         }
     )
 
@@ -451,7 +498,7 @@ class Fields(object):
         DESCRIPTION.ID3: DESCRIPTION.CID,
         GROUPING.ID3: GROUPING.CID,
         ENCODED_BY.ID3: ENCODED_BY.CID,
-        ENCODED_BY_ITUNES.ID3: ENCODED_BY_ITUNES.CID,
+        ENCODER.ID3: ENCODER.CID,
         COPYRIGHT.ID3: COPYRIGHT.CID,
         ALBUM_SORT_ORDER.ID3: ALBUM_SORT_ORDER.CID,
         ALBUM_ARTIST_SORT_ORDER.ID3: ALBUM_ARTIST_SORT_ORDER.CID,
@@ -501,7 +548,7 @@ class Fields(object):
         DESCRIPTION.CID: DESCRIPTION.ID3,
         GROUPING.CID: GROUPING.ID3,
         ENCODED_BY.CID: ENCODED_BY.ID3,
-        ENCODED_BY_ITUNES.CID: ENCODED_BY_ITUNES.ID3,
+        ENCODER.CID: ENCODER.ID3,
         COPYRIGHT.CID: COPYRIGHT.ID3,
         ALBUM_SORT_ORDER.CID: ALBUM_SORT_ORDER.ID3,
         ALBUM_ARTIST_SORT_ORDER.CID: ALBUM_ARTIST_SORT_ORDER.ID3,

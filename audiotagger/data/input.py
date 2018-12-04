@@ -97,9 +97,9 @@ class AudioTaggerInput(object):
 
     def read_from_excel(self, file_path):
         # TODO: this assumes the input sheet only has certain columns.
-        df = pd.read_excel(file_path, sheet_name="metadata")
+        df = pd.read_excel(file_path, sheet_name="metadata", dtype=str)
         for col in df:
-            df[col] = df[col].astype(eval(f"fld.{col}.TYPE"))
+            df[col] = df[col].astype(eval(f"fld.{col}.INPUT_TYPE"))
         df = df.replace("nan", "")
         self.metadata = df
 
