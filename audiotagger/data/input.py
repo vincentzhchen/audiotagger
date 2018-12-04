@@ -96,11 +96,8 @@ class AudioTaggerInput(object):
         return df
 
     def read_from_excel(self, file_path):
-        # TODO: this assumes the input sheet only has certain columns.
         df = pd.read_excel(file_path, sheet_name="metadata", dtype=str)
-        for col in df:
-            df[col] = df[col].astype(eval(f"fld.{col}.INPUT_TYPE"))
-        df = df.replace("nan", "")
+        df = TagUtils.enforce_dtypes(df=df, io_type="INPUT_TYPE")
         self.metadata = df
 
     def write_to_excel(self, file_path):
@@ -108,7 +105,7 @@ class AudioTaggerInput(object):
         Writes input data to Excel for debugging.
 
         Args:
-            file_path (str): output file_path to write the data to.
+            file_path (str): output file path to write the data to.
 
         """
         writer = pd.ExcelWriter(file_path,

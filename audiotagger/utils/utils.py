@@ -110,6 +110,7 @@ class TagUtils(object):
         return df.rename(columns=fld.ID3_to_field)
 
     @classmethod
+    # TODO: move this to a filter module / class
     def filter_by_artist(cls, df, artist):
         ret = df
         return ret.loc[df[fld.ARTIST.CID] == artist]
@@ -122,49 +123,56 @@ class TagUtils(object):
         if "COVER" in df_metadata.columns:
             df_metadata = df_metadata.drop("COVER", axis="columns")
 
-        # mutagen stores ratings as a byte; maintain this
-        if fld.RATING in df_metadata.columns:
-            df_metadata[fld.RATING.CID].fillna(bytes(0), inplace=True)
+        # remove leading and trailing white spaces
+        for col in df_metadata:
+            t = eval(f"fld.{col}.INPUT_TYPE")
+            if t == str:
+                df_metadata[col] = df_metadata[col].str.strip()
 
         df_metadata = TagUtils.split_track_and_disc_tuples(df=df_metadata)
         return df_metadata
 
     @classmethod
-    def metadata_to_tags(cls, df_metadata):
-        df_metadata[fld.TRACK_NUMBER.CID] = df_metadata[
-            [fld.TRACK_NO.CID, fld.TOTAL_TRACKS.CID]].apply(tuple, axis="columns")
-        df_metadata[fld.DISC_NUMBER.CID] = df_metadata[
-            [fld.DISC_NO.CID, fld.TOTAL_DISCS.CID]].apply(tuple, axis="columns")
-        df_metadata.drop([fld.TRACK_NO.CID, fld.TOTAL_TRACKS.CID,
-                          fld.DISC_NO.CID, fld.TOTAL_DISCS.CID],
-                         axis="columns", inplace=True)
-        df_metadata[fld.YEAR.CID] = df_metadata[fld.YEAR.CID].astype(str)
-
+    def enforce_dtypes(cls, df, io_type):
         # apply correct typing
-        for col in df_metadata:
-            t = eval(f"fld.{col}.OUTPUT_TYPE")
-            if t == "utf-8":
-                df_metadata[col] = df_metadata[col].apply(
-                    lambda x: x.encode("utf-8"))
-            else:
-                df_metadata[col] = df_metadata[col].astype(t)
-        df_metadata = df_metadata.replace("nan", "")
+        for col in df:
+            if io_type == "INPUT_TYPE":
+                df[col] = df[col].astype(eval(f"fld.{col}.INPUT_TYPE"))
 
-        # put all values back into a list for MP4Tags
+            elif io_type == "OUTPUT_TYPE":
+                t = eval(f"fld.{col}.OUTPUT_TYPE")
+                if t == "utf-8":
+                    df[col] = df[col].apply(
+                        lambda x: x.encode("utf-8"))
+                else:
+                    df[col] = df[col].astype(t)
+
+            else:
+                raise Exception(f"{col} has no attribute {io_type}.")
+
+        df = df.replace("nan", "")
+        return df
+
+    @classmethod
+    def metadata_to_tags(cls, df_metadata):
+        # only want to have tuples right before building the tag object
+        df_metadata = TagUtils.build_track_and_disc_tuples(df=df_metadata)
+
+        # convert to correct output data type
+        df_metadata = TagUtils.enforce_dtypes(df=df_metadata,
+                                              io_type="OUTPUT_TYPE")
+
+        # put all values into a list for MP4Tags
         df_metadata = df_metadata.applymap(lambda x: [x])
 
-        # convert all fields back to ID3 values for MP4Tags
-        df_metadata.columns = [
-            fld.field_to_ID3.get(c, c) for c in df_metadata.columns]
+        # convert all fields to ID3 values for MP4Tags
+        df_metadata.columns = [fld.field_to_ID3.get(c, c) for c in df_metadata]
 
         tag_dict = {}
         # generate the metadata tag dictionaries
         metadata_dicts = df_metadata.to_dict(orient="records")
         for d in metadata_dicts:
             path = d.pop(fld.PATH.CID)[0]
-            # do not include this field if the rating is 0
-            if d[fld.RATING.ID3] == [bytes(0)]:
-                d.pop(fld.RATING.ID3)
             tags = MP4Tags()
             tags.update(d)
             tag_dict.update({path: tags})
@@ -183,21 +191,42 @@ class TagUtils(object):
         df.to_excel(out_file, index=False)
 
     @classmethod
-    def split_track_and_disc_tuples(cls, df):
+    def split_track_and_disc_tuples(cls, df, drop_original=True):
         if fld.TRACK_NUMBER.CID in df.columns:
             df[fld.TRACK_NO.CID] = df[fld.TRACK_NUMBER.CID].apply(
                 lambda x: x[0])
             df[fld.TOTAL_TRACKS.CID] = df[fld.TRACK_NUMBER.CID].apply(
                 lambda x: x[1])
-            df = df.drop(fld.TRACK_NUMBER.CID, axis="columns")
+            if drop_original:
+                df = df.drop(fld.TRACK_NUMBER.CID, axis="columns")
 
         if fld.DISC_NUMBER.CID in df.columns:
             df[fld.DISC_NO.CID] = df[fld.DISC_NUMBER.CID].apply(
                 lambda x: x[0])
             df[fld.TOTAL_DISCS.CID] = df[fld.DISC_NUMBER.CID].apply(
                 lambda x: x[1])
-            df = df.drop(fld.DISC_NUMBER.CID, axis="columns")
+            if drop_original:
+                df = df.drop(fld.DISC_NUMBER.CID, axis="columns")
 
+        return df
+
+    @classmethod
+    def build_track_and_disc_tuples(cls, df, drop_components=True):
+        if (fld.TRACK_NO.CID in df) and (fld.TOTAL_TRACKS.CID in df):
+            df[fld.TRACK_NUMBER.CID] = df[
+                [fld.TRACK_NO.CID, fld.TOTAL_TRACKS.CID]
+            ].apply(tuple, axis="columns")
+            if drop_components:
+                df.drop([fld.TRACK_NO.CID, fld.TOTAL_TRACKS.CID],
+                        axis="columns", inplace=True)
+
+        if (fld.DISC_NO.CID in df) and (fld.TOTAL_DISCS.CID in df):
+            df[fld.DISC_NUMBER.CID] = df[
+                [fld.DISC_NO.CID, fld.TOTAL_DISCS.CID]
+            ].apply(tuple, axis="columns")
+            if drop_components:
+                df.drop([fld.DISC_NO.CID, fld.TOTAL_DISCS.CID],
+                        axis="columns", inplace=True)
         return df
 
     @classmethod
