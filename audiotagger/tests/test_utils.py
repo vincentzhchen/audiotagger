@@ -9,13 +9,13 @@ from audiotagger.utils.utils import FileUtils
     pytest.param("/fake/path", -1, marks=pytest.mark.xfail),
 
     # real directory
-    (audiotagger_config_dir(), 0),
+    pytest.param(audiotagger_config_dir(), 0),
 
     # fake path
     pytest.param("/fake/path/test.txt", -1, marks=pytest.mark.xfail),
 
     # real path
-    (audiotagger_config_path(), 0),
+    pytest.param(audiotagger_config_path(), 0),
 ])
 def test_traverse_directory(src, min_output_length):
     all_file_paths = FileUtils.traverse_directory(src)

@@ -1,3 +1,4 @@
+import glob
 import os
 from mutagen.easymp4 import MP4
 from mutagen.mp4 import MP4Tags
@@ -57,18 +58,19 @@ class FileUtils(object):
         return [MP4(path) for path in file_paths]
 
     @classmethod
-    def traverse_directory(cls, src):
-        """Recursively traverses a directory.
+    def traverse_directory(cls, src, filter_extension=None):
+        """Recursively traverses a directory and returns all paths in a list.
 
-        Notes:
-            1. Returns all the leaves (file paths) in the directory tree.
-            2. If the source is a file path, then return the source as a list.
+        If the source is a file path, then return the source as a list.
 
         Args:
             src (str): Source directory in a list.
+            filter_extension (str): Filter results on specified file
+                extension.  For example, passing "m4a" will only return
+                files that end in ".m4a".
 
         Returns:
-            all_file_paths (list): List of all leaf file paths.
+            all_file_paths (list): List of all file paths in `src`.
         """
 
         # if src is a file path, then return it as a list
@@ -78,13 +80,12 @@ class FileUtils(object):
         if not os.path.exists(src):
             raise ValueError(f"{src} does not exist.")
 
-        # walk directory ree
-        all_file_paths = []
-        for root, dirs, files in os.walk(src):
-            for file in files:
-                file_path = os.path.join(root, file)
-                all_file_paths.append(file_path)
-
+        # walk directory tree
+        file_extension = "**/*"  # get all files
+        if filter_extension is not None:
+            file_extension = f"**/*.{filter_extension}"
+        all_file_paths = [f for f in glob.iglob(src + file_extension,
+                                                recursive=True)]
         return all_file_paths
 
     @classmethod
