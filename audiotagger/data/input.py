@@ -18,6 +18,7 @@ class AudioTaggerInput(object):
         # for Excel metadata files
         if FileUtils.is_xlsx(self.src):
             self.read_from_excel(file_path=self.src)
+            self.all_audio_file_paths = self.metadata[fld.PATH.CID].tolist()
 
         # for directory of audio files or a single audio file
         elif os.path.isdir(self.src) or os.path.isfile(self.src):
