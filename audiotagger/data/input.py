@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 
+from audiotagger.data.fields import Fields as fld
 from audiotagger.util.file_util import FileUtil
 from audiotagger.util.tag_util import TagUtil
 
