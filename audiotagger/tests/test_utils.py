@@ -1,7 +1,7 @@
 import pytest
 from audiotagger.core.paths import (audiotagger_config_dir,
                                     audiotagger_config_path)
-from audiotagger.utils.utils import FileUtils
+from audiotagger.util.file_util import FileUtil
 
 
 @pytest.mark.parametrize("src, min_output_length", [
@@ -18,7 +18,7 @@ from audiotagger.utils.utils import FileUtils
     pytest.param(audiotagger_config_path(), 0),
 ])
 def test_traverse_directory(src, min_output_length):
-    all_file_paths = FileUtils.traverse_directory(src)
+    all_file_paths = FileUtil.traverse_directory(src)
     assert all_file_paths.__class__ == list
     assert len(all_file_paths) > min_output_length
 
@@ -34,4 +34,4 @@ def test_traverse_directory(src, min_output_length):
     pytest.param("~/file.csv", False),
 ])
 def test_is_xlsx(input_path, expected_result):
-    assert FileUtils.is_xlsx(input_path) == expected_result
+    assert FileUtil.is_xlsx(input_path) == expected_result

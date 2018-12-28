@@ -1,8 +1,8 @@
 import os
 import pandas as pd
 
-from audiotagger.data.fields import Fields as fld
-from audiotagger.utils.utils import FileUtils, TagUtils
+from audiotagger.util.file_util import FileUtil
+from audiotagger.util.tag_util import TagUtil
 
 
 class AudioTaggerInput(object):
@@ -16,7 +16,7 @@ class AudioTaggerInput(object):
         self.is_dry_run = is_dry_run
 
         # for Excel metadata files
-        if FileUtils.is_xlsx(self.src):
+        if FileUtil.is_xlsx(self.src):
             self.read_from_excel(file_path=self.src)
 
         # for directory of audio files or a single audio file
@@ -32,7 +32,7 @@ class AudioTaggerInput(object):
         else:
             raise Exception("INVALID SOURCE")
 
-        self.metadata = TagUtils.clean_metadata(df_metadata=self.metadata)
+        self.metadata = TagUtil.clean_metadata(df_metadata=self.metadata)
 
     def _load_all_file_paths(self):
         """Loads all file paths in the given root directory.
@@ -42,7 +42,7 @@ class AudioTaggerInput(object):
 
         """
         self.log.info("Loading all file paths...")
-        self.all_file_paths = FileUtils.traverse_directory(self.src)
+        self.all_file_paths = FileUtil.traverse_directory(self.src)
         self.log.info(f"LOADED {len(self.all_file_paths)} file paths.")
 
     def _load_all_audio_file_paths(self):
@@ -53,7 +53,7 @@ class AudioTaggerInput(object):
         self.all_audio_file_paths = []
 
         # M4A
-        m4a_file_paths = FileUtils.filter_m4a_files(self.all_file_paths)
+        m4a_file_paths = FileUtil.filter_m4a_files(self.all_file_paths)
         if m4a_file_paths:
             self.log.info("Loading all m4a file paths...")
             self.m4a_file_paths = m4a_file_paths
@@ -68,7 +68,7 @@ class AudioTaggerInput(object):
 
         """
         self.log.info("Loading all m4a objects...")
-        self.m4a_obj = FileUtils.convert_to_mp4_obj(self.m4a_file_paths)
+        self.m4a_obj = FileUtil.convert_to_mp4_obj(self.m4a_file_paths)
         self.log.info(f"LOADED {len(self.m4a_obj)} m4a objects.")
 
     def _load_all_audio_files_into_df(self):
@@ -85,7 +85,7 @@ class AudioTaggerInput(object):
                          for song in all_audio_obj]
         metadata = pd.DataFrame(all_audio_obj)
         # mutagen stores all tags in lists; flatten them
-        metadata = TagUtils.flatten_list_values(metadata)
+        metadata = TagUtil.flatten_list_values(metadata)
         self.metadata = metadata
 
     def get_all_audio_file_paths(self):
@@ -97,7 +97,7 @@ class AudioTaggerInput(object):
 
     def read_from_excel(self, file_path):
         df = pd.read_excel(file_path, sheet_name="metadata", dtype=str)
-        df = TagUtils.enforce_dtypes(df=df, io_type="INPUT_TYPE")
+        df = TagUtil.enforce_dtypes(df=df, io_type="INPUT_TYPE")
         self.metadata = df
 
     def write_to_excel(self, file_path):

@@ -2,7 +2,7 @@ import os
 from shutil import copy2
 
 from audiotagger.data.fields import Fields as fld
-from audiotagger.utils.utils import FileUtils
+from audiotagger.util.file_util import FileUtil
 
 
 class RenameFile(object):
@@ -37,9 +37,9 @@ class RenameFile(object):
             anonymous (str): Returns a destination path for the file.
         """
         artist, year, album, disc, track, title, ext = metadata_tuple
-        artist = FileUtils.replace_invalid_characters(artist)
-        album = FileUtils.replace_invalid_characters(album)
-        title = FileUtils.replace_invalid_characters(title)
+        artist = FileUtil.replace_invalid_characters(artist)
+        album = FileUtil.replace_invalid_characters(album)
+        title = FileUtil.replace_invalid_characters(title)
         return os.path.join(self.base_dst_dir,
                             artist,
                             year + " " + album,
@@ -75,8 +75,8 @@ class RenameFile(object):
     def rename_file(self):
         if self.input_data.is_dry_run:
             self.log.info("Dry run... saving to {out_file}.")
-            FileUtils.dry_run(df=self.modified_metadata,
-                              prefix=self.__str__())
+            FileUtil.dry_run(df=self.modified_metadata,
+                             prefix=self.__str__())
             self.log.info("Data saved to {out_file}")
             return
         else:
