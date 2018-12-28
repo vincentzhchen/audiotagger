@@ -31,7 +31,6 @@ class AudioTaggerInput(object):
         else:
             raise Exception("INVALID SOURCE")
 
-        self.metadata = TagUtil.clean_metadata(df_metadata=self.metadata)
         self.all_audio_file_paths = self.metadata[fld.PATH.CID].tolist()
 
     def _load_all_m4a_files_into_df(self):
@@ -55,6 +54,8 @@ class AudioTaggerInput(object):
 
         # mutagen stores all tags in lists; flatten them
         metadata = TagUtil.flatten_list_values(metadata)
+        metadata = TagUtil.clean_metadata(df_metadata=metadata)
+        metadata = TagUtil.enforce_dtypes(df=metadata, io_type="INPUT_TYPE")
         self.metadata = metadata
 
     def get_all_audio_file_paths(self):

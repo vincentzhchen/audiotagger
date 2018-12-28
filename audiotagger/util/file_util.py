@@ -9,34 +9,33 @@ class FileUtil(object):
         pass
 
     @classmethod
-    def get_file_extension(cls, path_to_some_file):
+    def _get_file_extension(cls, path_to_some_file):
         filename, file_extension = os.path.splitext(path_to_some_file)
         return file_extension
 
     @classmethod
-    def is_m4a(cls, path_to_some_file):
-        file_extension = FileUtil.get_file_extension(path_to_some_file)
-        return True if file_extension == ".m4a" else False
-
-    @classmethod
-    def is_mp3(cls, path_to_some_file):
-        file_extension = FileUtil.get_file_extension(path_to_some_file)
-        return True if file_extension == ".mp3" else False
+    def _is_audio_file_ext(self, path_to_some_file, extension):
+        file_extension = FileUtil._get_file_extension(path_to_some_file)
+        return True if file_extension == extension else False
 
     @classmethod
     def is_wav(cls, path_to_some_file):
-        file_extension = FileUtil.get_file_extension(path_to_some_file)
-        return True if file_extension == ".wav" else False
+        return FileUtil._is_audio_file_ext(path_to_some_file, ".wav")
+
+    @classmethod
+    def is_m4a(cls, path_to_some_file):
+        return FileUtil._is_audio_file_ext(path_to_some_file, ".m4a")
 
     @classmethod
     def is_flac(cls, path_to_some_file):
-        file_extension = FileUtil.get_file_extension(path_to_some_file)
-        return True if file_extension == ".flac" else False
+        return FileUtil._is_audio_file_ext(path_to_some_file, ".flac")
 
     @classmethod
-    def is_ape(cls, path_to_some_file):
-        file_extension = FileUtil.get_file_extension(path_to_some_file)
-        return True if file_extension == ".ape" else False
+    def filter_wav_files(cls, arg):
+        if isinstance(arg, str):
+            arg = [arg]
+
+        return [x for x in arg if FileUtil.is_wav(x)]
 
     @classmethod
     def filter_m4a_files(cls, arg):
@@ -44,6 +43,13 @@ class FileUtil(object):
             arg = [arg]
 
         return [x for x in arg if FileUtil.is_m4a(x)]
+
+    @classmethod
+    def filter_flac_files(cls, arg):
+        if isinstance(arg, str):
+            arg = [arg]
+
+        return [x for x in arg if FileUtil.is_flac(x)]
 
     @classmethod
     def apply_utf8(cls, x):
@@ -77,11 +83,11 @@ class FileUtil(object):
             raise ValueError(f"{src} does not exist.")
 
         # walk directory tree
-        file_extension = "**/*"  # get all files
+        file_extension = ""
         if filter_extension is not None:
-            file_extension = f"**/*.{filter_extension}"
-        all_file_paths = [f for f in glob.iglob(src + file_extension,
-                                                recursive=True)]
+            file_extension = f".{filter_extension}"
+        file_path = os.path.join(glob.escape(src), "**", f"*{file_extension}")
+        all_file_paths = [f for f in glob.iglob(file_path, recursive=True)]
         return all_file_paths
 
     @classmethod
@@ -94,7 +100,7 @@ class FileUtil(object):
         Returns:
             Returns True if the file is an xlsx file else False.
         """
-        file_extension = FileUtil.get_file_extension(path_to_some_file)
+        file_extension = FileUtil._get_file_extension(path_to_some_file)
         return True if file_extension == ".xlsx" else False
 
     @classmethod
