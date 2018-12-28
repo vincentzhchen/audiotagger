@@ -215,11 +215,41 @@ class Fields(object):
         }
     )
 
-    ENCODER = type(
-        "ENCODER", (),
+    ENCODER_APPLE = type(
+        "ENCODER_APPLE", (),
         {
             "ID3": "----:com.apple.iTunes:Encoder",
-            "CID": "ENCODER",
+            "CID": "ENCODER_APPLE",
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": "utf-8"
+        }
+    )
+
+    ENCODER_ID3 = type(
+        "ENCODER_ID3", (),
+        {
+            "ID3": "\xa9enc",
+            "CID": "ENCODER_ID3",
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": str
+        }
+    )
+
+    ENCODER_SETTINGS = type(
+        "ENCODER_SETTINGS", (),
+        {
+            "ID3": "----:com.apple.iTunes:Encoder Settings",
+            "CID": "ENCODER_SETTINGS",
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": "utf-8"
+        }
+    )
+
+    SOURCE = type(
+        "SOURCE", (),
+        {
+            "ID3": "----:com.apple.iTunes:Source",
+            "CID": "SOURCE",
             "INPUT_TYPE": str,
             "OUTPUT_TYPE": "utf-8"
         }
@@ -498,7 +528,10 @@ class Fields(object):
         DESCRIPTION.ID3: DESCRIPTION.CID,
         GROUPING.ID3: GROUPING.CID,
         ENCODED_BY.ID3: ENCODED_BY.CID,
-        ENCODER.ID3: ENCODER.CID,
+        ENCODER_APPLE.ID3: ENCODER_APPLE.CID,
+        ENCODER_ID3.ID3: ENCODER_ID3.CID,
+        ENCODER_SETTINGS.ID3: ENCODER_SETTINGS.CID,
+        SOURCE.ID3: SOURCE.CID,
         COPYRIGHT.ID3: COPYRIGHT.CID,
         ALBUM_SORT_ORDER.ID3: ALBUM_SORT_ORDER.CID,
         ALBUM_ARTIST_SORT_ORDER.ID3: ALBUM_ARTIST_SORT_ORDER.CID,
@@ -548,7 +581,10 @@ class Fields(object):
         DESCRIPTION.CID: DESCRIPTION.ID3,
         GROUPING.CID: GROUPING.ID3,
         ENCODED_BY.CID: ENCODED_BY.ID3,
-        ENCODER.CID: ENCODER.ID3,
+        ENCODER_APPLE.CID: ENCODER_APPLE.ID3,
+        ENCODER_ID3.CID: ENCODER_ID3.ID3,
+        ENCODER_SETTINGS.CID: ENCODER_SETTINGS.ID3,
+        SOURCE.CID: SOURCE.ID3,
         COPYRIGHT.CID: COPYRIGHT.ID3,
         ALBUM_SORT_ORDER.CID: ALBUM_SORT_ORDER.ID3,
         ALBUM_ARTIST_SORT_ORDER.CID: ALBUM_ARTIST_SORT_ORDER.ID3,
