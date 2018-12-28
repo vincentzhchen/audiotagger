@@ -19,7 +19,6 @@ class AudioTaggerInput(object):
         # for Excel metadata files
         if FileUtil.is_xlsx(self.src):
             self.read_from_excel(file_path=self.src)
-            self.all_audio_file_paths = self.metadata[fld.PATH.CID].tolist()
 
         # for directory of audio files or a single audio file
         elif os.path.isdir(self.src) or os.path.isfile(self.src):
@@ -27,65 +26,33 @@ class AudioTaggerInput(object):
                 raise ValueError(f"{self.src} does not exist.")
 
             # load inputs
-            self._load_all_audio_file_paths()
-            self._load_all_m4a_tuples()
-            self._load_all_audio_files_into_df()
+            self._load_all_m4a_files_into_df()
 
         else:
             raise Exception("INVALID SOURCE")
 
         self.metadata = TagUtil.clean_metadata(df_metadata=self.metadata)
+        self.all_audio_file_paths = self.metadata[fld.PATH.CID].tolist()
 
-    def _load_all_file_paths(self):
-        """Loads all file paths in the given root directory.
-
-        The files can be of any kind (e.g. text, xlsx, ...) and not
-        just audio files (m4a, mp3, flac, ...) at this point.
+    def _load_all_m4a_files_into_df(self):
+        """Load metadata from m4a files into a dataframe.
 
         """
-        self.log.info("Loading all file paths...")
-        self.all_file_paths = FileUtil.traverse_directory(self.src)
-        self.log.info(f"LOADED {len(self.all_file_paths)} file paths.")
+        self.log.info("Loading all m4a file paths")
+        m4a_file_paths = FileUtil.traverse_directory(self.src, "m4a")
+        self.log.info(f"LOADED {len(m4a_file_paths)} file paths.")
 
-    def _load_all_audio_file_paths(self):
-        """Loads all audio file paths into memory.
-
-        """
-        self._load_all_file_paths()
-        self.all_audio_file_paths = []
-
-        # M4A
-        m4a_file_paths = FileUtil.filter_m4a_files(self.all_file_paths)
-        if m4a_file_paths:
-            self.log.info("Loading all m4a file paths...")
-            self.m4a_file_paths = m4a_file_paths
-            self.log.info(f"LOADED {len(self.m4a_file_paths)} m4a file paths.")
-            self.all_audio_file_paths += m4a_file_paths
-
-    def _load_all_m4a_tuples(self):
-        """Loads all m4a file paths into memory.
-
-        The file path is used to create an MP4 object and is stored
-        as a (file_path, MP4 obj) tuple.
-
-        """
+        # The file path is used to create an MP4 object and is stored
+        # as a (file_path, MP4 obj) tuple.
         self.log.info("Loading all m4a objects...")
-        self.m4a_obj = FileUtil.convert_to_mp4_obj(self.m4a_file_paths)
-        self.log.info(f"LOADED {len(self.m4a_obj)} m4a objects.")
+        m4a_obj = FileUtil.convert_to_mp4_obj(m4a_file_paths)
+        self.log.info(f"LOADED {len(m4a_obj)} m4a objects.")
 
-    def _load_all_audio_files_into_df(self):
-        """Load all audio file into a dataframe.
-
-        The actual audio object is stored into the dataframe as well (in
-        the "SONG" column.
-
-        """
         self.log.info("Loading all audio file metadata into dataframe...")
-        all_audio_obj = []
-        all_audio_obj += self.m4a_obj  # add flac / mp3/ etc. here
-        all_audio_obj = [dict(song.tags, **{"PATH": [song.filename]})
-                         for song in all_audio_obj]
-        metadata = pd.DataFrame(all_audio_obj)
+        m4a_obj = [dict(song.tags, **{"PATH": [song.filename]})
+                   for song in m4a_obj]
+        metadata = pd.DataFrame(m4a_obj)
+
         # mutagen stores all tags in lists; flatten them
         metadata = TagUtil.flatten_list_values(metadata)
         self.metadata = metadata
@@ -98,13 +65,23 @@ class AudioTaggerInput(object):
         return df
 
     def read_from_excel(self, file_path):
+        """Read metadata file into input class.
+
+        Args:
+            file_path: Input file path
+
+        Returns:
+            void
+        """
         df = pd.read_excel(file_path, sheet_name="metadata", dtype=str)
         df = TagUtil.enforce_dtypes(df=df, io_type="INPUT_TYPE")
         self.metadata = df
 
     def write_to_excel(self, file_path):
-        """
-        Writes input data to Excel for debugging.
+        """Writes input data to Excel for debugging.
+
+        1. Only dataframes are saved.
+        2. So far, there is only a metadata dataframe.
 
         Args:
             file_path (str): output file path to write the data to.
@@ -124,4 +101,3 @@ class AudioTaggerInput(object):
 
         writer.save()
         self.log.info(f"Compiled input data saved in {file_path}")
-        return
