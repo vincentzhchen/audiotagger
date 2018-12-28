@@ -37,6 +37,9 @@ class RenameFile(object):
             anonymous (str): Returns a destination path for the file.
         """
         artist, year, album, disc, track, title, ext = metadata_tuple
+        artist = FileUtils.replace_invalid_characters(artist)
+        album = FileUtils.replace_invalid_characters(album)
+        title = FileUtils.replace_invalid_characters(title)
         return os.path.join(self.base_dst_dir,
                             artist,
                             year + " " + album,

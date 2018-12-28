@@ -101,6 +101,11 @@ class FileUtils(object):
         file_extension = FileUtils.get_file_extension(path_to_some_file)
         return True if file_extension == ".xlsx" else False
 
+    @classmethod
+    def replace_invalid_characters(cls, path_to_some_file):
+        path_to_some_file = path_to_some_file.replace("/", "_")
+        path_to_some_file = path_to_some_file.replace("\0", "_")
+        return path_to_some_file
 
 class TagUtils(object):
     def __init__(self):
