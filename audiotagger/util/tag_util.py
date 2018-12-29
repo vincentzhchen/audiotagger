@@ -40,22 +40,29 @@ class TagUtil(object):
     @classmethod
     def enforce_dtypes(cls, df, io_type):
         # apply correct typing
-        for col in df:
-            if io_type == "INPUT_TYPE":
-                df[col] = df[col].astype(eval(f"fld.{col}.INPUT_TYPE"))
-
-            elif io_type == "OUTPUT_TYPE":
+        if io_type == "INPUT_FROM_AUDIO_FILE":
+            for col in df:
                 t = eval(f"fld.{col}.OUTPUT_TYPE")
                 if t == "utf-8":
-                    df[col] = df[col].apply(
-                        lambda x: x.encode("utf-8"))
-                else:
-                    df[col] = df[col].astype(t)
+                    df[col] = df[col].str.decode("utf-8")
+                df[col] = df[col].astype(eval(f"fld.{col}.INPUT_TYPE"))
+            df = df.replace("nan", "")
 
-            else:
-                raise Exception(f"{col} has no attribute {io_type}.")
+        elif io_type == "INPUT_FROM_METADATA_FILE":
+            for col in df:
+                df[col] = df[col].astype(eval(f"fld.{col}.INPUT_TYPE"))
 
-        df = df.replace("nan", "")
+        elif io_type == "OUTPUT_TYPE":
+            try:
+                for col in df:
+                    t = eval(f"fld.{col}.OUTPUT_TYPE")
+                    if t == "utf-8":
+                        df[col] = df[col].str.encode("utf-8")
+                    else:
+                        df[col] = df[col].astype(t)
+            except:
+                print(col)
+
         return df
 
     @classmethod
@@ -97,28 +104,28 @@ class TagUtil(object):
 
     @classmethod
     def split_track_and_disc_tuples(cls, df, drop_original=True):
-        if fld.TRACK_NUMBER.CID in df.columns:
-            df[fld.TRACK_NO.CID] = df[fld.TRACK_NUMBER.CID].apply(
+        if fld.TRACK_NO_TUPLE.CID in df.columns:
+            df[fld.TRACK_NO.CID] = df[fld.TRACK_NO_TUPLE.CID].apply(
                 lambda x: x[0])
-            df[fld.TOTAL_TRACKS.CID] = df[fld.TRACK_NUMBER.CID].apply(
+            df[fld.TOTAL_TRACKS.CID] = df[fld.TRACK_NO_TUPLE.CID].apply(
                 lambda x: x[1])
             if drop_original:
-                df = df.drop(fld.TRACK_NUMBER.CID, axis="columns")
+                df = df.drop(fld.TRACK_NO_TUPLE.CID, axis="columns")
 
-        if fld.DISC_NUMBER.CID in df.columns:
-            df[fld.DISC_NO.CID] = df[fld.DISC_NUMBER.CID].apply(
+        if fld.DISC_NO_TUPLE.CID in df.columns:
+            df[fld.DISC_NO.CID] = df[fld.DISC_NO_TUPLE.CID].apply(
                 lambda x: x[0])
-            df[fld.TOTAL_DISCS.CID] = df[fld.DISC_NUMBER.CID].apply(
+            df[fld.TOTAL_DISCS.CID] = df[fld.DISC_NO_TUPLE.CID].apply(
                 lambda x: x[1])
             if drop_original:
-                df = df.drop(fld.DISC_NUMBER.CID, axis="columns")
+                df = df.drop(fld.DISC_NO_TUPLE.CID, axis="columns")
 
         return df
 
     @classmethod
     def build_track_and_disc_tuples(cls, df, drop_components=True):
         if (fld.TRACK_NO.CID in df) and (fld.TOTAL_TRACKS.CID in df):
-            df[fld.TRACK_NUMBER.CID] = df[
+            df[fld.TRACK_NO_TUPLE.CID] = df[
                 [fld.TRACK_NO.CID, fld.TOTAL_TRACKS.CID]
             ].apply(tuple, axis="columns")
             if drop_components:
@@ -126,7 +133,7 @@ class TagUtil(object):
                         axis="columns", inplace=True)
 
         if (fld.DISC_NO.CID in df) and (fld.TOTAL_DISCS.CID in df):
-            df[fld.DISC_NUMBER.CID] = df[
+            df[fld.DISC_NO_TUPLE.CID] = df[
                 [fld.DISC_NO.CID, fld.TOTAL_DISCS.CID]
             ].apply(tuple, axis="columns")
             if drop_components:
@@ -149,4 +156,16 @@ class TagUtil(object):
         f = lambda x: x[0] if isinstance(x, list) else x
         df_metadata = df_metadata.applymap(f)
 
+        return df_metadata
+
+    @classmethod
+    def sort_metadata(cls, df_metadata):
+        df_metadata = df_metadata.sort_values(
+            [fld.ALBUM_ARTIST.CID, fld.YEAR.CID, fld.ALBUM.CID, fld.DISC_NO.CID,
+             fld.TRACK_NO.CID, fld.TITLE.CID])
+
+        excess_cols = [c for c in df_metadata if
+                       c not in fld.BASE_METADATA_COLS]
+        cols = fld.BASE_METADATA_COLS + excess_cols
+        df_metadata = df_metadata[cols]
         return df_metadata

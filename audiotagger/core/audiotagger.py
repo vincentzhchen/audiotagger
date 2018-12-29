@@ -1,7 +1,7 @@
 from audiotagger.util.tag_util import TagUtil
 
 
-class ExcelTagger(object):
+class AudioTagger(object):
     def __init__(self, logger, input_data):
         self.log = logger
         self.input_data = input_data

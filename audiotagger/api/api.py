@@ -2,7 +2,7 @@ import os
 import pandasdateutils as pdu
 
 from audiotagger.core.clear_tags import ClearTags
-from audiotagger.core.excel_tagger import ExcelTagger
+from audiotagger.core.audiotagger import AudioTagger
 from audiotagger.core.paths import audiotagger_log_dir
 from audiotagger.core.rename_file import RenameFile
 from audiotagger.core.create_playlist import CreatePlaylist
@@ -10,7 +10,7 @@ from audiotagger.data.input import AudioTaggerInput
 from audiotagger.settings import settings as settings
 
 
-class AudioTagger(object):
+class AudioTaggerAPI(object):
     def __init__(self, logger, options, **kwargs):
         self.log = logger
         self.options = options
@@ -31,10 +31,10 @@ class AudioTagger(object):
             return
 
         if self.options.tag_file:
-            # Given an Excel metadata sheet, tag the audio files listed
-            # by the paths in the sheet.
-            et = ExcelTagger(logger=self.log, input_data=self.input_data)
-            et.save_tags_to_audio_files()
+            # Given a metadata dataframe, tag the audio files listed
+            # by the paths in the dataframe.
+            at = AudioTagger(logger=self.log, input_data=self.input_data)
+            at.save_tags_to_audio_files()
 
         if self.options.rename_file:
             # Renames the audio file path using a pre-defined format.
@@ -51,9 +51,14 @@ class AudioTagger(object):
                             input_data=self.input_data)
             rf.rename_file()
 
-        if self.options.clear_tags:
+        if self.options.clear_tags == "all":
+            # Deletes all tags from audio files.
             ct = ClearTags(logger=self.log, input_data=self.input_data)
             ct.clear_all_tags()
+        elif self.options.clear_tags == "excess":
+            # Deletes all tags not part of the base set of desired metadata.
+            ct = ClearTags(logger=self.log, input_data=self.input_data)
+            ct.clear_excess_tags()
 
         if self.options.generate_playlist:
             cp = CreatePlaylist(playlist_dst_dir=self.options.output_dst,

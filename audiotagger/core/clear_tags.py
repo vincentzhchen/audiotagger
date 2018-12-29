@@ -11,12 +11,17 @@ class ClearTags(object):
         self.utils = FileUtil()
 
     def clear_all_tags(self):
-        tags = MP4Tags()
+        """Clear all tags.
+
+        """
         for path in self.input_data.get_all_audio_file_paths():
             self.log.info(f"Cleared tag for {path}")
-            tags.save(path)
+            MP4Tags().save(path)
 
-    def clear_non_main_tags(self):
+    def clear_excess_tags(self):
+        """Clear all tags not part of the base set of desired metadata.
+
+        """
         metadata = self.input_data.get_metadata()
         metadata = metadata[fld.BASE_METADATA_COLS]
         tag_dict = TagUtil.metadata_to_tags(df_metadata=metadata)

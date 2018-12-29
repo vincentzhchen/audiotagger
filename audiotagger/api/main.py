@@ -45,9 +45,10 @@ def get_options():
     parser.add_option(
         "-c",
         "--clear_tags",
-        action="store_true",
+        action="store",
         dest="clear_tags",
-        help="Clears the tags for a given directory."
+        help="Clears the tags for a given directory. ('all' clears all "
+             "tags and 'excess' clears all tags not in desired base metadata)"
     )
 
     parser.add_option(
@@ -136,7 +137,7 @@ if __name__ == "__main__":
     logger.info(options)
 
     # RUN MAIN PROGRAM HERE.
-    from audiotagger.api.api import AudioTagger
+    from audiotagger.api.api import AudioTaggerAPI
 
-    at = AudioTagger(logger=logger, options=options)
+    at = AudioTaggerAPI(logger=logger, options=options)
     at.run()

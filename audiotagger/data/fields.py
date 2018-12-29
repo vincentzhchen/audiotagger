@@ -40,11 +40,11 @@ class Fields(object):
         }
     )
 
-    TRACK_NUMBER = type(
-        "TRACK_NUMBER", (),
+    TRACK_NO_TUPLE = type(
+        "TRACK_NO_TUPLE", (),
         {
             "ID3": "trkn",
-            "CID": "TRACK_NUMBER",
+            "CID": "TRACK_NO_TUPLE",
             "INPUT_TYPE": tuple,  # tuple of integer
             "OUTPUT_TYPE": tuple  # tuple of integer
         }
@@ -70,11 +70,11 @@ class Fields(object):
         }
     )
 
-    DISC_NUMBER = type(
-        "DISC_NUMBER", (),
+    DISC_NO_TUPLE = type(
+        "DISC_NO_TUPLE", (),
         {
             "ID3": "disk",
-            "CID": "DISC_NUMBER",
+            "CID": "DISC_NO_TUPLE",
             "INPUT_TYPE": tuple,  # tuple of integer
             "OUTPUT_TYPE": tuple  # tuple of integer
         }
@@ -140,7 +140,7 @@ class Fields(object):
     )
 
     BASE_METADATA_COLS = [
-        TITLE.CID, TRACK_NO.CID, TOTAL_TRACKS.CID, DISC_NO.CID,
+        PATH.CID, TITLE.CID, TRACK_NO.CID, TOTAL_TRACKS.CID, DISC_NO.CID,
         TOTAL_DISCS.CID, ARTIST.CID, ALBUM_ARTIST.CID, YEAR.CID,
         ALBUM.CID, GENRE.CID, RATING.CID]
 
@@ -511,10 +511,10 @@ class Fields(object):
         TITLE.ID3: TITLE.CID,
         TRACK_NO.ID3: TRACK_NO.CID,
         TOTAL_TRACKS.ID3: TOTAL_TRACKS.CID,
-        TRACK_NUMBER.ID3: TRACK_NUMBER.CID,
+        TRACK_NO_TUPLE.ID3: TRACK_NO_TUPLE.CID,
         DISC_NO.ID3: DISC_NO.CID,
         TOTAL_DISCS.ID3: TOTAL_DISCS.CID,
-        DISC_NUMBER.ID3: DISC_NUMBER.CID,
+        DISC_NO_TUPLE.ID3: DISC_NO_TUPLE.CID,
         ARTIST.ID3: ARTIST.CID,
         ALBUM_ARTIST.ID3: ALBUM_ARTIST.CID,
         YEAR.ID3: YEAR.CID,
@@ -564,10 +564,10 @@ class Fields(object):
         TITLE.CID: TITLE.ID3,
         TRACK_NO.CID: TRACK_NO.ID3,
         TOTAL_TRACKS.CID: TOTAL_TRACKS.ID3,
-        TRACK_NUMBER.CID: TRACK_NUMBER.ID3,
+        TRACK_NO_TUPLE.CID: TRACK_NO_TUPLE.ID3,
         DISC_NO.CID: DISC_NO.ID3,
         TOTAL_DISCS.CID: TOTAL_DISCS.ID3,
-        DISC_NUMBER.CID: DISC_NUMBER.ID3,
+        DISC_NO_TUPLE.CID: DISC_NO_TUPLE.ID3,
         ARTIST.CID: ARTIST.ID3,
         ALBUM_ARTIST.CID: ALBUM_ARTIST.ID3,
         YEAR.CID: YEAR.ID3,
