@@ -1,7 +1,6 @@
 import os
 import pandas as pd
 
-from audiotagger.data.fields import Fields as fld
 from audiotagger.util.file_util import FileUtil
 from audiotagger.util.tag_util import TagUtil
 
@@ -32,7 +31,6 @@ class AudioTaggerInput(object):
             raise Exception("INVALID SOURCE")
 
         self.metadata = TagUtil.sort_metadata(self.metadata)
-        self.all_audio_file_paths = self.metadata[fld.PATH.CID].tolist()
 
     def _load_all_m4a_files_into_df(self):
         """Load metadata from m4a files into a dataframe.
@@ -59,9 +57,6 @@ class AudioTaggerInput(object):
         metadata = TagUtil.enforce_dtypes(df=metadata,
                                           io_type="INPUT_FROM_AUDIO_FILE")
         self.metadata = metadata
-
-    def get_all_audio_file_paths(self):
-        return self.all_audio_file_paths
 
     def get_metadata(self):
         df = self.metadata
