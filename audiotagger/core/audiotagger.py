@@ -22,7 +22,4 @@ class AudioTagger(object):
             self.log.info("Data saved to {out_file}")
             return
 
-        tag_dict = TagUtil.metadata_to_tags(df_metadata=metadata)
-        for k in tag_dict:
-            self.log.info(f"Saving {tag_dict[k]} to {k}")
-            tag_dict[k].save(k)
+        TagUtil.save_tags_to_file(df_metadata=metadata)
