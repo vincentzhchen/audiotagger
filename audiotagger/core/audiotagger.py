@@ -22,4 +22,4 @@ class AudioTagger(object):
             self.log.info("Data saved to {out_file}")
             return
 
-        TagUtil.save_tags_to_file(df_metadata=metadata)
+        TagUtil.save_tags_to_file(df_metadata=metadata, logger=self.log)

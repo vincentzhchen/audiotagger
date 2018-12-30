@@ -1,4 +1,5 @@
 import os
+import warnings
 from mutagen.mp4 import MP4Tags
 import pandasdateutils as pdu
 
@@ -53,15 +54,12 @@ class TagUtil(object):
                 df[col] = df[col].astype(eval(f"fld.{col}.INPUT_TYPE"))
 
         elif io_type == "OUTPUT_TYPE":
-            try:
-                for col in df:
-                    t = eval(f"fld.{col}.OUTPUT_TYPE")
-                    if t == "utf-8":
-                        df[col] = df[col].str.encode("utf-8")
-                    else:
-                        df[col] = df[col].astype(t)
-            except:
-                print(col)
+            for col in df:
+                t = eval(f"fld.{col}.OUTPUT_TYPE")
+                if t == "utf-8":
+                    df[col] = df[col].str.encode("utf-8")
+                else:
+                    df[col] = df[col].astype(t)
 
         return df
 
@@ -171,8 +169,9 @@ class TagUtil(object):
         return df_metadata
 
     @classmethod
-    def save_tags_to_file(cls, df_metadata):
+    def save_tags_to_file(cls, df_metadata, logger=None):
         tag_dict = TagUtil.metadata_to_tags(df_metadata=df_metadata)
         for k in tag_dict:
-            print(f"Saving {tag_dict[k]} to {k}")
+            if logger is not None:
+                logger.info(f"Saving {tag_dict[k]} to {k}")
             tag_dict[k].save(k)

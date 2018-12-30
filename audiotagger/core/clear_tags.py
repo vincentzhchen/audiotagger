@@ -17,13 +17,15 @@ class ClearTags(object):
 
         """
         metadata = self.input_data.get_metadata()
-        metadata = metadata[[fld.PATH.CID]]
+        metadata = metadata.loc[:, [fld.PATH.CID]]
         TagUtil.save_tags_to_file(df_metadata=metadata)
+        self.log.info("ALL TAGS are cleared.")
 
     def clear_excess_tags(self):
         """Clear all tags not part of the base set of desired metadata.
 
         """
         metadata = self.input_data.get_metadata()
-        metadata = metadata[fld.BASE_METADATA_COLS]
+        metadata = metadata.loc[:, fld.BASE_METADATA_COLS]
         TagUtil.save_tags_to_file(df_metadata=metadata)
+        self.log.info("ALL TAGS except base metadata are cleared.")
