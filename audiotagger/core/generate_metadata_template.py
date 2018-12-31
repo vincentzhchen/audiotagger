@@ -1,8 +1,9 @@
 import os
 import pandas as pd
-import pandasdateutils as pdu
+
 from audiotagger.core.paths import audiotagger_config_dir
 from audiotagger.data.fields import Fields as fld
+import pandasdateutils as pdu
 
 
 def generate_metadata_template(dst_dir=None):
@@ -14,7 +15,7 @@ def generate_metadata_template(dst_dir=None):
         dst = os.path.join(dst_dir, f"metadata_{now}.xlsx")
         print(f"Generating metadata file at {dst} ... ", end="")
 
-        df = pd.DataFrame(columns=[fld.PATH.CID] + fld.BASE_METADATA_COLS)
+        df = pd.DataFrame(columns=fld.BASE_METADATA_COLS)
         df.to_excel(dst, sheet_name="metadata", index=False)
         print("done.")
     else:
