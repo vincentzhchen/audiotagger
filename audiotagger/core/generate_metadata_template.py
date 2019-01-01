@@ -2,7 +2,7 @@ import os
 import pandas as pd
 
 from audiotagger.data.fields import Fields as fld
-from audiotagger.settings import settings as settings
+from audiotagger.settings import settings
 import pandasdateutils as pdu
 
 

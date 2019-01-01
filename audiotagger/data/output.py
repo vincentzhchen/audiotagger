@@ -1,7 +1,7 @@
 import os
 
 import pandasdateutils as pdu
-from audiotagger.settings import settings as settings
+from audiotagger.settings import settings
 from audiotagger.util.tag_util import TagUtil
 from audiotagger.util.input_output_util import InputOutputUtil
 
