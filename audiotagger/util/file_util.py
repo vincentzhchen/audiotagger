@@ -19,6 +19,19 @@ class FileUtil(object):
         return True if file_extension == extension else False
 
     @classmethod
+    def is_xlsx(cls, path_to_some_file):
+        """Checks if a file is an Excel (.xlsx) file.
+
+        Args:
+            path_to_some_file (str): Path to the file.
+
+        Returns:
+            Returns True if the file is an xlsx file else False.
+        """
+        file_extension = FileUtil._get_file_extension(path_to_some_file)
+        return True if file_extension == ".xlsx" else False
+
+    @classmethod
     def is_wav(cls, path_to_some_file):
         return FileUtil._is_audio_file_ext(path_to_some_file, ".wav")
 
@@ -50,10 +63,6 @@ class FileUtil(object):
             arg = [arg]
 
         return [x for x in arg if FileUtil.is_flac(x)]
-
-    @classmethod
-    def apply_utf8(cls, x):
-        return x.encode("utf-8").decode("utf-8")
 
     @classmethod
     def convert_to_mp4_obj(cls, file_paths):
@@ -89,19 +98,6 @@ class FileUtil(object):
         file_path = os.path.join(glob.escape(src), "**", f"*{file_extension}")
         all_file_paths = [f for f in glob.iglob(file_path, recursive=True)]
         return all_file_paths
-
-    @classmethod
-    def is_xlsx(cls, path_to_some_file):
-        """Checks if a file is an Excel (.xlsx) file.
-
-        Args:
-            path_to_some_file (str): Path to the file.
-
-        Returns:
-            Returns True if the file is an xlsx file else False.
-        """
-        file_extension = FileUtil._get_file_extension(path_to_some_file)
-        return True if file_extension == ".xlsx" else False
 
     @classmethod
     def replace_invalid_characters(cls, path_to_some_file):

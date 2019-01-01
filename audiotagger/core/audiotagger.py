@@ -1,25 +1,28 @@
-from audiotagger.util.tag_util import TagUtil
+from audiotagger.modifier.audiotagger_modifier import AudioTaggerModifier as atm
 
 
 class AudioTagger(object):
-    def __init__(self, logger, input_data):
+    def __init__(self, input_data, logger, options):
         self.log = logger
         self.input_data = input_data
+        self.options = options
 
-        self.metadata = input_data.get_metadata()
-        self.modified_metadata = self._apply_modifiers()
+    def execute(self):
+        metadata = self.input_data.get_metadata()
+        modifier = self.options.modifier
+        str_cols = [c for c in metadata if eval(f"fld.{c}.INPUT_TYPE") == str]
 
-    def _apply_modifiers(self):
-        modified_metadata = self.metadata
-        return modified_metadata
+        # apply standard modifiers
+        metadata.loc[:, str_cols] = atm.strip_str(metadata.loc[:, str_cols])
+        metadata.loc[:, str_cols] = atm.remove_multiple_whitespace(
+            metadata.loc[:, str_cols])
 
-    def save_tags_to_audio_files(self):
-        metadata = self.modified_metadata
-        if self.input_data.is_dry_run:
-            self.log.info("Dry run... saving to {out_file}.")
-            TagUtil.dry_run(df=self.modified_metadata,
-                            prefix=self.__str__())
-            self.log.info("Data saved to {out_file}")
-            return
+        # return metadata as is if there are no modifiers specified
+        if modifier is None:
+            return metadata
 
-        TagUtil.save_tags_to_file(df_metadata=metadata, logger=self.log)
+        if self.options.modifier:
+            # TODO: apply modifiers here
+            pass
+
+        return metadata

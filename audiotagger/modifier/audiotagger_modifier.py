@@ -1,39 +1,55 @@
+import pandas as pd
+
+
 class AudioTaggerModifier(object):
-    @staticmethod
-    def remove_leading_trailing_spaces(var):
-        """Removes leading trailing spaces from string tags.
+    @classmethod
+    def strip_str(cls, arg):
+        """Removes leading trailing spaces from a string.
 
         Args:
-            var (str): TITLE, ARTIST, etc.
+            arg (str, dataframe of str, series of str): TITLE, ARTIST, etc.
 
         Returns:
-            anonymous (str): Stripped string.
+            anonymous (input type): Returns input data with stripped strings.
         """
-        return var.strip()
+        if arg.__class__ == str:
+            arg = arg.strip()
 
-    @staticmethod
-    def remove_multiple_whitespace(var):
+        elif arg.__class__ == pd.Series:
+            arg = arg.str.strip()
+
+        elif arg.__class__ == pd.DataFrame:
+            for col in arg:
+                arg[col] = arg[col].str.strip()
+
+        return arg
+
+    @classmethod
+    def _remove_multiple_whitespace(cls, arg):
+        return " ".join(arg.split())
+
+    @classmethod
+    def remove_multiple_whitespace(cls, arg):
         """Removes multiple whitespaces in the middle of a string.
 
         This implementation also removes all whitespace characters (e.g.
         tab, newline, return, etc.)
 
         Args:
-            var (str): TITLE, ARTIST, etc.
+            arg (str, dataframe of str, series of str): TITLE, ARTIST, etc.
 
         Returns:
-            anonymous (str): Returns clean string.
+            anonymous (input type): Returns cleaned input.
         """
-        return " ".join(var.split())
+        if arg.__class__ == str:
+            arg = AudioTaggerModifier._remove_multiple_whitespace(arg)
 
-    @staticmethod
-    def uppercase(var):
-        return var.upperc()
+        elif arg.__class__ == pd.Series:
+            arg = arg.apply(AudioTaggerModifier._remove_multiple_whitespace)
 
-    @staticmethod
-    def lowercase(var):
-        return var.lower()
+        elif arg.__class__ == pd.DataFrame:
+            for col in arg:
+                arg[col] = arg[col].apply(
+                    AudioTaggerModifier._remove_multiple_whitespace)
 
-    @staticmethod
-    def title(var):
-        return var.title()
+        return arg

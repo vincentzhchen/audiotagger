@@ -1,29 +1,28 @@
 import os
-import pandasdateutils as pdu
 
-from audiotagger.core.clear_tags import ClearTags
+import pandasdateutils as pdu
 from audiotagger.core.audiotagger import AudioTagger
-from audiotagger.core.paths import audiotagger_log_dir
-from audiotagger.core.rename_file import RenameFile
+from audiotagger.core.clear_tags import ClearTags
 from audiotagger.core.create_playlist import CreatePlaylist
+from audiotagger.core.rename_file import RenameFile
 from audiotagger.data.input import AudioTaggerInput
+from audiotagger.data.output import AudioTaggerOutput
 from audiotagger.settings import settings as settings
+from audiotagger.util.input_output_util import InputOutputUtil
 
 
 class AudioTaggerAPI(object):
     def __init__(self, logger, options, **kwargs):
         self.log = logger
         self.options = options
-        self.input_data = AudioTaggerInput(src=options.src,
-                                           logger=self.log,
-                                           is_dry_run=options.dry_run)
+        self.input_data = AudioTaggerInput(src=options.src, logger=self.log)
 
         if self.options.write_to_excel:
-            # write input data to Excel for debugging
-            base_dir = audiotagger_log_dir()
+            base_dir = settings.LOG_DIRECTORY
             file_path = os.path.join(
                 base_dir, f"input_{pdu.now(as_string=True)}.xlsx")
-            self.input_data.write_to_excel(file_path)
+            InputOutputUtil.write_to_excel(df=self.input_data.get_metadata(),
+                                           file_path=file_path)
 
     def run(self):
         if self.input_data.get_metadata().empty:
@@ -33,8 +32,14 @@ class AudioTaggerAPI(object):
         if self.options.tag_file:
             # Given a metadata dataframe, tag the audio files listed
             # by the paths in the dataframe.
-            at = AudioTagger(logger=self.log, input_data=self.input_data)
-            at.save_tags_to_audio_files()
+            metadata = AudioTagger(input_data=self.input_data,
+                                   logger=self.log,
+                                   options=self.options).execute()
+
+            out = AudioTaggerOutput(metadata=metadata,
+                                    logger=self.log,
+                                    options=self.options)
+            out.save()
 
         if self.options.rename_file:
             # Renames the audio file path using a pre-defined format.
@@ -51,14 +56,16 @@ class AudioTaggerAPI(object):
                             input_data=self.input_data)
             rf.rename_file()
 
-        if self.options.clear_tags == "all":
-            # Deletes all tags from audio files.
-            ct = ClearTags(logger=self.log, input_data=self.input_data)
-            ct.clear_all_tags()
-        elif self.options.clear_tags == "excess":
-            # Deletes all tags not part of the base set of desired metadata.
-            ct = ClearTags(logger=self.log, input_data=self.input_data)
-            ct.clear_excess_tags()
+        if self.options.clear_tags:
+            # Deletes tags from audio files by overwriting with blank tags.
+            metadata = ClearTags(input_data=self.input_data,
+                                 logger=self.log,
+                                 options=self.options).execute()
+
+            out = AudioTaggerOutput(metadata=metadata,
+                                    logger=self.log,
+                                    options=self.options)
+            out.save()
 
         if self.options.generate_playlist:
             cp = CreatePlaylist(playlist_dst_dir=self.options.output_dst,

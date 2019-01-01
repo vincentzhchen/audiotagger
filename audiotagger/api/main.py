@@ -36,6 +36,14 @@ def get_options():
     )
 
     parser.add_option(
+        "-m",
+        "--modifier",
+        action="store",
+        dest="modifier",
+        help="Modifiers to apply to metadata."
+    )
+
+    parser.add_option(
         "-l",
         action="store",
         dest="log_dir",

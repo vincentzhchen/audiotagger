@@ -167,11 +167,3 @@ class TagUtil(object):
         cols = fld.BASE_METADATA_COLS + excess_cols
         df_metadata = df_metadata[cols]
         return df_metadata
-
-    @classmethod
-    def save_tags_to_file(cls, df_metadata, logger=None):
-        tag_dict = TagUtil.metadata_to_tags(df_metadata=df_metadata)
-        for k in tag_dict:
-            if logger is not None:
-                logger.info(f"Saving {tag_dict[k]} to {k}")
-            tag_dict[k].save(k)
