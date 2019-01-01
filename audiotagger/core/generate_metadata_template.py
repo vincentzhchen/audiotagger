@@ -1,14 +1,14 @@
 import os
 import pandas as pd
 
-from audiotagger.core.paths import audiotagger_config_dir
 from audiotagger.data.fields import Fields as fld
+from audiotagger.settings import settings as settings
 import pandasdateutils as pdu
 
 
 def generate_metadata_template(dst_dir=None):
     if dst_dir is None:
-        dst_dir = audiotagger_config_dir()
+        dst_dir = settings.LOG_DIRECTORY
 
     if os.path.isdir(dst_dir):
         now = pdu.now(as_string=True)
