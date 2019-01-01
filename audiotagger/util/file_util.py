@@ -9,13 +9,13 @@ class FileUtil(object):
         pass
 
     @classmethod
-    def _get_file_extension(cls, path_to_some_file):
+    def get_file_extension(cls, path_to_some_file):
         filename, file_extension = os.path.splitext(path_to_some_file)
         return file_extension
 
     @classmethod
     def _is_audio_file_ext(self, path_to_some_file, extension):
-        file_extension = FileUtil._get_file_extension(path_to_some_file)
+        file_extension = FileUtil.get_file_extension(path_to_some_file)
         return True if file_extension == extension else False
 
     @classmethod
@@ -28,7 +28,7 @@ class FileUtil(object):
         Returns:
             Returns True if the file is an xlsx file else False.
         """
-        file_extension = FileUtil._get_file_extension(path_to_some_file)
+        file_extension = FileUtil.get_file_extension(path_to_some_file)
         return True if file_extension == ".xlsx" else False
 
     @classmethod
