@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import optparse
+import os
 import sys
 
 from audiotagger.core.generate_config import generate_config
-from audiotagger.core.generate_metadata_template import \
-    generate_metadata_template
+from audiotagger.core.paths import audiotagger_config_path
 from customlogging import CustomLogging as cl
 
 
@@ -125,14 +125,27 @@ if __name__ == "__main__":
     parser = get_options()
     options, args = parser.parse_args()
 
-    # Get app configurations.
+    # If the app was never configured, generate configuration once.
+    if not os.path.exists(audiotagger_config_path()):
+        print("Application will configure for the first time...")
+        generate_config()
+        sys.exit(0)
+
+    # Reset app configurations.
     if options.generate_config:
         generate_config()
         sys.exit(0)
 
+    # Generate metadata Excel template.
     if options.generate_metadata_template:
+        from audiotagger.core.generate_metadata_template import \
+            generate_metadata_template
+
         generate_metadata_template(dst_dir=options.dst)
         sys.exit(0)
+
+    # RUN MAIN PROGRAM HERE.
+    from audiotagger.api.api import AudioTaggerAPI
 
     # Set up logging.
     if options.log_dir is not None:
@@ -143,9 +156,6 @@ if __name__ == "__main__":
         log_dir = LOG_DIRECTORY
     logger = cl(log_dir=log_dir, name="audiotagger.log")
     logger.info(options)
-
-    # RUN MAIN PROGRAM HERE.
-    from audiotagger.api.api import AudioTaggerAPI
 
     at = AudioTaggerAPI(logger=logger, options=options)
     at.run()
