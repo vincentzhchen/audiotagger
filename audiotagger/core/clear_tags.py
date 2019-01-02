@@ -31,7 +31,7 @@ class ClearTags(object):
             metadata (dataframe): Returns metadata df with no tag columns.
         """
         metadata = self.input_data.get_metadata()
-        metadata = metadata.loc[:, [fld.PATH.CID]]
+        metadata = metadata.loc[:, fld.PATH_COLS]
         self.log.info("ALL TAGS are cleared.")
         return metadata
 

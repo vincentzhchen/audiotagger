@@ -1,3 +1,4 @@
+from audiotagger.data.fields import Fields as fld
 from audiotagger.modifier.audiotagger_modifier import AudioTaggerModifier as atm
 
 

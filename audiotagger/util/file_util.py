@@ -65,8 +65,30 @@ class FileUtil(object):
         return [x for x in arg if FileUtil.is_flac(x)]
 
     @classmethod
-    def convert_to_mp4_obj(cls, file_paths):
-        return [MP4(path) for path in file_paths]
+    def generate_metadata_records_from_m4a(cls, m4a_file_paths):
+        """Generate a list of metadata records from m4a file paths.
+
+        Also append the file path into the tags.
+
+        Args:
+            m4a_file_paths (list of str): m4a file paths.
+
+        Returns:
+            out (list of dict): Returns a list of metadata dicts.
+        """
+        g = (dict(MP4(path).tags, **{"PATH_SRC": [path], "PATH_DST": [path]})
+             for path in m4a_file_paths)
+
+        # mutagen stores tag values as lists, so flatten them
+        return [{k: d[k][0] for k in d} for d in g]
+
+    @classmethod
+    def generate_metadata_records(cls, file_paths, extension="m4a"):
+        if extension == "m4a":
+            return FileUtil.generate_metadata_records_from_m4a(file_paths)
+
+        else:
+            raise NotImplementedError("Only support for m4a at this time.")
 
     @classmethod
     def traverse_directory(cls, src, filter_extension=None):

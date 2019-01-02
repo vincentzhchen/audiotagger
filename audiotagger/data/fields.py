@@ -1,13 +1,26 @@
 class Fields(object):
-    PATH = type(
-        "PATH", (),
+    # PATH COLS
+    PATH_SRC = type(
+        "PATH_SRC", (),
         {
-            "ID3": "PATH",
-            "CID": "PATH",
+            "ID3": "PATH_SRC",
+            "CID": "PATH_SRC",
             "INPUT_TYPE": str,
             "OUTPUT_TYPE": str
         }
     )
+
+    PATH_DST = type(
+        "PATH_DST", (),
+        {
+            "ID3": "PATH_DST",
+            "CID": "PATH_DST",
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": str
+        }
+    )
+
+    PATH_COLS = [PATH_SRC.CID, PATH_DST.CID]
 
     # BASE METADATA COLS
     TITLE = type(
@@ -139,10 +152,10 @@ class Fields(object):
         }
     )
 
-    BASE_METADATA_COLS = [
-        PATH.CID, TITLE.CID, TRACK_NO.CID, TOTAL_TRACKS.CID, DISC_NO.CID,
-        TOTAL_DISCS.CID, ARTIST.CID, ALBUM_ARTIST.CID, YEAR.CID,
-        ALBUM.CID, GENRE.CID, RATING.CID]
+    BASE_METADATA_COLS = PATH_COLS + [
+        TITLE.CID, TRACK_NO.CID, TOTAL_TRACKS.CID,
+        DISC_NO.CID, TOTAL_DISCS.CID, ARTIST.CID, ALBUM_ARTIST.CID,
+        YEAR.CID, ALBUM.CID, GENRE.CID, RATING.CID]
 
     # ADDITIONAL METADATA COLS
     COMPOSER = type(
@@ -505,9 +518,13 @@ class Fields(object):
         }
     )
 
+    # CUSTOM COLS (non-metadata)
+    CUSTOM_COLS = [] + PATH_COLS
+
     # MAPS
     ID3_to_field = {
-        PATH.ID3: PATH.CID,
+        PATH_SRC.ID3: PATH_SRC.CID,
+        PATH_DST.ID3: PATH_DST.CID,
         TITLE.ID3: TITLE.CID,
         TRACK_NO.ID3: TRACK_NO.CID,
         TOTAL_TRACKS.ID3: TOTAL_TRACKS.CID,
@@ -560,7 +577,8 @@ class Fields(object):
     }
 
     field_to_ID3 = {
-        PATH.CID: PATH.ID3,
+        PATH_SRC.CID: PATH_SRC.ID3,
+        PATH_DST.CID: PATH_DST.ID3,
         TITLE.CID: TITLE.ID3,
         TRACK_NO.CID: TRACK_NO.ID3,
         TOTAL_TRACKS.CID: TOTAL_TRACKS.ID3,

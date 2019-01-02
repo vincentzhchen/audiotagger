@@ -1,18 +1,23 @@
 import os
 import pandas as pd
 
+import pandasdateutils as pdu
+from audiotagger.data.fields import Fields as fld
+from audiotagger.settings import settings as settings
 from audiotagger.util.file_util import FileUtil
+from audiotagger.util.input_output_util import InputOutputUtil
 from audiotagger.util.tag_util import TagUtil
 
 
 class AudioTaggerInput(object):
-    def __init__(self, src, logger):
+    def __init__(self, src, logger, options):
         if src is None:
             raise Exception("INVALID SOURCE")
         else:
             self.src = src
 
         self.log = logger
+        self.options = options
 
         # for Excel metadata files
         if FileUtil.is_xlsx(self.src):
@@ -35,6 +40,14 @@ class AudioTaggerInput(object):
 
         self.metadata = TagUtil.sort_metadata(self.metadata)
 
+        if self.options.write_to_excel:
+            base_dir = settings.LOG_DIRECTORY
+            file_path = os.path.join(
+                base_dir, f"input_{pdu.now(as_string=True)}.xlsx")
+            InputOutputUtil.write_to_excel(df=self.metadata,
+                                           file_path=file_path)
+            self.log.info(f"Saved input metadata to {file_path}")
+
     def _load_all_m4a_files_into_df_from_excel(self):
         metadata = pd.read_excel(self.src, sheet_name="metadata", dtype=str)
         metadata = TagUtil.enforce_dtypes(df=metadata,
@@ -45,28 +58,32 @@ class AudioTaggerInput(object):
         """Load metadata from m4a files into a dataframe.
 
         """
-        self.log.info("Loading all m4a file paths")
         m4a_file_paths = FileUtil.traverse_directory(self.src, "m4a")
         self.log.info(f"LOADED {len(m4a_file_paths)} file paths.")
 
-        # The file path is used to create an MP4 object and is stored
-        # as a (file_path, MP4 obj) tuple.
-        self.log.info("Loading all m4a objects...")
-        m4a_obj = FileUtil.convert_to_mp4_obj(m4a_file_paths)
-        self.log.info(f"LOADED {len(m4a_obj)} m4a objects.")
+        metadata_records = FileUtil.generate_metadata_records(m4a_file_paths)
+        self.log.info(f"LOADED {len(metadata_records)} records.")
 
-        self.log.info("Loading all audio file metadata into dataframe...")
-        m4a_obj = [dict(song.tags, **{"PATH": [song.filename]})
-                   for song in m4a_obj]
-        metadata = pd.DataFrame(m4a_obj)
+        metadata = pd.DataFrame(metadata_records)
+        metadata = metadata.rename(columns={"PATH_SRC": fld.PATH_SRC.CID,
+                                            "PATH_DST": fld.PATH_DST.CID,})
+        self.log.info(f"LOADED raw metadata df, shape: {metadata.shape}.")
 
-        # mutagen stores all tags in lists; flatten them
-        metadata = TagUtil.flatten_list_values(metadata)
-        metadata = TagUtil.clean_metadata(df_metadata=metadata)
+        metadata = metadata.rename(columns=fld.ID3_to_field)
+
+        # TODO: hack to drop cover since that fails UTF-8 encoding
+        if "COVER" in metadata:
+            metadata = metadata.drop(columns="COVER")
+        metadata = TagUtil.split_track_and_disc_tuples(df=metadata)
         metadata = TagUtil.enforce_dtypes(df=metadata,
                                           io_type="INPUT_FROM_AUDIO_FILE")
         self.metadata = metadata
 
     def get_metadata(self):
+        """Get cleaned metadata.
+
+        All cleaning should be done at instantiation.  Do not modify here.
+
+        """
         df = self.metadata
         return df

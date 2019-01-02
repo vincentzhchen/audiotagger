@@ -1,30 +1,33 @@
 import os
-from shutil import copy2
 
 from audiotagger.data.fields import Fields as fld
+from audiotagger.settings import settings
 from audiotagger.util.file_util import FileUtil
 
 
 class RenameFile(object):
-    def __init__(self, base_dst_dir, logger, input_data):
-        """
-
-        Args:
-            base_dst_dir (str): The base directory for the output.  This
-                is typically the folder where all music is stored at the
-                artist level.
-            input_data (AudioTaggerInput): Holds all needed input data.
-        """
-        self.base_dst_dir = base_dst_dir
-        self.log = logger
+    def __init__(self, input_data, logger, options):
         self.input_data = input_data
+        self.log = logger
+        self.options = options
 
-        self.metadata = input_data.get_metadata()
-        self.modified_metadata = self.generate_new_file_path_from_metadata(
-            df_metadata=self.metadata)
+        self.generate_base_dst_dir()
 
-    def __str__(self):
-        return "rename_file"
+    def execute(self):
+        metadata = self.input_data.get_metadata()
+        metadata = self.generate_new_file_path_from_metadata(df=metadata)
+
+        # filter out only new paths
+        metadata = metadata.loc[
+            metadata[fld.PATH_SRC.CID] != metadata["NEW_PATH"]]
+        return metadata
+
+    def generate_base_dst_dir(self):
+        if self.options.dst is not None:
+            self.base_dst_dir = self.options.dst
+        else:
+            # TODO: for now, always save to the audio directory.
+            self.base_dst_dir = settings.AUDIO_DIRECTORY
 
     def _join_metadata_path(self, metadata_tuple):
         """Helper function to create the new path.
@@ -36,48 +39,26 @@ class RenameFile(object):
         Returns:
             anonymous (str): Returns a destination path for the file.
         """
-        artist, year, album, disc, track, title, ext = metadata_tuple
-        artist = FileUtil.replace_invalid_characters(artist)
+        album_artist, year, album, disc, track, title, file_ext = metadata_tuple
+        album_artist = FileUtil.replace_invalid_characters(album_artist)
         album = FileUtil.replace_invalid_characters(album)
         title = FileUtil.replace_invalid_characters(title)
         return os.path.join(self.base_dst_dir,
-                            artist,
+                            album_artist,
                             year + " " + album,
-                            disc + "." + track + " " + title + ext)
+                            disc + "." + track + " " + title + file_ext)
 
-    def generate_new_file_path_from_metadata(self, df_metadata):
-        df_metadata["NEW_PATH"] = tuple(zip(
-            df_metadata[fld.ALBUM_ARTIST.CID],
-            df_metadata[fld.YEAR.CID],
-            df_metadata[fld.ALBUM.CID],
-            df_metadata[fld.DISC_NO.CID].astype(str),
-            df_metadata[fld.TRACK_NO.CID].astype(str).str.pad(2, side="left",
-                                                              fillchar="0"),
-            df_metadata[fld.TITLE.CID],
-            df_metadata["PATH"].apply(lambda x: os.path.splitext(x)[1])
-        ))
-        df_metadata["NEW_PATH"] = df_metadata["NEW_PATH"].apply(
+    def generate_new_file_path_from_metadata(self, df):
+        df[fld.PATH_DST.CID] = tuple(zip(
+            df[fld.ALBUM_ARTIST.CID],
+            df[fld.YEAR.CID],
+            df[fld.ALBUM.CID],
+            df[fld.DISC_NO.CID].astype(str),
+            df[fld.TRACK_NO.CID].astype(
+                str).str.pad(2, side="left", fillchar="0"),
+            df[fld.TITLE.CID],
+            df[fld.PATH_SRC.CID].apply(FileUtil.get_file_extension)))
+        df[fld.PATH_DST.CID] = df[fld.PATH_DST.CID].apply(
             self._join_metadata_path)
-        df_metadata = df_metadata.sort_values("NEW_PATH")
-        return df_metadata[[fld.PATH.CID, "NEW_PATH"]]
-
-    def _rename_file(self):
-        df = self.modified_metadata
-        pairs = list(zip(df[fld.PATH.CID], df["NEW_PATH"]))
-        for old, new in pairs:
-            new_dir = os.path.dirname(new)
-            if not os.path.isdir(new_dir):
-                self.log.info(f"{new_dir} does not exist, creating it...")
-                os.makedirs(new_dir)
-            self.log.info(f"Renaming {old} to {new}")
-            copy2(old, new)
-
-    def rename_file(self):
-        if self.input_data.is_dry_run:
-            self.log.info("Dry run... saving to {out_file}.")
-            FileUtil.dry_run(df=self.modified_metadata,
-                             prefix=self.__str__())
-            self.log.info("Data saved to {out_file}")
-            return
-        else:
-            self._rename_file()
+        df = df.sort_values(fld.PATH_DST.CID)
+        return df
