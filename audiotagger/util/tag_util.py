@@ -1,3 +1,4 @@
+import warnings
 from mutagen.mp4 import MP4Tags
 
 from audiotagger.data.fields import Fields as fld
@@ -16,6 +17,13 @@ class TagUtil(object):
 
         """
         if io_type == "INPUT_FROM_AUDIO_FILE":
+            missing_fields = [c for c in df if c not in fld.field_to_ID3.keys()]
+            if len(missing_fields) > 0:
+                warnings.warn(f"THESE FIELDS do not exist... {missing_fields} "
+                              f"... removing them to continue.")
+                cols = [c for c in df if c in fld.field_to_ID3.keys()]
+                df = df[cols]
+
             for col in df:
                 t = eval(f"fld.{col}.OUTPUT_TYPE")
                 if t == "utf-8":
@@ -87,8 +95,8 @@ class TagUtil(object):
         """Given a metadata dataframe, split any track / disc tuples.
 
         """
-        part = lambda x: x[0]
-        total = lambda x: x[1]
+        part = lambda x: x[0] if isinstance(x, tuple) else x
+        total = lambda x: x[1] if isinstance(x, tuple) else x
 
         if fld.TRACK_NO_TUPLE.CID in df.columns:
             df[fld.TRACK_NO.CID] = df[fld.TRACK_NO_TUPLE.CID].apply(part)
