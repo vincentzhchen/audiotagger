@@ -80,7 +80,8 @@ class FileUtil(object):
              for path in m4a_file_paths)
 
         # mutagen stores tag values as lists, so flatten them
-        return [{k: d[k][0] for k in d} for d in g]
+        return [{k: d[k][0] if not isinstance(d[k], bool) else d[k]
+                 for k in d} for d in g]
 
     @classmethod
     def generate_metadata_records(cls, file_paths, extension="m4a"):
