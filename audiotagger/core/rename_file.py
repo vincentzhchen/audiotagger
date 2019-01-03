@@ -19,7 +19,7 @@ class RenameFile(object):
 
         # filter out only new paths
         metadata = metadata.loc[
-            metadata[fld.PATH_SRC.CID] != metadata["NEW_PATH"]]
+            metadata[fld.PATH_SRC.CID] != metadata[fld.PATH_DST.CID]]
         return metadata
 
     def generate_base_dst_dir(self):
