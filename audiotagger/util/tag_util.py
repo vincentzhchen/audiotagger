@@ -21,8 +21,8 @@ class TagUtil(object):
             if len(missing_fields) > 0:
                 warnings.warn(f"THESE FIELDS do not exist... {missing_fields} "
                               f"... removing them to continue.")
-                cols = [c for c in df if c in fld.field_to_ID3.keys()]
-                df = df[cols]
+                cols = [c for c in df if c not in fld.field_to_ID3.keys()]
+                df = df.drop(columns=cols)
 
             for col in df:
                 t = eval(f"fld.{col}.OUTPUT_TYPE")
