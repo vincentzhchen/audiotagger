@@ -74,6 +74,10 @@ class AudioTaggerInput(object):
         # TODO: hack to drop cover since that fails UTF-8 encoding
         if "COVER" in metadata:
             metadata = metadata.drop(columns="COVER")
+
+        # TODO: hack to fill missing disc numbers
+        metadata[fld.DISC_NO_TUPLE.CID] = metadata[fld.DISC_NO_TUPLE.CID].where(
+            metadata[fld.DISC_NO_TUPLE.CID].notnull(), (1,1))
         metadata = TagUtil.split_track_and_disc_tuples(df=metadata)
         metadata = TagUtil.enforce_dtypes(df=metadata,
                                           io_type="INPUT_FROM_AUDIO_FILE")
