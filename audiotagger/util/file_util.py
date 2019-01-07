@@ -119,7 +119,7 @@ class FileUtil(object):
         if filter_extension is not None:
             file_extension = f".{filter_extension}"
         file_path = os.path.join(glob.escape(src), "**", f"*{file_extension}")
-        all_file_paths = [f for f in glob.iglob(file_path, recursive=True)]
+        all_file_paths = glob.glob(file_path, recursive=True)
         return all_file_paths
 
     @classmethod
