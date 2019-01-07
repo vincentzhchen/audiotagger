@@ -33,6 +33,7 @@ class Fields(object):
         }
     )
 
+    # custom field for easier editing
     TRACK_NO = type(
         "TRACK_NO", (),
         {
@@ -43,6 +44,7 @@ class Fields(object):
         }
     )
 
+    # custom field for easier editing
     TOTAL_TRACKS = type(
         "TOTAL_TRACKS", (),
         {
@@ -53,6 +55,7 @@ class Fields(object):
         }
     )
 
+    # this field is the one going into the audio file
     TRACK_NO_TUPLE = type(
         "TRACK_NO_TUPLE", (),
         {
@@ -63,6 +66,7 @@ class Fields(object):
         }
     )
 
+    # custom field for easier editing
     DISC_NO = type(
         "DISC_NO", (),
         {
@@ -73,6 +77,7 @@ class Fields(object):
         }
     )
 
+    # custom field for easier editing
     TOTAL_DISCS = type(
         "TOTAL_DISCS", (),
         {
@@ -83,6 +88,7 @@ class Fields(object):
         }
     )
 
+    # this field is the one going into the audio file
     DISC_NO_TUPLE = type(
         "DISC_NO_TUPLE", (),
         {
@@ -178,156 +184,6 @@ class Fields(object):
         }
     )
 
-    PLAY_COUNT = type(
-        "PLAY_COUNT", (),
-        {
-            "ID3": "----:com.apple.iTunes:play_count",
-            "CID": "PLAY_COUNT",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": "utf-8"
-        }
-    )
-
-    LYRICS = type(
-        "LYRICS", (),
-        {
-            "ID3": "\xa9lyr",
-            "CID": "LYRICS",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": str
-        }
-    )
-
-    DESCRIPTION = type(
-        "DESCRIPTION", (),
-        {
-            "ID3": "desc",
-            "CID": "DESCRIPTION",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": str
-        }
-    )
-
-    GROUPING = type(
-        "GROUPING", (),
-        {
-            "ID3": "\xa9grp",
-            "CID": "GROUPING",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": str
-        }
-    )
-
-    ENCODED_BY = type(
-        "ENCODED_BY", (),
-        {
-            "ID3": "\xa9too",
-            "CID": "ENCODED_BY",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": str
-        }
-    )
-
-    ENCODER_APPLE = type(
-        "ENCODER_APPLE", (),
-        {
-            "ID3": "----:com.apple.iTunes:Encoder",
-            "CID": "ENCODER_APPLE",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": "utf-8"
-        }
-    )
-
-    ENCODER_ID3 = type(
-        "ENCODER_ID3", (),
-        {
-            "ID3": "\xa9enc",
-            "CID": "ENCODER_ID3",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": str
-        }
-    )
-
-    ENCODER_SETTINGS = type(
-        "ENCODER_SETTINGS", (),
-        {
-            "ID3": "----:com.apple.iTunes:Encoder Settings",
-            "CID": "ENCODER_SETTINGS",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": "utf-8"
-        }
-    )
-
-    SOURCE = type(
-        "SOURCE", (),
-        {
-            "ID3": "----:com.apple.iTunes:Source",
-            "CID": "SOURCE",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": "utf-8"
-        }
-    )
-
-    COPYRIGHT = type(
-        "COPYRIGHT", (),
-        {
-            "ID3": "cprt",
-            "CID": "COPYRIGHT",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": str
-        }
-    )
-
-    ALBUM_SORT_ORDER = type(
-        "ALBUM_SORT_ORDER", (),
-        {
-            "ID3": "soal",
-            "CID": "ALBUM_SORT_ORDER",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": str
-        }
-    )
-
-    ALBUM_ARTIST_SORT_ORDER = type(
-        "ALBUM_ARTIST_SORT_ORDER", (),
-        {
-            "ID3": "soaa",
-            "CID": "ALBUM_ARTIST_SORT_ORDER",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": str
-        }
-    )
-
-    ARTIST_SORT_ORDER = type(
-        "ARTIST_SORT_ORDER", (),
-        {
-            "ID3": "soar",
-            "CID": "ARTIST_SORT_ORDER",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": str
-        }
-    )
-
-    TITLE_SORT_ORDER = type(
-        "TITLE_SORT_ORDER", (),
-        {
-            "ID3": "sonm",
-            "CID": "TITLE_SORT_ORDER",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": str
-        }
-    )
-
-    COMPOSER_SORT_ORDER = type(
-        "COMPOSER_SORT_ORDER", (),
-        {
-            "ID3": "soco",
-            "CID": "COMPOSER_SORT_ORDER",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": str
-        }
-    )
-
     WORK = type(
         "WORK", (),
         {
@@ -378,21 +234,11 @@ class Fields(object):
         }
     )
 
-    DISC_CONFIDENCE = type(
-        "DISC_CONFIDENCE", (),
+    PLAY_COUNT = type(
+        "PLAY_COUNT", (),
         {
-            "ID3": "----:com.apple.iTunes:CTDBDISCCONFIDENCE",
-            "CID": "DISC_CONFIDENCE",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": "utf-8"
-        }
-    )
-
-    TRACK_CONFIDENCE = type(
-        "TRACK_CONFIDENCE", (),
-        {
-            "ID3": "----:com.apple.iTunes:CTDBTRACKCONFIDENCE",
-            "CID": "TRACK_CONFIDENCE",
+            "ID3": "----:com.apple.iTunes:play_count",
+            "CID": "PLAY_COUNT",
             "INPUT_TYPE": str,
             "OUTPUT_TYPE": "utf-8"
         }
@@ -458,53 +304,54 @@ class Fields(object):
         }
     )
 
-    CDDB_DISC_ID = type(
-        "CDDB_DISC_ID", (),
+    ENCODER_SETTINGS = type(
+        "ENCODER_SETTINGS", (),
         {
-            "ID3": "----:com.apple.iTunes:CDDB Disc ID",
-            "CID": "CDDB_DISC_ID",
+            "ID3": "----:com.apple.iTunes:Encoder Settings",
+            "CID": "ENCODER_SETTINGS",
             "INPUT_TYPE": str,
             "OUTPUT_TYPE": "utf-8"
         }
     )
 
-    DYNAMIC_RANGE_DR = type(
-        "DYNAMIC_RANGE_DR", (),
+    ENCODED_BY = type(
+        "ENCODED_BY", (),
         {
-            "ID3": "----:com.apple.iTunes:Dynamic Range (DR)",
-            "CID": "DYNAMIC_RANGE_DR",
+            "ID3": "\xa9too",
+            "CID": "ENCODED_BY",
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": str
+        }
+    )
+
+    ENCODER_APPLE = type(
+        "ENCODER_APPLE", (),
+        {
+            "ID3": "----:com.apple.iTunes:Encoder",
+            "CID": "ENCODER_APPLE",
             "INPUT_TYPE": str,
             "OUTPUT_TYPE": "utf-8"
         }
     )
 
-    DYNAMIC_RANGE_R128 = type(
-        "DYNAMIC_RANGE_R128", (),
+    # TODO: should the CID be ENCODED_BY?
+    ENCODER_ID3 = type(
+        "ENCODER_ID3", (),
         {
-            "ID3": "----:com.apple.iTunes:Dynamic Range (R128)",
-            "CID": "DYNAMIC_RANGE_R128",
+            "ID3": "\xa9enc",
+            "CID": "ENCODER_ID3",
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": str
+        }
+    )
+
+    SOURCE = type(
+        "SOURCE", (),
+        {
+            "ID3": "----:com.apple.iTunes:Source",
+            "CID": "SOURCE",
             "INPUT_TYPE": str,
             "OUTPUT_TYPE": "utf-8"
-        }
-    )
-
-    IS_COMPILATION = type(
-        "IS_COMPILATION", (),
-        {
-            "ID3": "cpll",
-            "CID": "IS_COMPILATION",
-            "INPUT_TYPE": bool,
-            "OUTPUT_TYPE": bool
-        }
-    )
-
-    IS_GAPLESS_ALBUM = type(
-        "IS_GAPLESS_ALBUM", (),
-        {
-            "ID3": "pgap",
-            "CID": "IS_GAPLESS_ALBUM",
-            "INPUT_TYPE": bool,
-            "OUTPUT_TYPE": bool
         }
     )
 
@@ -519,113 +366,19 @@ class Fields(object):
     )
 
     # CUSTOM COLS (non-metadata)
-    CUSTOM_COLS = [] + PATH_COLS
+    CUSTOM_COLS = [TRACK_NO.CID, TOTAL_TRACKS.CID,
+                   DISC_NO.CID, TOTAL_DISCS.CID] + PATH_COLS
 
-    # MAPS
-    ID3_to_field = {
-        PATH_SRC.ID3: PATH_SRC.CID,
-        PATH_DST.ID3: PATH_DST.CID,
-        TITLE.ID3: TITLE.CID,
-        TRACK_NO.ID3: TRACK_NO.CID,
-        TOTAL_TRACKS.ID3: TOTAL_TRACKS.CID,
-        TRACK_NO_TUPLE.ID3: TRACK_NO_TUPLE.CID,
-        DISC_NO.ID3: DISC_NO.CID,
-        TOTAL_DISCS.ID3: TOTAL_DISCS.CID,
-        DISC_NO_TUPLE.ID3: DISC_NO_TUPLE.CID,
-        ARTIST.ID3: ARTIST.CID,
-        ALBUM_ARTIST.ID3: ALBUM_ARTIST.CID,
-        YEAR.ID3: YEAR.CID,
-        ALBUM.ID3: ALBUM.CID,
-        GENRE.ID3: GENRE.CID,
-        RATING.ID3: RATING.CID,
-        COMPOSER.ID3: COMPOSER.CID,
-        COMMENT.ID3: COMMENT.CID,
-        PLAY_COUNT.ID3: PLAY_COUNT.CID,
-        LYRICS.ID3: LYRICS.CID,
-        DESCRIPTION.ID3: DESCRIPTION.CID,
-        GROUPING.ID3: GROUPING.CID,
-        ENCODED_BY.ID3: ENCODED_BY.CID,
-        ENCODER_APPLE.ID3: ENCODER_APPLE.CID,
-        ENCODER_ID3.ID3: ENCODER_ID3.CID,
-        ENCODER_SETTINGS.ID3: ENCODER_SETTINGS.CID,
-        SOURCE.ID3: SOURCE.CID,
-        COPYRIGHT.ID3: COPYRIGHT.CID,
-        ALBUM_SORT_ORDER.ID3: ALBUM_SORT_ORDER.CID,
-        ALBUM_ARTIST_SORT_ORDER.ID3: ALBUM_ARTIST_SORT_ORDER.CID,
-        ARTIST_SORT_ORDER.ID3: ARTIST_SORT_ORDER.CID,
-        TITLE_SORT_ORDER.ID3: TITLE_SORT_ORDER.CID,
-        COMPOSER_SORT_ORDER.ID3: COMPOSER_SORT_ORDER.CID,
-        WORK.ID3: WORK.CID,
-        MOVEMENT.ID3: MOVEMENT.CID,
-        ADDED_TIMESTAMP.ID3: ADDED_TIMESTAMP.CID,
-        FIRST_PLAYED_TIMESTAMP.ID3: FIRST_PLAYED_TIMESTAMP.CID,
-        LAST_PLAYED_TIMESTAMP.ID3: LAST_PLAYED_TIMESTAMP.CID,
-        DISC_CONFIDENCE.ID3: DISC_CONFIDENCE.CID,
-        TRACK_CONFIDENCE.ID3: TRACK_CONFIDENCE.CID,
-        REPLAYGAIN_ALBUM_GAIN.ID3: REPLAYGAIN_ALBUM_GAIN.CID,
-        REPLAYGAIN_ALBUM_PEAK.ID3: REPLAYGAIN_ALBUM_PEAK.CID,
-        REPLAYGAIN_TRACK_GAIN.ID3: REPLAYGAIN_TRACK_GAIN.CID,
-        REPLAYGAIN_TRACK_PEAK.ID3: REPLAYGAIN_TRACK_PEAK.CID,
-        ACCURATE_RIP_DISC_ID.ID3: ACCURATE_RIP_DISC_ID.CID,
-        ACCURATE_RIP_RESULT.ID3: ACCURATE_RIP_RESULT.CID,
-        CDDB_DISC_ID.ID3: CDDB_DISC_ID.CID,
-        DYNAMIC_RANGE_DR.ID3: DYNAMIC_RANGE_DR.CID,
-        DYNAMIC_RANGE_R128.ID3: DYNAMIC_RANGE_R128.CID,
-        IS_COMPILATION.ID3: IS_COMPILATION.CID,
-        IS_GAPLESS_ALBUM.ID3: IS_GAPLESS_ALBUM.CID,
-        COVER.ID3: COVER.CID,
-    }
 
-    field_to_ID3 = {
-        PATH_SRC.CID: PATH_SRC.ID3,
-        PATH_DST.CID: PATH_DST.ID3,
-        TITLE.CID: TITLE.ID3,
-        TRACK_NO.CID: TRACK_NO.ID3,
-        TOTAL_TRACKS.CID: TOTAL_TRACKS.ID3,
-        TRACK_NO_TUPLE.CID: TRACK_NO_TUPLE.ID3,
-        DISC_NO.CID: DISC_NO.ID3,
-        TOTAL_DISCS.CID: TOTAL_DISCS.ID3,
-        DISC_NO_TUPLE.CID: DISC_NO_TUPLE.ID3,
-        ARTIST.CID: ARTIST.ID3,
-        ALBUM_ARTIST.CID: ALBUM_ARTIST.ID3,
-        YEAR.CID: YEAR.ID3,
-        ALBUM.CID: ALBUM.ID3,
-        GENRE.CID: GENRE.ID3,
-        RATING.CID: RATING.ID3,
-        COMPOSER.CID: COMPOSER.ID3,
-        COMMENT.CID: COMMENT.ID3,
-        PLAY_COUNT.CID: PLAY_COUNT.ID3,
-        LYRICS.CID: LYRICS.ID3,
-        DESCRIPTION.CID: DESCRIPTION.ID3,
-        GROUPING.CID: GROUPING.ID3,
-        ENCODED_BY.CID: ENCODED_BY.ID3,
-        ENCODER_APPLE.CID: ENCODER_APPLE.ID3,
-        ENCODER_ID3.CID: ENCODER_ID3.ID3,
-        ENCODER_SETTINGS.CID: ENCODER_SETTINGS.ID3,
-        SOURCE.CID: SOURCE.ID3,
-        COPYRIGHT.CID: COPYRIGHT.ID3,
-        ALBUM_SORT_ORDER.CID: ALBUM_SORT_ORDER.ID3,
-        ALBUM_ARTIST_SORT_ORDER.CID: ALBUM_ARTIST_SORT_ORDER.ID3,
-        ARTIST_SORT_ORDER.CID: ARTIST_SORT_ORDER.ID3,
-        TITLE_SORT_ORDER.CID: TITLE_SORT_ORDER.ID3,
-        COMPOSER_SORT_ORDER.CID: COMPOSER_SORT_ORDER.ID3,
-        WORK.CID: WORK.ID3,
-        MOVEMENT.CID: MOVEMENT.ID3,
-        ADDED_TIMESTAMP.CID: ADDED_TIMESTAMP.ID3,
-        FIRST_PLAYED_TIMESTAMP.CID: FIRST_PLAYED_TIMESTAMP.ID3,
-        LAST_PLAYED_TIMESTAMP.CID: LAST_PLAYED_TIMESTAMP.ID3,
-        DISC_CONFIDENCE.CID: DISC_CONFIDENCE.ID3,
-        TRACK_CONFIDENCE.CID: TRACK_CONFIDENCE.ID3,
-        REPLAYGAIN_ALBUM_GAIN.CID: REPLAYGAIN_ALBUM_GAIN.ID3,
-        REPLAYGAIN_ALBUM_PEAK.CID: REPLAYGAIN_ALBUM_PEAK.ID3,
-        REPLAYGAIN_TRACK_GAIN.CID: REPLAYGAIN_TRACK_GAIN.ID3,
-        REPLAYGAIN_TRACK_PEAK.CID: REPLAYGAIN_TRACK_PEAK.ID3,
-        ACCURATE_RIP_DISC_ID.CID: ACCURATE_RIP_DISC_ID.ID3,
-        ACCURATE_RIP_RESULT.CID: ACCURATE_RIP_RESULT.ID3,
-        CDDB_DISC_ID.CID: CDDB_DISC_ID.ID3,
-        DYNAMIC_RANGE_DR.CID: DYNAMIC_RANGE_DR.ID3,
-        DYNAMIC_RANGE_R128.CID: DYNAMIC_RANGE_R128.ID3,
-        IS_COMPILATION.CID: IS_COMPILATION.ID3,
-        IS_GAPLESS_ALBUM.CID: IS_GAPLESS_ALBUM.ID3,
-        COVER.CID: COVER.ID3,
-    }
+# MAPS
+#   Generate maps after the class has been made and set
+#   them back as attributes.
+ID3_to_field = {eval(f"Fields.{f}.ID3"): eval(f"Fields.{f}.CID")
+                for f in dir(Fields) if
+                (not eval(f"Fields.{f}.__class__") != type) and ("__" not in f)}
+setattr(Fields, "ID3_to_field", ID3_to_field)
+
+field_to_ID3 = {eval(f"Fields.{f}.CID"): eval(f"Fields.{f}.ID3")
+                for f in dir(Fields) if
+                (not eval(f"Fields.{f}.__class__") != type) and ("__" not in f)}
+setattr(Fields, "field_to_ID3", field_to_ID3)
