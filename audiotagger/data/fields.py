@@ -369,6 +369,10 @@ class Fields(object):
     CUSTOM_COLS = [TRACK_NO.CID, TOTAL_TRACKS.CID,
                    DISC_NO.CID, TOTAL_DISCS.CID] + PATH_COLS
 
+    # MAPS (initialize to empty dicts)
+    ID3_to_field = {}
+    field_to_ID3 = {}
+
 
 # MAPS
 #   Generate maps after the class has been made and set
