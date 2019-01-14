@@ -1,3 +1,4 @@
+import os
 import warnings
 from mutagen.mp4 import MP4Tags
 
@@ -80,6 +81,8 @@ class TagUtil(object):
         # convert all fields to ID3 values for MP4Tags
         df = df.rename(columns=fld.field_to_ID3)
 
+        # TODO: convert cover path back to MP4 Cover object here and apply
+
         tag_dict = {}
         # generate the metadata tag dictionaries
         metadata_dicts = df.to_dict(orient="records")
@@ -147,4 +150,23 @@ class TagUtil(object):
         excess_cols = [c for c in df if c not in fld.BASE_METADATA_COLS]
         cols = fld.BASE_METADATA_COLS + excess_cols
         df = df[cols]
+        return df
+
+    @classmethod
+    def generate_album_art_path(cls, df):
+        def _generate_album_art_path(path):
+            dir = os.path.dirname(path)
+            jpg_path = os.path.join(dir, "cover.jpg")
+            png_path = os.path.join(dir, "cover.png")
+
+            if os.path.exists(jpg_path):
+                return jpg_path
+            elif os.path.exists(png_path):
+                return png_path
+            else:
+                return ""
+
+        df[fld.COVER.CID] = df[fld.PATH_SRC.CID].apply(
+            lambda x: _generate_album_art_path(x))
+
         return df

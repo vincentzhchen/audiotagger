@@ -66,15 +66,19 @@ class AudioTaggerInput(object):
 
         metadata = pd.DataFrame(metadata_records)
         metadata = metadata.rename(columns={"PATH_SRC": fld.PATH_SRC.CID,
-                                            "PATH_DST": fld.PATH_DST.CID,})
+                                            "PATH_DST": fld.PATH_DST.CID, })
         self.log.info(f"LOADED raw metadata df, shape: {metadata.shape}.")
 
         metadata = metadata.rename(columns=fld.ID3_to_field)
+        existing_cols = [c for c in metadata if c in fld.ID3_to_field.values()]
+        metadata = metadata[existing_cols]
 
         metadata = TagUtil.split_track_and_disc_tuples(df=metadata)
         # TODO: hack to fill missing disc numbers
         metadata[fld.DISC_NO.CID].fillna(1, inplace=True)
         metadata[fld.TOTAL_DISCS.CID].fillna(1, inplace=True)
+
+        metadata = TagUtil.generate_album_art_path(df=metadata)
         metadata = TagUtil.enforce_dtypes(df=metadata,
                                           io_type="INPUT_FROM_AUDIO_FILE")
 

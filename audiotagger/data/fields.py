@@ -360,8 +360,8 @@ class Fields(object):
         {
             "ID3": "covr",
             "CID": "COVER",
-            "INPUT_TYPE": None,
-            "OUTPUT_TYPE": None
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": str
         }
     )
 
