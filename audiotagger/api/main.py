@@ -61,10 +61,10 @@ def get_options():
 
     parser.add_option(
         "-r",
-        "--rename_file",
+        "--copy_file",
         action="store_true",
-        dest="rename_file",
-        help="Renames the audio file path."
+        dest="copy_file",
+        help="Copies the audio file from the source path to destination path."
     )
 
     parser.add_option(
@@ -74,20 +74,6 @@ def get_options():
         dest="dst",
         help="Base destination directory for file output (e.g. from "
              "file renaming or playlist generation."
-    )
-
-    parser.add_option(
-        "--xl_in",
-        action="store",
-        dest="xl_input_file",
-        help="Specially formatted Excel file to read tags from."
-    )
-
-    parser.add_option(
-        "--xl_out",
-        action="store",
-        dest="xl_output_file",
-        help="Output file to write tags to."
     )
 
     parser.add_option(
@@ -105,10 +91,10 @@ def get_options():
     )
 
     parser.add_option(
-        "--generate-playlist",
+        "--create-playlist",
         action="store_true",
-        dest="generate_playlist",
-        help="Generates a playlist based on input path file."
+        dest="playlist_query",
+        help="Creates a playlist from the given query on the source."
     )
 
     parser.add_option(
@@ -159,3 +145,4 @@ if __name__ == "__main__":
 
     at = AudioTaggerAPI(logger=logger, options=options)
     at.run()
+    logger.info("Done.")

@@ -1,7 +1,7 @@
 from audiotagger.core.audiotagger import AudioTagger
 from audiotagger.core.clear_tags import ClearTags
 from audiotagger.core.create_playlist import CreatePlaylist
-from audiotagger.core.rename_file import RenameFile
+from audiotagger.core.copy_file import CopyFile
 from audiotagger.data.input import AudioTaggerInput
 from audiotagger.data.output import AudioTaggerOutput
 
@@ -42,32 +42,35 @@ class AudioTaggerAPI(object):
                                     options=self.options)
             out.save()
 
-        if self.options.rename_file:
+        if self.options.copy_file:
             # Renames the audio file path using a pre-defined format.
             # If a destination directory is passed, the renamed file
             # will be saved into the destination, leaving the original
             # file untouched.
-            metadata = RenameFile(input_data=self.input_data,
-                                  logger=self.log,
-                                  options=self.options).execute()
+            metadata = CopyFile(input_data=self.input_data,
+                                logger=self.log,
+                                options=self.options).execute()
 
             out = AudioTaggerOutput(metadata=metadata,
                                     logger=self.log,
                                     options=self.options)
             out.copy()
 
-        if self.options.generate_playlist:
+        if self.options.playlist_query:
             # TODO: fix this to match above structure
             # The CreatePlaylist should just return a metadata df with the
             # desired playlist.  The PATH_DST should have the location to
             # save the playlist.  Output object should just copy.
-            cp = CreatePlaylist(playlist_dst_dir=self.options.output_dst,
-                                logger=self.log, input_data=self.input_data)
-            cp.create_playlist()
+            metadata = CreatePlaylist(input_data=self.input_data,
+                                      logger=self.log,
+                                      options=self.options).execute()
+
+            out = AudioTaggerOutput(metadata=metadata,
+                                    logger=self.log,
+                                    options=self.options)
+            out.copy()
 
             # out = AudioTaggerOutput(metadata=metadata,
             #                         logger=self.log,
             #                         options=self.options)
             # out.copy()
-
-        self.log.info("Done.")

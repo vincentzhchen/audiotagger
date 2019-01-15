@@ -5,7 +5,7 @@ from audiotagger.settings import settings
 from audiotagger.util.file_util import FileUtil
 
 
-class RenameFile(object):
+class CopyFile(object):
     def __init__(self, input_data, logger, options):
         self.input_data = input_data
         self.log = logger
@@ -30,15 +30,6 @@ class RenameFile(object):
             self.base_dst_dir = settings.AUDIO_DIRECTORY
 
     def _join_metadata_path(self, metadata_tuple):
-        """Helper function to create the new path.
-
-        Args:
-            metadata_tuple (tuple): A tuple of metadata fields to be included
-                in the file path.
-
-        Returns:
-            anonymous (str): Returns a destination path for the file.
-        """
         album_artist, year, album, disc, track, title, file_ext = metadata_tuple
         album_artist = FileUtil.replace_invalid_characters(album_artist)
         album = FileUtil.replace_invalid_characters(album)
@@ -49,6 +40,14 @@ class RenameFile(object):
                             disc + "." + track + " " + title + file_ext)
 
     def generate_new_file_path_from_metadata(self, df):
+        """Create new destination path from metadata.
+
+        Args:
+            df (dataframe): Metadata dataframe.
+
+        Returns:
+            anonymous (str): Returns a destination path for the file.
+        """
         df[fld.PATH_DST.CID] = tuple(zip(
             df[fld.ALBUM_ARTIST.CID],
             df[fld.YEAR.CID],
