@@ -1,5 +1,6 @@
 import glob
 import os
+import shutil
 
 from mutagen.easymp4 import MP4
 
@@ -127,3 +128,20 @@ class FileUtil(object):
         path_to_some_file = path_to_some_file.replace("/", "_")
         path_to_some_file = path_to_some_file.replace("\0", "_")
         return path_to_some_file
+
+    @classmethod
+    def parse_sql_query(cls, sql_file):
+        with open(sql_file, "r") as f:
+            query = f.read().strip()
+        return query
+
+    @classmethod
+    def get_file_size(cls, path, unit="GB"):
+        if unit.upper() == "GB":
+            return os.path.getsize(path) / 1e9
+        else:
+            raise ValueError(f"UNIT {unit} is not supported.")
+
+    @classmethod
+    def check_disk_usage(cls, path):
+        return shutil.disk_usage(path).free / 1e9

@@ -92,7 +92,7 @@ def get_options():
 
     parser.add_option(
         "--create-playlist",
-        action="store_true",
+        action="store",
         dest="playlist_query",
         help="Creates a playlist from the given query on the source."
     )

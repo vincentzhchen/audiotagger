@@ -69,8 +69,3 @@ class AudioTaggerAPI(object):
                                     logger=self.log,
                                     options=self.options)
             out.copy()
-
-            # out = AudioTaggerOutput(metadata=metadata,
-            #                         logger=self.log,
-            #                         options=self.options)
-            # out.copy()
