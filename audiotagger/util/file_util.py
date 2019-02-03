@@ -143,5 +143,12 @@ class FileUtil(object):
             raise ValueError(f"UNIT {unit} is not supported.")
 
     @classmethod
-    def check_disk_usage(cls, path):
+    def get_free_space(cls, path):
         return shutil.disk_usage(path).free / 1e9
+
+    @classmethod
+    def get_mount_point(cls, path):
+        path = os.path.abspath(path)
+        while not os.path.ismount(path):
+            path = os.path.dirname(path)
+        return path

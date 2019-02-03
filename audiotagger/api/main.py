@@ -60,7 +60,7 @@ def get_options():
     )
 
     parser.add_option(
-        "-r",
+        "--cp",
         "--copy_file",
         action="store_true",
         dest="copy_file",
@@ -77,10 +77,11 @@ def get_options():
     )
 
     parser.add_option(
-        "--dry-run",
+        "-w",
+        "--write_to_file",
         action="store_true",
-        dest="dry_run",
-        help="Writes potential changes to Excel before committing."
+        dest="write_to_file",
+        help="Commit changes to audio file."
     )
 
     parser.add_option(

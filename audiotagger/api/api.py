@@ -57,10 +57,8 @@ class AudioTaggerAPI(object):
             out.copy()
 
         if self.options.playlist_query:
-            # TODO: fix this to match above structure
-            # The CreatePlaylist should just return a metadata df with the
-            # desired playlist.  The PATH_DST should have the location to
-            # save the playlist.  Output object should just copy.
+            # Creates a playlist from the source directory using the given
+            # query and writes the files into the destination directory.
             metadata = CreatePlaylist(input_data=self.input_data,
                                       logger=self.log,
                                       options=self.options).execute()
