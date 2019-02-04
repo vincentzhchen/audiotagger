@@ -5,9 +5,9 @@ from shutil import copy2
 import pandasdateutils as pdu
 from audiotagger.data.fields import Fields as fld
 from audiotagger.settings import settings
-from audiotagger.util.file_util import FileUtil
-from audiotagger.util.tag_util import TagUtil
-from audiotagger.util.input_output_util import InputOutputUtil
+from audiotagger.util import file_util as futil
+from audiotagger.util import tag_util as tutil
+from audiotagger.util import input_output_util as ioutil
 
 
 class AudioTaggerOutput(object):
@@ -22,8 +22,8 @@ class AudioTaggerOutput(object):
                 base_dir, f"output_{pdu.now(as_string=True)}.xlsx")
             # NULL COVER when not writing to audio file
             metadata = self.metadata.eval("COVER = None")
-            InputOutputUtil.write_to_excel(df=metadata,
-                                           file_path=file_path)
+            ioutil.write_to_excel(df=metadata,
+                                  file_path=file_path)
             self.log.info(f"Saved output metadata to {file_path}")
 
     def save(self):
@@ -34,7 +34,7 @@ class AudioTaggerOutput(object):
 
     def save_tags_to_audio_files(self):
         metadata = self.metadata
-        tag_dict = TagUtil.metadata_to_tags(df=metadata)
+        tag_dict = tutil.metadata_to_tags(df=metadata)
         for k in tag_dict:
             dict_for_log = deepcopy(tag_dict[k])
             dict_for_log.pop(fld.COVER.ID3)
@@ -51,9 +51,9 @@ class AudioTaggerOutput(object):
         df = self.metadata
 
         # check to see if there is enough space to copy files
-        df["ROOT"] = df[fld.PATH_DST.CID].apply(FileUtil.get_mount_point)
-        df["FREE_SPACE"] = df["ROOT"].apply(FileUtil.get_free_space)
-        df["FILE_SIZE"] = df[fld.PATH_SRC.CID].apply(FileUtil.get_file_size)
+        df["ROOT"] = df[fld.PATH_DST.CID].apply(futil.get_mount_point)
+        df["FREE_SPACE"] = df["ROOT"].apply(futil.get_free_space)
+        df["FILE_SIZE"] = df[fld.PATH_SRC.CID].apply(futil.get_file_size)
 
         gb = df.groupby("ROOT")
         no_space = (gb["FILE_SIZE"].sum() > gb["FREE_SPACE"].max())

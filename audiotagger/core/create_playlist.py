@@ -3,7 +3,7 @@ import pandas as pd
 import sqlite3
 
 from audiotagger.data.fields import Fields as fld
-from audiotagger.util.file_util import FileUtil
+from audiotagger.util import file_util as futil
 
 
 class CreatePlaylist(object):
@@ -22,7 +22,7 @@ class CreatePlaylist(object):
 
         # get query
         if os.path.exists(self.options.playlist_query):
-            query = FileUtil.parse_sql_query(self.options.playlist_query)
+            query = futil.parse_sql_query(self.options.playlist_query)
         else:
             query = self.options.playlist_query
         self.log.info("Execute the following query: \n" + query)

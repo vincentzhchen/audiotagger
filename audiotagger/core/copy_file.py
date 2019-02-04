@@ -2,8 +2,8 @@ import os
 
 from audiotagger.data.fields import Fields as fld
 from audiotagger.settings import settings
-from audiotagger.util.file_util import FileUtil
-from audiotagger.util.tag_util import TagUtil
+from audiotagger.util import file_util as futil
+from audiotagger.util import tag_util as tutil
 
 
 class CopyFile(object):
@@ -32,9 +32,9 @@ class CopyFile(object):
 
     def _join_metadata_path(self, metadata_tuple):
         album_artist, year, album, disc, track, title, file_ext = metadata_tuple
-        album_artist = FileUtil.replace_invalid_characters(album_artist)
-        album = FileUtil.replace_invalid_characters(album)
-        title = FileUtil.replace_invalid_characters(title)
+        album_artist = futil.replace_invalid_characters(album_artist)
+        album = futil.replace_invalid_characters(album)
+        title = futil.replace_invalid_characters(title)
         return os.path.join(self.base_dst_dir,
                             album_artist,
                             year + " " + album,
@@ -57,12 +57,12 @@ class CopyFile(object):
             df[fld.TRACK_NO.CID].astype(
                 str).str.pad(2, side="left", fillchar="0"),
             df[fld.TITLE.CID],
-            df[fld.PATH_SRC.CID].apply(FileUtil.get_file_extension)))
+            df[fld.PATH_SRC.CID].apply(futil.get_file_extension)))
         df[fld.PATH_DST.CID] = df[fld.PATH_DST.CID].apply(
             self._join_metadata_path)
         df = df.sort_values(fld.PATH_DST.CID)
 
         # since album art destination changes as the destination path changes,
         # generate the album art paths again
-        df = TagUtil.generate_album_art_path(df=df)
+        df = tutil.generate_album_art_path(df=df)
         return df
