@@ -1,4 +1,5 @@
 import os
+from copy import deepcopy
 from shutil import copy2
 
 import pandasdateutils as pdu
@@ -19,7 +20,9 @@ class AudioTaggerOutput(object):
             base_dir = settings.LOG_DIRECTORY
             file_path = os.path.join(
                 base_dir, f"output_{pdu.now(as_string=True)}.xlsx")
-            InputOutputUtil.write_to_excel(df=self.metadata,
+            # NULL COVER when not writing to audio file
+            metadata = self.metadata.eval("COVER = None")
+            InputOutputUtil.write_to_excel(df=metadata,
                                            file_path=file_path)
             self.log.info(f"Saved output metadata to {file_path}")
 
@@ -33,7 +36,9 @@ class AudioTaggerOutput(object):
         metadata = self.metadata
         tag_dict = TagUtil.metadata_to_tags(df=metadata)
         for k in tag_dict:
-            self.log.info(f"Saving {tag_dict[k]} to {k}")
+            dict_for_log = deepcopy(tag_dict[k])
+            dict_for_log.pop(fld.COVER.ID3)
+            self.log.info(f"Saving {dict_for_log} to {k}")
             tag_dict[k].save(k)
 
     def copy(self):
@@ -59,6 +64,18 @@ class AudioTaggerOutput(object):
 
         # BEGIN copy process
         pairs = list(zip(df[fld.PATH_SRC.CID], df[fld.PATH_DST.CID]))
+
+        # copy cover art as well
+        df["COVER_ART_DST"] = tuple(zip(
+            df[fld.PATH_DST.CID].apply(os.path.dirname),
+            df[fld.PATH_COVER.CID].apply(os.path.basename)))
+        df["COVER_ART_DST"] = df["COVER_ART_DST"].apply(
+            lambda x: os.path.join(x[0], x[1]))
+        cover = df[[fld.PATH_COVER.CID, "COVER_ART_DST"]].drop_duplicates()
+        pairs.extend(list(zip(cover[fld.PATH_COVER.CID],
+                              cover["COVER_ART_DST"])))
+        pairs = sorted(pairs)
+
         for old, new in pairs:
             # check if the new destination dir exists, if not then create it
             new_dir = os.path.dirname(new)

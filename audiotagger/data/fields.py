@@ -20,7 +20,17 @@ class Fields(object):
         }
     )
 
-    PATH_COLS = [PATH_SRC.CID, PATH_DST.CID]
+    PATH_COVER = type(
+        "PATH_COVER", (),
+        {
+            "ID3": "PATH_COVER",
+            "CID": "PATH_COVER",
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": str
+        }
+    )
+
+    PATH_COLS = [PATH_SRC.CID, PATH_DST.CID, PATH_COVER.CID]
 
     # BASE METADATA COLS
     TITLE = type(
@@ -361,7 +371,7 @@ class Fields(object):
             "ID3": "covr",
             "CID": "COVER",
             "INPUT_TYPE": str,
-            "OUTPUT_TYPE": str
+            "OUTPUT_TYPE": None
         }
     )
 

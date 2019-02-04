@@ -1,6 +1,6 @@
 import os
 import warnings
-from mutagen.mp4 import MP4Tags
+from mutagen.mp4 import MP4Tags, MP4Cover
 
 from audiotagger.data.fields import Fields as fld
 
@@ -42,6 +42,8 @@ class TagUtil(object):
                 t = eval(f"fld.{col}.OUTPUT_TYPE")
                 if t == "utf-8":
                     df[col] = df[col].str.encode("utf-8")
+                elif t is None:
+                    continue
                 else:
                     df[col] = df[col].astype(t)
 
@@ -71,6 +73,9 @@ class TagUtil(object):
     def metadata_to_tags(cls, df):
         # only want to have tuples right before building the tag object
         df = TagUtil.build_track_and_disc_tuples(df=df)
+
+        # get cover art from file
+        df = TagUtil.construct_cover_object(df=df)
 
         # convert to correct output data type
         df = TagUtil.enforce_dtypes(df=df, io_type="OUTPUT_TYPE")
@@ -166,7 +171,21 @@ class TagUtil(object):
             else:
                 return ""
 
-        df[fld.COVER.CID] = df[fld.PATH_SRC.CID].apply(
+        df[fld.PATH_COVER.CID] = df[fld.PATH_SRC.CID].apply(
             lambda x: _generate_album_art_path(x))
 
+        return df
+
+    @classmethod
+    def construct_cover_object(cls, df):
+        def construct_mutagen_mp4_cover(path):
+            if path is "":
+                return path
+
+            with open(path, "rb") as f:
+                cover_byte_str = f.read()
+            return MP4Cover(cover_byte_str)
+
+        df[fld.COVER.CID] = df[fld.PATH_COVER.CID].apply(
+            construct_mutagen_mp4_cover)
         return df

@@ -44,7 +44,9 @@ class AudioTaggerInput(object):
             base_dir = settings.LOG_DIRECTORY
             file_path = os.path.join(
                 base_dir, f"input_{pdu.now(as_string=True)}.xlsx")
-            InputOutputUtil.write_to_excel(df=self.metadata,
+            # NULL COVER when not writing to audio file
+            metadata = self.metadata.eval("COVER = None")
+            InputOutputUtil.write_to_excel(df=metadata,
                                            file_path=file_path)
             self.log.info(f"Saved input metadata to {file_path}")
 
