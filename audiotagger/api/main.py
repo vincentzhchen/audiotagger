@@ -5,9 +5,9 @@ import optparse
 import os
 import sys
 
+import customlogging as cl
 from audiotagger.core.generate_config import generate_config
 from audiotagger.core.paths import audiotagger_config_path
-from customlogging import CustomLogging as cl
 
 
 def get_options():
@@ -141,7 +141,7 @@ if __name__ == "__main__":
         from audiotagger.settings.settings import LOG_DIRECTORY
 
         log_dir = LOG_DIRECTORY
-    logger = cl(log_dir=log_dir, name="audiotagger.log")
+    logger = cl.initialize_logger(log_dir=log_dir, name="audiotagger.log")
     logger.info(options)
 
     at = AudioTaggerAPI(logger=logger, options=options)
