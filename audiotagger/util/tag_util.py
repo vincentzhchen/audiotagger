@@ -171,8 +171,11 @@ class TagUtil(object):
             else:
                 return ""
 
-        df[fld.PATH_COVER.CID] = df[fld.PATH_SRC.CID].apply(
-            lambda x: _generate_album_art_path(x))
+        df[fld.COVER_SRC.CID] = df[fld.PATH_SRC.CID].apply(
+            _generate_album_art_path)
+
+        df[fld.COVER_DST.CID] = df[fld.PATH_DST.CID].apply(
+            _generate_album_art_path)
 
         return df
 
@@ -186,6 +189,6 @@ class TagUtil(object):
                 cover_byte_str = f.read()
             return MP4Cover(cover_byte_str)
 
-        df[fld.COVER.CID] = df[fld.PATH_COVER.CID].apply(
+        df[fld.COVER.CID] = df[fld.COVER_SRC.CID].apply(
             construct_mutagen_mp4_cover)
         return df

@@ -20,17 +20,40 @@ class Fields(object):
         }
     )
 
-    PATH_COVER = type(
-        "PATH_COVER", (),
+    PATH_COLS = [PATH_SRC.CID, PATH_DST.CID]
+
+    # COVER COLS
+    COVER_SRC = type(
+        "COVER_SRC", (),
         {
-            "ID3": "PATH_COVER",
-            "CID": "PATH_COVER",
+            "ID3": "COVER_SRC",
+            "CID": "COVER_SRC",
             "INPUT_TYPE": str,
             "OUTPUT_TYPE": str
         }
     )
 
-    PATH_COLS = [PATH_SRC.CID, PATH_DST.CID, PATH_COVER.CID]
+    COVER_DST = type(
+        "COVER_DST", (),
+        {
+            "ID3": "COVER_DST",
+            "CID": "COVER_DST",
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": str
+        }
+    )
+
+    COVER = type(
+        "COVER", (),
+        {
+            "ID3": "covr",
+            "CID": "COVER",
+            "INPUT_TYPE": str,
+            "OUTPUT_TYPE": None
+        }
+    )
+
+    COVER_COLS = [COVER_SRC.CID, COVER_DST.CID, COVER.CID]
 
     # BASE METADATA COLS
     TITLE = type(
@@ -171,7 +194,7 @@ class Fields(object):
     BASE_METADATA_COLS = PATH_COLS + [
         TITLE.CID, TRACK_NO.CID, TOTAL_TRACKS.CID,
         DISC_NO.CID, TOTAL_DISCS.CID, ARTIST.CID, ALBUM_ARTIST.CID,
-        YEAR.CID, ALBUM.CID, GENRE.CID, RATING.CID]
+        YEAR.CID, ALBUM.CID, GENRE.CID, RATING.CID] + COVER_COLS
 
     # ADDITIONAL METADATA COLS
     COMPOSER = type(
@@ -362,16 +385,6 @@ class Fields(object):
             "CID": "SOURCE",
             "INPUT_TYPE": str,
             "OUTPUT_TYPE": "utf-8"
-        }
-    )
-
-    COVER = type(
-        "COVER", (),
-        {
-            "ID3": "covr",
-            "CID": "COVER",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": None
         }
     )
 

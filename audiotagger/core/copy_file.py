@@ -3,6 +3,7 @@ import os
 from audiotagger.data.fields import Fields as fld
 from audiotagger.settings import settings
 from audiotagger.util.file_util import FileUtil
+from audiotagger.util.tag_util import TagUtil
 
 
 class CopyFile(object):
@@ -60,4 +61,8 @@ class CopyFile(object):
         df[fld.PATH_DST.CID] = df[fld.PATH_DST.CID].apply(
             self._join_metadata_path)
         df = df.sort_values(fld.PATH_DST.CID)
+
+        # since album art destination changes as the destination path changes,
+        # generate the album art paths again
+        df = TagUtil.generate_album_art_path(df=df)
         return df

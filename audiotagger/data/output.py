@@ -66,14 +66,8 @@ class AudioTaggerOutput(object):
         pairs = list(zip(df[fld.PATH_SRC.CID], df[fld.PATH_DST.CID]))
 
         # copy cover art as well
-        df["COVER_ART_DST"] = tuple(zip(
-            df[fld.PATH_DST.CID].apply(os.path.dirname),
-            df[fld.PATH_COVER.CID].apply(os.path.basename)))
-        df["COVER_ART_DST"] = df["COVER_ART_DST"].apply(
-            lambda x: os.path.join(x[0], x[1]))
-        cover = df[[fld.PATH_COVER.CID, "COVER_ART_DST"]].drop_duplicates()
-        pairs.extend(list(zip(cover[fld.PATH_COVER.CID],
-                              cover["COVER_ART_DST"])))
+        pairs.extend(
+            list(set(zip(df[fld.COVER_SRC.CID], df[fld.COVER_DST.CID]))))
         pairs = sorted(pairs)
 
         for old, new in pairs:
