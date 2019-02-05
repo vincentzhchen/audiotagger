@@ -37,7 +37,7 @@ class AudioTaggerOutput(object):
         tag_dict = tutil.metadata_to_tags(df=metadata)
         for k in tag_dict:
             dict_for_log = deepcopy(tag_dict[k])
-            dict_for_log.pop(fld.COVER.ID3)
+            dict_for_log.pop(fld.COVER.ID3, None)
             self.log.info(f"Saving {dict_for_log} to {k}")
             tag_dict[k].save(k)
 
