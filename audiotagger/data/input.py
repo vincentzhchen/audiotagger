@@ -71,6 +71,9 @@ class AudioTaggerInput(object):
         self.log.info(f"LOADED raw metadata df, shape: {metadata.shape}.")
 
         metadata = metadata.rename(columns=fld.ID3_to_field)
+        skip_cols = [c for c in metadata if c not in fld.ID3_to_field.values()]
+        if skip_cols:
+            self.log.info(f"SKIPPING these fields: {skip_cols}.")
         existing_cols = [c for c in metadata if c in fld.ID3_to_field.values()]
         metadata = metadata[existing_cols]
 
