@@ -155,6 +155,19 @@ def sort_metadata(df):
 
 
 def generate_album_art_path(df):
+    """Generate cover art file paths.
+
+    Notes:
+        The paths are generated assuming that all albums have a "cover.jpg"
+        file in the same directory level as the audio files.  Invalid paths
+        will be generated if the image file does not exist.
+
+    Args:
+        df (dataframe): Metadata dataframe.
+
+    Returns:
+        anonymous (dataframe): Returns dataframe with cover art paths.
+    """
     def _generate_album_art_path(path):
         dir = os.path.dirname(path)
         jpg_path = os.path.join(dir, "cover.jpg")
@@ -170,11 +183,11 @@ def generate_album_art_path(df):
 
 
 def construct_cover_object(df):
-    """Given a metadata dataframe, construct all MP4Cover objects.
+    """Construct all MP4Cover objects.
 
     Notes:
         If the cover source column exists but there is no valid source,
-        the cover object column will contain an empty string.
+        the cover object column will be NULL.
 
     Args:
         df (dataframe): Metadata dataframe.
@@ -184,7 +197,7 @@ def construct_cover_object(df):
             constructed cover object.
     """
     def construct_mutagen_mp4_cover(path):
-        # return empty string if there is no path or the path doesnt exist
+        # return None if there is no path or the path doesnt exist
         if path is "" or not os.path.exists(path):
             return None
 
