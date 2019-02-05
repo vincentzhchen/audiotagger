@@ -71,6 +71,9 @@ class AudioTaggerOutput(object):
         pairs = sorted(pairs)
 
         for old, new in pairs:
+            if old == new:
+                continue
+
             # check if the new destination dir exists, if not then create it
             new_dir = os.path.dirname(new)
             if not os.path.isdir(new_dir):
@@ -80,3 +83,11 @@ class AudioTaggerOutput(object):
             # copy the file to the destination
             self.log.info(f"Copying {old} to {new}")
             copy2(old, new)
+
+            # If the old file is in the same directory as the new file,
+            # delete the old file (this prevents duplicates).  A common use
+            # case is when a song title has changed and the copy takes place
+            # in the same directory.
+            old_dir = os.path.dirname(old)
+            if old_dir == new_dir:
+                os.remove(old)
