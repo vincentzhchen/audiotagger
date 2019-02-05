@@ -389,7 +389,7 @@ class Fields(object):
     )
 
     # CUSTOM COLS (non-metadata)
-    CUSTOM_COLS = [TRACK_NO.CID, TOTAL_TRACKS.CID,
+    CUSTOM_COLS = [TRACK_NO.CID, TOTAL_TRACKS.CID, COVER_SRC.CID, COVER_DST.CID,
                    DISC_NO.CID, TOTAL_DISCS.CID] + PATH_COLS
 
     # MAPS (initialize to empty dicts)
