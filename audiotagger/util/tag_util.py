@@ -81,12 +81,13 @@ def metadata_to_tags(df):
     # convert all fields to ID3 values for MP4Tags
     df = df.rename(columns=fld.field_to_ID3)
 
-    # TODO: convert cover path back to MP4 Cover object here and apply
-
     tag_dict = {}
     # generate the metadata tag dictionaries
     metadata_dicts = df.to_dict(orient="records")
     for d in metadata_dicts:
+        # TODO: remove empty covers
+        if d.get(fld.COVER.ID3, None)[0] is None:
+            d.pop(fld.COVER.ID3, None)
         path_src = d[fld.PATH_SRC.CID][0]
         d = remove_non_metadata_fields_from_metadata_dict(d)
         d = dict_to_mp4tag(d)
@@ -157,14 +158,7 @@ def generate_album_art_path(df):
     def _generate_album_art_path(path):
         dir = os.path.dirname(path)
         jpg_path = os.path.join(dir, "cover.jpg")
-        png_path = os.path.join(dir, "cover.png")
-
-        if os.path.exists(jpg_path):
-            return jpg_path
-        elif os.path.exists(png_path):
-            return png_path
-        else:
-            return ""
+        return jpg_path
 
     df[fld.COVER_SRC.CID] = df[fld.PATH_SRC.CID].apply(
         _generate_album_art_path)
@@ -176,14 +170,29 @@ def generate_album_art_path(df):
 
 
 def construct_cover_object(df):
+    """Given a metadata dataframe, construct all MP4Cover objects.
+
+    Notes:
+        If the cover source column exists but there is no valid source,
+        the cover object column will contain an empty string.
+
+    Args:
+        df (dataframe): Metadata dataframe.
+
+    Returns:
+        anonymous (dataframe): Returns a dataframe with potentially
+            constructed cover object.
+    """
     def construct_mutagen_mp4_cover(path):
-        if path is "":
-            return path
+        # return empty string if there is no path or the path doesnt exist
+        if path is "" or not os.path.exists(path):
+            return None
 
         with open(path, "rb") as f:
             cover_byte_str = f.read()
         return MP4Cover(cover_byte_str)
 
-    df[fld.COVER.CID] = df[fld.COVER_SRC.CID].apply(
-        construct_mutagen_mp4_cover)
+    if fld.COVER_SRC.CID in df:
+        df[fld.COVER.CID] = df[fld.COVER_SRC.CID].apply(
+            construct_mutagen_mp4_cover)
     return df
