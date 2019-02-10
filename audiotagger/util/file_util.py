@@ -126,10 +126,8 @@ def traverse_directory(src, filter_extension=None):
 
 def replace_invalid_characters(path_to_some_file):
     # TODO: make this a config?
-    path_to_some_file = path_to_some_file.replace("/", "_")
-    path_to_some_file = path_to_some_file.replace("\0", "_")
-    path_to_some_file = path_to_some_file.replace(":", "_")
-    path_to_some_file = path_to_some_file.replace("?", "_")
+    for char in ["/", "\0", ":", "?", '"']:
+        path_to_some_file = path_to_some_file.replace(char, "_")
     return path_to_some_file
 
 
