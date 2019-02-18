@@ -20,11 +20,15 @@ class AudioTaggerOutput(object):
             base_dir = settings.LOG_DIRECTORY
             file_path = os.path.join(
                 base_dir, f"output_{pdu.now(as_string=True)}.xlsx")
-            # NULL COVER when not writing to audio file
-            metadata = self.metadata.eval("COVER = None")
-            ioutil.write_to_excel(df=metadata,
-                                  file_path=file_path)
+            # choose to not write cover byte string into file
+            metadata = self.metadata.drop(
+                columns=fld.COVER.CID, errors="ignore")
+            ioutil.write_to_excel(df=metadata, file_path=file_path)
             self.log.info(f"Saved output metadata to {file_path}")
+
+        # at this point, handle cover art
+        self.metadata = tutil.generate_cover_art_path(df=self.metadata)
+        self.metadata = tutil.construct_cover_object(df=self.metadata)
 
     def save(self):
         if self.options.write_to_file:

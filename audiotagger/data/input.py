@@ -44,8 +44,9 @@ class AudioTaggerInput(object):
             base_dir = settings.LOG_DIRECTORY
             file_path = os.path.join(
                 base_dir, f"input_{pdu.now(as_string=True)}.xlsx")
-            # NULL COVER when not writing to audio file
-            metadata = self.metadata.eval("COVER = None")
+            # choose to not write cover byte string into file
+            metadata = self.metadata.drop(
+                columns=fld.COVER.CID, errors="ignore")
             ioutil.write_to_excel(df=metadata, file_path=file_path)
             self.log.info(f"Saved input metadata to {file_path}")
 
@@ -73,7 +74,7 @@ class AudioTaggerInput(object):
         metadata = metadata.rename(columns=fld.ID3_to_field)
         skip_cols = [c for c in metadata if c not in fld.ID3_to_field.values()]
         if skip_cols:
-            self.log.info(f"SKIPPING these fields: {skip_cols}.")
+            self.log.info(f"SKIPPED these fields: {skip_cols}.")
         existing_cols = [c for c in metadata if c in fld.ID3_to_field.values()]
         metadata = metadata[existing_cols]
 
@@ -88,9 +89,6 @@ class AudioTaggerInput(object):
         # TODO: hack to fill missing disc numbers
         metadata[fld.DISC_NO.CID].fillna(1, inplace=True)
         metadata[fld.TOTAL_DISCS.CID].fillna(1, inplace=True)
-
-        metadata = tutil.generate_album_art_path(df=metadata)
-        self.log.debug(f"Generated album art paths.")
 
         metadata = tutil.enforce_dtypes(df=metadata,
                                         io_type="INPUT_FROM_AUDIO_FILE")

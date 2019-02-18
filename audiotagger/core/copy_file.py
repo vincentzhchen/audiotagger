@@ -61,8 +61,4 @@ class CopyFile(object):
         df[fld.PATH_DST.CID] = df[fld.PATH_DST.CID].apply(
             self._join_metadata_path)
         df = df.sort_values(fld.PATH_DST.CID)
-
-        # since album art destination changes as the destination path changes,
-        # generate the album art paths again
-        df = tutil.generate_album_art_path(df=df)
         return df

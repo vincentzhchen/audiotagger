@@ -69,9 +69,6 @@ def metadata_to_tags(df):
     # only want to have tuples right before building the tag object
     df = build_track_and_disc_tuples(df=df)
 
-    # get cover art from file
-    df = construct_cover_object(df=df)
-
     # convert to correct output data type
     df = enforce_dtypes(df=df, io_type="OUTPUT_TYPE")
 
@@ -154,7 +151,7 @@ def sort_metadata(df):
     return df
 
 
-def generate_album_art_path(df):
+def generate_cover_art_path(df):
     """Generate cover art file paths.
 
     Notes:
@@ -205,7 +202,16 @@ def construct_cover_object(df):
             cover_byte_str = f.read()
         return MP4Cover(cover_byte_str)
 
-    if fld.COVER_SRC.CID in df:
-        df[fld.COVER.CID] = df[fld.COVER_SRC.CID].apply(
-            construct_mutagen_mp4_cover)
+    # make a temporary column to decide what to use
+    df["TMP_COVER"] = df[fld.COVER_SRC.CID].apply(construct_mutagen_mp4_cover)
+
+    # if cover tag exists, and there is no cover file, keep original metadata
+    # otherwise take potential cover from cover file
+    if fld.COVER.CID in df:
+        df[fld.COVER.CID] = df["TMP_COVER"].where(
+            df["TMP_COVER"].notnull(), df[fld.COVER.CID])
+    else:
+        df[fld.COVER.CID] = df["TMP_COVER"]
+
+    df = df.drop(columns="TMP_COVER")
     return df
