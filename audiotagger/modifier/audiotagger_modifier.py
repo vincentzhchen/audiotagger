@@ -25,6 +25,49 @@ class AudioTaggerModifier(object):
         return arg
 
     @classmethod
+    def _create_spacing_for_characters(cls, arg):
+        left = ["(", "["]
+        right = [")", "]"]
+        both = ["/"]
+
+        for c in left:
+            if c in arg:
+                arg = arg.replace(c, " " + c)
+
+        for c in right:
+            if c in arg:
+                arg = arg.replace(c, c + " ")
+
+        for c in both:
+            if c in arg:
+                arg = arg.replace(c, " " + c + " ")
+
+        return arg
+
+    @classmethod
+    def create_spacing_for_characters(cls, arg):
+        """Create spaces next to special characters.
+
+        Args:
+            arg (str, dataframe of str, series of str): TITLE, ARTIST, etc.
+
+        Returns:
+            anonymous (input type): Returns cleaned input.
+        """
+        if arg.__class__ == str:
+            arg = AudioTaggerModifier._create_spacing_for_characters(arg)
+
+        elif arg.__class__ == pd.Series:
+            arg = arg.apply(AudioTaggerModifier._create_spacing_for_characters)
+
+        elif arg.__class__ == pd.DataFrame:
+            for col in arg:
+                arg[col] = arg[col].apply(
+                    AudioTaggerModifier._create_spacing_for_characters)
+
+        return arg
+
+    @classmethod
     def _remove_multiple_whitespace(cls, arg):
         return " ".join(arg.split())
 

@@ -11,10 +11,19 @@ class AudioTagger(object):
     def execute(self):
         metadata = self.input_data.get_metadata()
         modifier = self.options.modifier
-        str_cols = [c for c in metadata if eval(f"fld.{c}.INPUT_TYPE") == str]
+
+        # never modify paths
+        cols = [c for c in metadata if c not in fld.PATH_COLS]
+
+        # modify str cols only
+        str_cols = [c for c in cols if eval(f"fld.{c}.INPUT_TYPE") == str]
 
         # apply standard modifiers
         metadata.loc[:, str_cols] = atm.strip_str(metadata.loc[:, str_cols])
+        metadata.loc[:, str_cols] = atm.create_spacing_for_characters(
+            metadata.loc[:, str_cols])
+
+        # do this last after all the space insertions above
         metadata.loc[:, str_cols] = atm.remove_multiple_whitespace(
             metadata.loc[:, str_cols])
 
