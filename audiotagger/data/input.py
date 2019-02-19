@@ -62,6 +62,8 @@ class AudioTaggerInput(object):
         """
         m4a_file_paths = futil.traverse_directory(self.src, "m4a")
         self.log.info(f"LOADED {len(m4a_file_paths)} file paths.")
+        if not m4a_file_paths:
+            raise Exception("No m4a files found, exiting program.")
 
         metadata_records = futil.generate_metadata_records(m4a_file_paths)
         self.log.info(f"LOADED {len(metadata_records)} records.")
