@@ -1,13 +1,17 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# STANDARD LIB
 import optparse
 import os
 import sys
 
+# DEPENDENCIES
 import customlogging as cl
-from audiotagger.core.generate_config import generate_config
-from audiotagger.core.paths import audiotagger_config_path
+
+# PROJECT LIB
+from audiotagger.core import paths
+from audiotagger.util import generate_config
 
 
 def get_options():
@@ -113,37 +117,36 @@ if __name__ == "__main__":
     options, args = parser.parse_args()
 
     # If the app was never configured, generate configuration once.
-    if not os.path.exists(audiotagger_config_path()):
+    if not os.path.exists(paths.audiotagger_config_path()):
         print("Application will configure for the first time...")
-        generate_config()
+        generate_config.generate_config()
         sys.exit(0)
 
     # Reset app configurations.
     if options.generate_config:
-        generate_config()
+        generate_config.generate_config()
         sys.exit(0)
 
     # Generate metadata Excel template.
     if options.generate_metadata_template:
-        from audiotagger.core.generate_metadata_template import \
-            generate_metadata_template
+        from audiotagger.util import generate_metadata_template as gtmp
 
-        generate_metadata_template(dst_dir=options.dst)
+        gtmp.generate_metadata_template(dst_dir=options.dst)
         sys.exit(0)
 
     # RUN MAIN PROGRAM HERE.
-    from audiotagger.api.api import AudioTaggerAPI
+    from audiotagger.api import api
 
     # Set up logging.
     if options.log_dir is not None:
         log_dir = options.log_dir
     else:
-        from audiotagger.settings.settings import LOG_DIRECTORY
+        from audiotagger.settings import settings as at_settings
 
-        log_dir = LOG_DIRECTORY
+        log_dir = at_settings.LOG_DIRECTORY
     logger = cl.initialize_logger(log_dir=log_dir, name="audiotagger.log")
     logger.info(options)
 
-    at = AudioTaggerAPI(logger=logger, options=options)
+    at = api.AudioTaggerAPI(logger=logger, options=options)
     at.run()
     logger.info("Done.")

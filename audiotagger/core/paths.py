@@ -23,5 +23,15 @@ def audiotagger_config_path():
 
 
 def audiotagger_log_dir():
-    """Default directory to hold logs and input / output debugging files."""
-    return os.path.join(audiotagger_config_dir(), "logs")
+    """Default directory to hold logs."""
+    return os.path.join(audiotagger_config_dir(), "log")
+
+
+def audiotagger_data_dir():
+    """Default directory to hold input / output data files."""
+    return os.path.join(audiotagger_config_dir(), "data")
+
+
+def audiotagger_test_dir():
+    """Default directory to hold unittest files."""
+    return os.path.join(audiotagger_config_dir(), "test")
