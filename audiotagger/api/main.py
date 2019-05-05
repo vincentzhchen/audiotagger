@@ -11,7 +11,7 @@ import customlogging as cl
 
 # PROJECT LIB
 from audiotagger.core import paths
-from audiotagger.util import generate_config
+from audiotagger.util import audiotagger_setup
 
 
 def get_options():
@@ -119,19 +119,17 @@ if __name__ == "__main__":
     # If the app was never configured, generate configuration once.
     if not os.path.exists(paths.audiotagger_config_path()):
         print("Application will configure for the first time...")
-        generate_config.generate_config()
+        audiotagger_setup.generate_config()
         sys.exit(0)
 
     # Reset app configurations.
     if options.generate_config:
-        generate_config.generate_config()
+        audiotagger_setup.generate_config()
         sys.exit(0)
 
     # Generate metadata Excel template.
     if options.generate_metadata_template:
-        from audiotagger.util import generate_metadata_template as gtmp
-
-        gtmp.generate_metadata_template(dst_dir=options.dst)
+        audiotagger_setup.generate_metadata_template(dst_dir=options.dst)
         sys.exit(0)
 
     # RUN MAIN PROGRAM HERE.

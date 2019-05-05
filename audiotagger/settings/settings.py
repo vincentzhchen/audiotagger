@@ -13,8 +13,6 @@ if os.path.exists(config_path):
     spec.loader.exec_module(c)
 
     # Setup constants.
-    LOG_DIRECTORY = c.LOG_DIRECTORY
-    TEST_DIRECTORY = c.TEST_DIRECTORY
     AUDIO_DIRECTORY = c.AUDIO_DIRECTORY
     DATA_DIRECTORY = c.DATA_DIRECTORY
 else:
