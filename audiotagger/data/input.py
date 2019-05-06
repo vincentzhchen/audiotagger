@@ -1,23 +1,26 @@
+# STANDARD LIB
 import os
 import pandas as pd
 
-import pandasdateutils as pdu
-from audiotagger.data.fields import Fields as fld
-from audiotagger.settings import settings as settings
+# PROJECT LIB
+from audiotagger.data import fields
 from audiotagger.util import file_util as futil
 from audiotagger.util import input_output_util as ioutil
 from audiotagger.util import tag_util as tutil
 
+# ALIAS
+fld = fields.Fields
+
 
 class AudioTaggerInput(object):
-    def __init__(self, src, logger, options):
+    def __init__(self, src, logger, to_excel=False):
         if src is None:
             raise Exception("INVALID SOURCE")
         else:
             self.src = src
 
         self.log = logger
-        self.options = options
+        self.write_to_excel = to_excel
 
         # for Excel metadata files
         if futil.is_xlsx(self.src):
@@ -40,14 +43,9 @@ class AudioTaggerInput(object):
 
         self.metadata = tutil.sort_metadata(self.metadata)
 
-        if self.options.write_to_excel:
-            base_dir = settings.LOG_DIRECTORY
-            file_path = os.path.join(
-                base_dir, f"input_{pdu.now(as_string=True)}.xlsx")
-            # choose to not write cover byte string into file
-            metadata = self.metadata.drop(
-                columns=fld.COVER.CID, errors="ignore")
-            ioutil.write_to_excel(df=metadata, file_path=file_path)
+        if self.write_to_excel:
+            file_path = ioutil.generate_excel_path("audiotagger_input")
+            ioutil.write_metadata_to_excel(self.metadata, file_path=file_path)
             self.log.info(f"Saved input metadata to {file_path}")
 
     def _load_all_m4a_files_into_df_from_excel(self):
@@ -111,5 +109,5 @@ class AudioTaggerInput(object):
         All cleaning should be done at instantiation.  Do not modify here.
 
         """
-        df = self.metadata
+        df = self.metadata.copy(deep=True)  # TODO: is this needed?
         return df

@@ -1,10 +1,10 @@
+# STANDARD LIB
+import copy
 import os
-from copy import deepcopy
-from shutil import copy2
+import shutil
 
-import pandasdateutils as pdu
+# PROJECT LIB
 from audiotagger.data.fields import Fields as fld
-from audiotagger.settings import settings
 from audiotagger.util import file_util as futil
 from audiotagger.util import tag_util as tutil
 from audiotagger.util import input_output_util as ioutil
@@ -17,12 +17,7 @@ class AudioTaggerOutput(object):
         self.options = options
 
         if self.options.write_to_excel:
-            base_dir = settings.LOG_DIRECTORY
-            file_path = os.path.join(
-                base_dir, f"output_{pdu.now(as_string=True)}.xlsx")
-            # choose to not write cover byte string into file
-            metadata = self.metadata.drop(
-                columns=fld.COVER.CID, errors="ignore")
+            file_path = ioutil.generate_excel_path("audiotagger_output")
             ioutil.write_to_excel(df=metadata, file_path=file_path)
             self.log.info(f"Saved output metadata to {file_path}")
 
@@ -40,7 +35,7 @@ class AudioTaggerOutput(object):
         metadata = self.metadata
         tag_dict = tutil.metadata_to_tags(df=metadata)
         for k in tag_dict:
-            dict_for_log = deepcopy(tag_dict[k])
+            dict_for_log = copy.deepcopy(tag_dict[k])
             dict_for_log.pop(fld.COVER.ID3, None)
             self.log.info(f"Saving {dict_for_log} to {k}")
             tag_dict[k].save(k)
@@ -86,7 +81,7 @@ class AudioTaggerOutput(object):
 
             # copy the file to the destination
             self.log.info(f"Copying {old} to {new}")
-            copy2(old, new)
+            shutil.copy2(old, new)
 
             # If the old file is in the same directory as the new file,
             # delete the old file (this prevents duplicates).  A common use

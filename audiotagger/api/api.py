@@ -1,18 +1,20 @@
-from audiotagger.core.audiotagger import AudioTagger
-from audiotagger.core.clear_tags import ClearTags
-from audiotagger.core.create_playlist import CreatePlaylist
-from audiotagger.core.copy_file import CopyFile
-from audiotagger.data.input import AudioTaggerInput
-from audiotagger.data.output import AudioTaggerOutput
+# PROJECT LIB
+from audiotagger.core import audiotagger
+from audiotagger.core import clear_tags
+from audiotagger.core import copy_file
+from audiotagger.core import create_playlist
+from audiotagger.data import input as at_in
+from audiotagger.data import output as at_out
 
 
 class AudioTaggerAPI(object):
     def __init__(self, logger, options, **kwargs):
         self.log = logger
         self.options = options
-        self.input_data = AudioTaggerInput(src=self.options.src,
-                                           logger=self.log,
-                                           options=self.options)
+        self.input_data = at_in.AudioTaggerInput(
+            src=self.options.src,
+            logger=self.log,
+            to_excel=self.options.write_to_excel)
 
     def run(self):
         if self.input_data.get_metadata().empty:
@@ -21,25 +23,29 @@ class AudioTaggerAPI(object):
 
         if self.options.clear_tags:
             # Deletes tags from audio files by overwriting with blank tags.
-            metadata = ClearTags(input_data=self.input_data,
-                                 logger=self.log,
-                                 options=self.options).execute()
+            metadata = clear_tags.ClearTags(
+                input_data=self.input_data,
+                logger=self.log,
+                options=self.options).execute()
 
-            out = AudioTaggerOutput(metadata=metadata,
-                                    logger=self.log,
-                                    options=self.options)
+            out = at_out.AudioTaggerOutput(
+                metadata=metadata,
+                logger=self.log,
+                options=self.options)
             out.save()
 
         if self.options.tag_file:
             # Given a metadata dataframe, tag the audio files listed
             # by the paths in the dataframe.
-            metadata = AudioTagger(input_data=self.input_data,
-                                   logger=self.log,
-                                   options=self.options).execute()
+            metadata = audiotagger.AudioTagger(
+                input_data=self.input_data,
+                logger=self.log,
+                options=self.options).execute()
 
-            out = AudioTaggerOutput(metadata=metadata,
-                                    logger=self.log,
-                                    options=self.options)
+            out = at_out.AudioTaggerOutput(
+                metadata=metadata,
+                logger=self.log,
+                options=self.options)
             out.save()
 
         if self.options.copy_file:
@@ -47,23 +53,27 @@ class AudioTaggerAPI(object):
             # If a destination directory is passed, the renamed file
             # will be saved into the destination, leaving the original
             # file untouched.
-            metadata = CopyFile(input_data=self.input_data,
-                                logger=self.log,
-                                options=self.options).execute()
+            metadata = copy_file.CopyFile(
+                input_data=self.input_data,
+                logger=self.log,
+                options=self.options).execute()
 
-            out = AudioTaggerOutput(metadata=metadata,
-                                    logger=self.log,
-                                    options=self.options)
+            out = at_out.AudioTaggerOutput(
+                metadata=metadata,
+                logger=self.log,
+                options=self.options)
             out.copy()
 
         if self.options.playlist_query:
             # Creates a playlist from the source directory using the given
             # query and writes the files into the destination directory.
-            metadata = CreatePlaylist(input_data=self.input_data,
-                                      logger=self.log,
-                                      options=self.options).execute()
+            metadata = create_playlist.CreatePlaylist(
+                input_data=self.input_data,
+                logger=self.log,
+                options=self.options).execute()
 
-            out = AudioTaggerOutput(metadata=metadata,
-                                    logger=self.log,
-                                    options=self.options)
+            out = at_out.AudioTaggerOutput(
+                metadata=metadata,
+                logger=self.log,
+                options=self.options)
             out.copy()

@@ -1,4 +1,8 @@
-from audiotagger.data.fields import Fields as fld
+# PROJECT LIB
+from audiotagger.data import fields
+
+# ALIAS
+fld = fields.Fields()
 
 
 class ClearTags(object):
@@ -15,11 +19,12 @@ class ClearTags(object):
 
     def execute(self):
         metadata = self.input_data.get_metadata()
+        clear_type = self.options.clear_tags
 
-        if self.options.clear_tags == "all":
+        if clear_type == "all":
             metadata = self.clear_all_tags(df=metadata)
 
-        elif self.options.clear_tags == "excess":
+        elif clear_type == "excess":
             metadata = self.clear_excess_tags(df=metadata)
 
         return metadata
@@ -28,10 +33,11 @@ class ClearTags(object):
         """Clear all tags.
 
         Args:
-            df (dataframe): Metadata dataframe.
+            df (pd.DataFrame): Metadata dataframe.
 
         Returns:
-            metadata (dataframe): Returns metadata df with no tag columns.
+            metadata (pd.DataFrame): Returns metadata df with
+                no tag columns.
         """
         df = df.loc[:, fld.PATH_COLS]
         self.log.info("ALL TAGS are cleared.")
@@ -41,10 +47,11 @@ class ClearTags(object):
         """Clear all tags not part of the base set of desired metadata.
 
         Args:
-            df (dataframe): Metadata dataframe.
+            df (pd.DataFrame): Metadata dataframe.
 
         Returns:
-            metadata (dataframe): Returns metadata df with base tag columns.
+            metadata (pd.DataFrame): Returns metadata df with base
+                tag columns.
         """
         df = df.loc[:, fld.BASE_METADATA_COLS]
         self.log.info("ALL TAGS except base metadata are cleared.")
