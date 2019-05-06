@@ -139,9 +139,7 @@ if __name__ == "__main__":
     if options.log_dir is not None:
         log_dir = options.log_dir
     else:
-        from audiotagger.settings import settings as at_settings
-
-        log_dir = at_settings.LOG_DIRECTORY
+        log_dir = paths.audiotagger_log_dir()
     logger = cl.initialize_logger(log_dir=log_dir, name="audiotagger.log")
     logger.info(options)
 
