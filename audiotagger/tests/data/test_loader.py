@@ -12,7 +12,7 @@ from audiotagger.data import fields, loader
 # ALIAS
 fld = fields.Fields
 logger = cl.initialize_logger(paths.audiotagger_log_dir(),
-                              "test_audiotagger_input.log")
+                              "test_audiotagger_loader.log")
 
 
 @pytest.fixture
