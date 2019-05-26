@@ -1,20 +1,22 @@
 # PROJECT LIB
-from audiotagger.core import audiotagger
-from audiotagger.core import clear_tags
-from audiotagger.core import copy_file
-from audiotagger.core import create_playlist
-from audiotagger.data import input as at_in
-from audiotagger.data import output as at_out
+from audiotagger.core import (audiotagger, clear_tags, copy_file,
+                              create_playlist)
+from audiotagger.data import input as at_in, output as at_out
 
 
 class AudioTaggerAPI(object):
     def __init__(self, logger, options, **kwargs):
         self.log = logger
         self.options = options
-        self.input_data = at_in.AudioTaggerInput(
-            src=self.options.src,
-            logger=self.log,
-            to_excel=self.options.write_to_excel)
+
+        input_data = at_in.AudioTaggerInput(logger=self.log)
+        # load data -- singleton to be modified continuously as needed.
+        input_data.load_metadata(src=self.options.src)
+
+        if self.options.write_to_excel:
+            input_data.write_to_excel()
+
+        self.input_data = input_data
 
     def run(self):
         if self.input_data.get_metadata().empty:

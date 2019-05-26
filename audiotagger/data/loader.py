@@ -21,7 +21,7 @@ class AudioTaggerMetadataLoader(object):
     """
 
     def __init__(self, src, logger):
-        if src is None:
+        if not isinstance(src, str):
             raise Exception("INVALID SOURCE")
         else:
             self.src = src
@@ -53,6 +53,9 @@ class AudioTaggerMetadataLoader(object):
             # load metadata
             return self._load_all_m4a_files_into_df_from_path()
 
+        else:
+            raise Exception("INVALID SOURCE")
+
     def _load_all_m4a_files_into_df_from_excel(self):
         """Load metadata from a metadata file into a dataframe.
 
@@ -62,6 +65,7 @@ class AudioTaggerMetadataLoader(object):
         metadata = pd.read_excel(self.src, sheet_name="metadata", dtype=str)
         metadata = tutil.enforce_dtypes(df=metadata,
                                         io_type="INPUT_FROM_METADATA_FILE")
+        metadata = tutil.sort_metadata(metadata)
         return metadata
 
     def _load_all_m4a_files_into_df_from_path(self):
@@ -115,4 +119,5 @@ class AudioTaggerMetadataLoader(object):
             # everything is str except for disc and track no.
             metadata[c] = ""
 
+        metadata = tutil.sort_metadata(metadata)
         return metadata
