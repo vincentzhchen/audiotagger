@@ -7,7 +7,7 @@ import os
 import sys
 
 # DEPENDENCIES
-import customlogging as cl
+import redquill as rq
 
 # PROJECT LIB
 from audiotagger.core import paths
@@ -140,7 +140,7 @@ if __name__ == "__main__":
         log_dir = options.log_dir
     else:
         log_dir = paths.audiotagger_log_dir()
-    logger = cl.initialize_logger(log_dir=log_dir, name="audiotagger.log")
+    logger = rq.initialize_logger(log_dir=log_dir, name="audiotagger.log")
     logger.info(options)
 
     at = api.AudioTaggerAPI(logger=logger, options=options)

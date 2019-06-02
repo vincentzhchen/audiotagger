@@ -3,7 +3,7 @@ import pandas as pd
 import pytest
 
 # DEPENDENCIES
-import customlogging as cl
+import redquill as rq
 
 # PROJECT LIB
 from audiotagger.core import paths
@@ -11,9 +11,9 @@ from audiotagger.data import fields
 from audiotagger.data import input as at_in
 
 # ALIAS
-fld = fields.Fields
+fld = fields.Fields()
 
-logger = cl.initialize_logger(paths.audiotagger_log_dir(),
+logger = rq.initialize_logger(paths.audiotagger_log_dir(),
                               "test_audiotagger_input.log")
 
 
