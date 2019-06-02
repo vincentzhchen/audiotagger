@@ -1,5 +1,5 @@
 # audiotagger
-Cross platform metadata editor and manager for audio files.
+Cross-platform metadata editor for audio files.
 
 ## Dependencies
 - [mutagen](https://github.com/quodlibet/mutagen): Developed on 1.41.1 and
