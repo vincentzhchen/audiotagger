@@ -1,3 +1,5 @@
+# TODO: remove the class Fields, it is not necessary
+
 class Fields(object):
     # PATH COLS
     PATH_SRC = type(

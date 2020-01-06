@@ -41,12 +41,14 @@ class AudioTaggerOutput(object):
             tag_dict[k].save(k)
 
     def copy(self):
+        # TODO: this does not belong here; move to copy class
         if self.options.write_to_file:
             self.copy_files()
         else:
             self.log.info("DRY RUN -- no files were created.")
 
     def copy_files(self):
+        # TODO: this does not belong here; move to copy class
         df = self.metadata
 
         # check to see if there is enough space to copy files
