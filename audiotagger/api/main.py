@@ -113,8 +113,7 @@ def get_options():
 
 
 if __name__ == "__main__":
-    parser = get_options()
-    options, args = parser.parse_args()
+    options, args = get_options().parse_args()
 
     # If the app was never configured, generate configuration once.
     if not os.path.exists(paths.audiotagger_config_path()):
