@@ -43,7 +43,7 @@ class AudioTaggerMetadataLoader(object):
                 raise ValueError(f"{self.src} does not exist.")
 
             # load metadata
-            return self._load_all_m4a_files_into_df_from_excel()
+            metadata = self._load_all_m4a_files_into_df_from_excel()
 
         # for directory of audio files or a single audio file
         elif os.path.isdir(self.src) or os.path.isfile(self.src):
@@ -51,10 +51,12 @@ class AudioTaggerMetadataLoader(object):
                 raise ValueError(f"{self.src} does not exist.")
 
             # load metadata
-            return self._load_all_m4a_files_into_df_from_path()
+            metadata = self._load_all_m4a_files_into_df_from_path()
 
         else:
             raise Exception("INVALID SOURCE")
+
+        return metadata
 
     def _load_all_m4a_files_into_df_from_excel(self):
         """Load metadata from a metadata file into a dataframe.
@@ -103,6 +105,9 @@ class AudioTaggerMetadataLoader(object):
         self.log.debug(f"Split track and disc tuples.")
 
         # TODO: hack to fill missing disc numbers
+        if fld.DISC_NO not in metadata:
+            metadata[fld.DISC_NO.CID] = 1
+            metadata[fld.TOTAL_DISCS.CID] = 1
         metadata[fld.DISC_NO.CID].fillna(1, inplace=True)
         metadata[fld.TOTAL_DISCS.CID].fillna(1, inplace=True)
 
