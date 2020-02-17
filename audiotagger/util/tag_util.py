@@ -159,19 +159,25 @@ def generate_cover_art_path(df):
         file in the same directory level as the audio files.  Invalid paths
         will be generated if the image file does not exist.
 
+        You can choose to have a custom cover source location if you are
+        generating the paths from a metadata file.
+
     Args:
         df (dataframe): Metadata dataframe.
 
     Returns:
-        anonymous (dataframe): Returns dataframe with cover art paths.
+        df (dataframe): Returns dataframe with cover art paths.
     """
     def _generate_album_art_path(path):
         dir = os.path.dirname(path)
         jpg_path = os.path.join(dir, "cover.jpg")
         return jpg_path
 
-    df[fld.COVER_SRC.CID] = df[fld.PATH_SRC.CID].apply(
-        _generate_album_art_path)
+    if fld.COVER_SRC.CID not in df:
+        # assume cover source path is in same location as audio file path
+        # if it is not provided
+        df[fld.COVER_SRC.CID] = df[fld.PATH_SRC.CID].apply(
+            _generate_album_art_path)
 
     df[fld.COVER_DST.CID] = df[fld.PATH_DST.CID].apply(
         _generate_album_art_path)
