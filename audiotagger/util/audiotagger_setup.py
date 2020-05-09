@@ -3,9 +3,6 @@ import os
 import pandas as pd
 import shutil
 
-# DEPENDENCIES
-import pandasdateutils as pdu
-
 # PROJECT LIB
 from audiotagger.core import paths
 from audiotagger.data import fields
@@ -38,7 +35,8 @@ def generate_config():
 
         config_file = paths.audiotagger_config_path()
         with open(config_file, "w") as f:
-            f.write(f"AUDIO_DIRECTORY=None"'\n'
+            f.write(f"AUDIO_DIRECTORY=None"
+                    '\n'
                     f"DATA_DIRECTORY='{paths.audiotagger_data_dir()}'\n")
         print(f"Generated config at {paths.audiotagger_config_path()}")
     else:
@@ -50,7 +48,7 @@ def generate_metadata_template(dst_dir=None):
         dst_dir = paths.audiotagger_data_dir()
 
     if os.path.isdir(dst_dir):
-        now = pdu.now(as_string=True)
+        now = pd.to_datetime("today").strftime("%Y%m%d_%H%M%S")
         dst = os.path.join(dst_dir, f"metadata_{now}.xlsx")
         print(f"Generating metadata file at {dst} ... ", end="")
 

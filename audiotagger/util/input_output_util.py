@@ -2,9 +2,6 @@
 import os
 import pandas as pd
 
-# DEPENDENCIES
-import pandasdateutils as pdu
-
 # PROJECT LIB
 from audiotagger.core import paths
 from audiotagger.data import fields
@@ -15,7 +12,8 @@ fld = fields.Fields()
 
 def generate_excel_path(context):
     base_dir = paths.audiotagger_data_dir()
-    context += f"_{pdu.now(as_string=True)}.xlsx"
+    now = now = pd.to_datetime("today").strftime("%Y%m%d_%H%M%S")
+    context += f"_{now}.xlsx"
     file_path = os.path.join(base_dir, context)
     return file_path
 
