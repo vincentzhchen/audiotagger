@@ -1,3 +1,7 @@
+"""Main module and entry into audiotagger.
+
+"""
+
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
 
@@ -12,6 +16,9 @@ from audiotagger.util import audiotagger_logger, audiotagger_setup
 
 
 def get_args():
+    """Construct all run arguments.
+
+    """
     parser = argparse.ArgumentParser()
 
     # add arguments here
@@ -92,7 +99,10 @@ def get_args():
     return parser.parse_args()
 
 
-if __name__ == "__main__":
+def main():
+    """Driver for the app.
+
+    """
     # Set up logging.
     if os.path.exists(paths.audiotagger_log_dir()):
         log_dir = paths.audiotagger_log_dir()
@@ -133,3 +143,7 @@ if __name__ == "__main__":
     at = api.AudioTaggerAPI(logger=logger, options=args)
     at.run()
     logger.info("Done.")
+
+
+if __name__ == "__main__":
+    main()

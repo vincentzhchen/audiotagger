@@ -1,3 +1,7 @@
+"""General setup methods.
+
+"""
+
 # STANDARD LIB
 import os
 import shutil
