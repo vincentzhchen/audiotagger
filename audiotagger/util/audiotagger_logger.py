@@ -7,8 +7,8 @@ import logging
 import os
 import sys
 
-THIS = sys.modules[__name__]  # pointer to module instance
-THIS.LOGGER_SINGLETON = None  # explicit assignment of singleton
+this = sys.modules[__name__]  # pointer to module instance
+this.LOGGER_SINGLETON = None  # explicit assignment of singleton
 
 
 def get_logger(log_dir=None, name="audiotagger.log", level=logging.DEBUG):
@@ -27,8 +27,8 @@ def get_logger(log_dir=None, name="audiotagger.log", level=logging.DEBUG):
     Return:
         logger (logging.RootLogger): returns a logger instance.
     """
-    if THIS.LOGGER_SINGLETON is not None:
-        return THIS.LOGGER_SINGLETON
+    if this.LOGGER_SINGLETON is not None:
+        return this.LOGGER_SINGLETON
 
     logging.captureWarnings(True)
 
@@ -59,5 +59,5 @@ def get_logger(log_dir=None, name="audiotagger.log", level=logging.DEBUG):
     # setup log level
     logger.setLevel(level)
 
-    THIS.LOGGER_SINGLETON = logger
+    this.LOGGER_SINGLETON = logger
     return logger
