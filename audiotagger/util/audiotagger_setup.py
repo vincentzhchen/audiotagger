@@ -1,7 +1,7 @@
 # STANDARD LIB
 import os
-import pandas as pd
 import shutil
+import pandas as pd
 
 # PROJECT LIB
 from audiotagger.core import paths
