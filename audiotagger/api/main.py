@@ -6,12 +6,9 @@ import argparse
 import os
 import sys
 
-# DEPENDENCIES
-import redquill as rq
-
 # PROJECT LIB
 from audiotagger.core import paths
-from audiotagger.util import audiotagger_setup
+from audiotagger.util import audiotagger_logger, audiotagger_setup
 
 
 def get_args():
@@ -96,32 +93,43 @@ def get_args():
 
 
 if __name__ == "__main__":
+    # Set up logging.
+    if os.path.exists(paths.audiotagger_log_dir()):
+        log_dir = paths.audiotagger_log_dir()
+    else:
+        log_dir = None
+    logger = audiotagger_logger.get_logger(log_dir)
+
+    logger.info("-" * 40)
+    logger.info("Starting audiotagger.")
+    logger.info("-" * 40)
+
     args = get_args()
+    logger.info(args)
 
     # If the app was never configured, generate configuration once.
     if not os.path.exists(paths.audiotagger_config_path()):
-        print("Application will configure for the first time...")
+        logger.info("Application will configure for the first time...")
         audiotagger_setup.generate_config()
+        logger.info("Default configuration generated, exiting app.")
         sys.exit(0)
 
     # Reset app configurations.
     if args.generate_config:
+        logger.info("Generating default app configurations...")
         audiotagger_setup.generate_config()
+        logger.info("Done.")
         sys.exit(0)
 
     # Generate metadata Excel template.
     if args.generate_metadata_template:
+        logger.info("Generating blank metadata template...")
         audiotagger_setup.generate_metadata_template(dst_dir=args.dst)
+        logger.info("Done.")
         sys.exit(0)
 
     # RUN MAIN PROGRAM HERE.
     from audiotagger.api import api
-
-    # Set up logging.
-    log_dir = paths.audiotagger_log_dir()
-    logger = rq.initialize_logger(log_dir=log_dir, name="audiotagger.log")
-    logger.info(args)
-
     at = api.AudioTaggerAPI(logger=logger, options=args)
     at.run()
     logger.info("Done.")
