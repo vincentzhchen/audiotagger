@@ -48,10 +48,15 @@ def get_logger(log_dir=None, name="audiotagger.log", level=logging.DEBUG):
 
     # setup file handler
     if log_dir is not None:
-        log_path = os.path.realpath(os.path.join(log_dir, name))
-        file_handler = logging.FileHandler(log_path, encoding="utf-8")
-        file_handler.setFormatter(formatter)
-        logger.addHandler(file_handler)
+        if os.path.isdir(log_dir):
+            log_path = os.path.realpath(os.path.join(log_dir, name))
+            file_handler = logging.FileHandler(log_path, encoding="utf-8")
+            file_handler.setFormatter(formatter)
+            logger.addHandler(file_handler)
+        else:
+            logger.warning(
+                "LOG DIRECTORY %s does not exist... only log to console.",
+                log_dir)
     else:
         logger.warning(
             "NO LOG DIRECTORY was specified... only log to console.")

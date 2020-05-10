@@ -99,16 +99,9 @@ def get_args():
     return parser.parse_args()
 
 
-def main():
-    """Driver for the app.
-
-    """
+if __name__ == "__main__":
     # Set up logging.
-    if os.path.exists(paths.audiotagger_log_dir()):
-        log_dir = paths.audiotagger_log_dir()
-    else:
-        log_dir = None
-    logger = audiotagger_logger.get_logger(log_dir)
+    logger = audiotagger_logger.get_logger(paths.audiotagger_log_dir())
 
     logger.info("-" * 40)
     logger.info("Starting audiotagger.")
@@ -140,10 +133,5 @@ def main():
 
     # RUN MAIN PROGRAM HERE.
     from audiotagger.api import api  # keep this lazy in case there is no config
-    at = api.AudioTaggerAPI(logger=logger, options=args)
-    at.run()
+    api.AudioTaggerAPI(logger=logger, options=args).run()
     logger.info("Done.")
-
-
-if __name__ == "__main__":
-    main()
