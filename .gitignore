@@ -49,7 +49,6 @@ dist
 *.egg-info
 .eggs
 .pypirc
-
 # tox testing tool
 .tox
 # rope
