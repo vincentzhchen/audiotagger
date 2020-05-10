@@ -129,7 +129,7 @@ if __name__ == "__main__":
         sys.exit(0)
 
     # RUN MAIN PROGRAM HERE.
-    from audiotagger.api import api
+    from audiotagger.api import api  # keep this lazy in case there is no config
     at = api.AudioTaggerAPI(logger=logger, options=args)
     at.run()
     logger.info("Done.")
