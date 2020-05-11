@@ -1,5 +1,10 @@
+"""Handles all deletion of tags.
+
+"""
+
 # PROJECT LIB
 from audiotagger.data import fields
+from audiotagger.util import audiotagger_logger
 
 # ALIAS
 fld = fields.Fields()
@@ -11,15 +16,25 @@ class ClearTags(object):
     The implementation overwrites existing tags with a tag metadata dataframe.
 
     """
+    def __init__(self, input_data, logger=None):
+        """This class requires an input data to operate on.
 
-    def __init__(self, input_data, logger, options):
+        """
         self.input_data = input_data
-        self.log = logger
-        self.options = options
+        self.logger = logger if (
+            logger is not None) else audiotagger_logger.get_logger()
 
-    def execute(self):
+    def execute(self, clear_type):
+        """The caller chooses how class method gets executed.
+
+        Args:
+            clear_type (str): `all` will delete all tags and `excess` will
+                delete all tags not part of the base set of desired metadata.
+
+        Returns:
+            metadata (pd.DataFrame): Returns metadata df.
+        """
         metadata = self.input_data.get_metadata()
-        clear_type = self.options.clear_tags
 
         if clear_type == "all":
             metadata = self.clear_all_tags(df=metadata)
@@ -36,11 +51,10 @@ class ClearTags(object):
             df (pd.DataFrame): Metadata dataframe.
 
         Returns:
-            metadata (pd.DataFrame): Returns metadata df with
-                no tag columns.
+            df (pd.DataFrame): Returns metadata df with no tag columns.
         """
         df = df.loc[:, fld.PATH_COLS]
-        self.log.info("ALL TAGS are cleared.")
+        self.logger.info("ALL TAGS are cleared.")
         return df
 
     def clear_excess_tags(self, df):
@@ -50,9 +64,8 @@ class ClearTags(object):
             df (pd.DataFrame): Metadata dataframe.
 
         Returns:
-            metadata (pd.DataFrame): Returns metadata df with base
-                tag columns.
+            df (pd.DataFrame): Returns metadata df with base tag columns.
         """
         df = df.loc[:, fld.BASE_METADATA_COLS]
-        self.log.info("ALL TAGS except base metadata are cleared.")
+        self.logger.info("ALL TAGS except base metadata are cleared.")
         return df

@@ -5,31 +5,30 @@ import shutil
 
 # PROJECT LIB
 from audiotagger.data.fields import Fields as fld
-from audiotagger.util import file_util as futil
-from audiotagger.util import tag_util as tutil
-from audiotagger.util import input_output_util as ioutil
+from audiotagger.util import (audiotagger_logger, file_util as futil, tag_util
+                              as tutil, input_output_util as ioutil)
 
 
 class AudioTaggerOutput(object):
-    def __init__(self, metadata, logger, options):
+    def __init__(self, metadata, logger=None, to_excel=False):
         self.metadata = metadata
-        self.log = logger
-        self.options = options
+        self.logger = logger if (
+            logger is not None) else audiotagger_logger.get_logger()
 
-        if self.options.write_to_excel:
+        if to_excel:
             file_path = ioutil.generate_excel_path("audiotagger_output")
             ioutil.write_to_excel(df=metadata, file_path=file_path)
-            self.log.info(f"Saved output metadata to {file_path}")
+            self.logger.info(f"Saved output metadata to {file_path}")
 
         # at this point, handle cover art
         self.metadata = tutil.generate_cover_art_path(df=self.metadata)
         self.metadata = tutil.construct_cover_object(df=self.metadata)
 
-    def save(self):
-        if self.options.write_to_file:
+    def save(self, to_file=False):
+        if to_file:
             self.save_tags_to_audio_files()
         else:
-            self.log.info("DRY RUN -- no files were modified.")
+            self.logger.info("DRY RUN -- no files were modified.")
 
     def save_tags_to_audio_files(self):
         metadata = self.metadata
@@ -37,15 +36,15 @@ class AudioTaggerOutput(object):
         for k in tag_dict:
             dict_for_log = copy.deepcopy(tag_dict[k])
             dict_for_log.pop(fld.COVER.ID3, None)
-            self.log.info(f"Saving {dict_for_log} to {k}")
+            self.logger.info(f"Saving {dict_for_log} to {k}")
             tag_dict[k].save(k)
 
-    def copy(self):
+    def copy(self, to_file):
         # TODO: this does not belong here; move to copy class
-        if self.options.write_to_file:
+        if to_file:
             self.copy_files()
         else:
-            self.log.info("DRY RUN -- no files were created.")
+            self.logger.info("DRY RUN -- no files were created.")
 
     def copy_files(self):
         # TODO: this does not belong here; move to copy class
@@ -78,11 +77,11 @@ class AudioTaggerOutput(object):
             # check if the new destination dir exists, if not then create it
             new_dir = os.path.dirname(new)
             if not os.path.isdir(new_dir):
-                self.log.info(f"{new_dir} does not exist, creating it...")
+                self.logger.info(f"{new_dir} does not exist, creating it...")
                 os.makedirs(new_dir)
 
             # copy the file to the destination
-            self.log.info(f"Copying {old} to {new}")
+            self.logger.info(f"Copying {old} to {new}")
             shutil.copy2(old, new)
 
             # If the old file is in the same directory as the new file,

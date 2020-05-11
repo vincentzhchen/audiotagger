@@ -133,5 +133,7 @@ if __name__ == "__main__":
 
     # RUN MAIN PROGRAM HERE.
     from audiotagger.api import api  # keep this lazy in case there is no config
-    api.AudioTaggerAPI(logger=logger, options=args).run()
+    api.AudioTaggerAPI(logger=logger,
+                       src=args.src,
+                       to_excel=args.write_to_excel).run()
     logger.info("Done.")

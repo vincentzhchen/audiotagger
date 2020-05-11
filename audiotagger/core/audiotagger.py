@@ -1,16 +1,18 @@
+
+# PROJECT LIB
 from audiotagger.data.fields import Fields as fld
 from audiotagger.modifier.audiotagger_modifier import AudioTaggerModifier as atm
+from audiotagger.util import audiotagger_logger
 
 
 class AudioTagger(object):
-    def __init__(self, input_data, logger, options):
-        self.log = logger
+    def __init__(self, input_data, logger=None):
+        self.logger = logger if (
+            logger is not None) else audiotagger_logger.get_logger()
         self.input_data = input_data
-        self.options = options
 
-    def execute(self):
+    def execute(self, modifier=None):
         metadata = self.input_data.get_metadata()
-        modifier = self.options.modifier
 
         # never modify paths or special columns (e.g. cover art)
         cols = [c for c in metadata if c not in fld.PATH_COLS + fld.COVER_COLS]
