@@ -1,8 +1,10 @@
 # STANDARD LIB
 import abc
+import pandas as pd
 
 # PROJECT LIB
 from audiotagger.data import fields
+from audiotagger.util import audiotagger_logger
 
 # ALIAS
 fld = fields.Fields
@@ -10,21 +12,30 @@ fld = fields.Fields
 
 class AudioTaggerBaseInputOutput(abc.ABC):
     def __init__(self, logger):
-        self.log = logger
+        self.logger = logger if (
+            logger is not None) else audiotagger_logger.get_logger()
+
+        self.metadata = pd.DataFrame()
 
     @abc.abstractmethod
     def write_to_excel(self):
-        """All IO classes should allow to write to an Excel file."""
-        pass
+        """All IO classes should allow to write to an Excel file.
+
+        """
+        raise NotImplementedError
 
     @abc.abstractmethod
     def write_to_csv(self):
-        """All IO classes should allow to write to a csv file."""
-        pass
+        """All IO classes should allow to write to a csv file.
+
+        """
+        raise NotImplementedError
 
     @abc.abstractmethod
     def set_metadata(self, df):
-        """Use a setter to enforce the metadata dataframe structure."""
+        """Use a setter to enforce the metadata dataframe structure.
+
+        """
         cols = set(fld.BASE_METADATA_COLS).difference(df.columns)
         if cols == set():
             self.metadata = df
