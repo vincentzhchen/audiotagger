@@ -2,19 +2,16 @@
 import pandas as pd
 import pytest
 
-# DEPENDENCIES
-import redquill as rq
-
 # PROJECT LIB
 from audiotagger.core import paths
 from audiotagger.data import fields
 from audiotagger.data import input as at_in
+from audiotagger.util import audiotagger_logger
 
 # ALIAS
 fld = fields.Fields()
 
-logger = rq.initialize_logger(paths.audiotagger_log_dir(),
-                              "test_audiotagger_input.log")
+logger = audiotagger_logger.get_logger(name="test_audiotagger_input.log")
 
 
 @pytest.fixture
@@ -45,7 +42,7 @@ def input_object():
 
 
 def test_get_metadata_raises_if_metadata_not_set():
-    with pytest.raises(ValueError):
+    with pytest.raises(AttributeError):
         input_obj = at_in.AudioTaggerInput(logger)
         input_obj.get_metadata()
 
