@@ -1,9 +1,9 @@
 # PROJECT LIB
-from audiotagger.data import base_io, loader
+from audiotagger.data import _base_io, loader
 from audiotagger.util import input_output_util as ioutil
 
 
-class AudioTaggerInput(base_io.AudioTaggerBaseInputOutput):
+class AudioTaggerInput(_base_io.AudioTaggerBaseInputOutput):
     """Holds all necessary inputs for audiotagger project.
 
     """

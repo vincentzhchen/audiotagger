@@ -1,3 +1,7 @@
+"""Base structure for input / output.
+
+"""
+
 # STANDARD LIB
 import abc
 import pandas as pd
@@ -11,6 +15,9 @@ fld = fields.Fields
 
 
 class AudioTaggerBaseInputOutput(abc.ABC):
+    """Contains all the methods that an input / output would need to implement.
+
+    """
     def __init__(self, logger):
         self.logger = logger if (
             logger is not None) else audiotagger_logger.get_logger()
