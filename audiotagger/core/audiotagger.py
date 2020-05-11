@@ -1,3 +1,6 @@
+"""All tagging takes place here.
+
+"""
 
 # PROJECT LIB
 from audiotagger.data.fields import Fields as fld
@@ -5,13 +8,24 @@ from audiotagger.modifier.audiotagger_modifier import AudioTaggerModifier as atm
 from audiotagger.util import audiotagger_logger
 
 
-class AudioTagger(object):
+class AudioTagger():
+    """Main tagging class.
+
+    """
     def __init__(self, input_data, logger=None):
         self.logger = logger if (
             logger is not None) else audiotagger_logger.get_logger()
         self.input_data = input_data
 
     def execute(self, modifier=None):
+        """Implementation.
+
+        Args:
+            modifier (str, default None): modifier type to apply.
+
+        Returns:
+            metadata (pd.DataFrame): Returns metadata df.
+        """
         metadata = self.input_data.get_metadata()
 
         # never modify paths or special columns (e.g. cover art)
@@ -33,7 +47,7 @@ class AudioTagger(object):
         if modifier is None:
             return metadata
 
-        if self.options.modifier:
+        if modifier is not None:
             # TODO: apply modifiers here
             pass
 
