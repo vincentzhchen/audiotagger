@@ -2,22 +2,21 @@
 import os
 import pytest
 
-# DEPENDENCIES
-import redquill as rq
-
 # PROJECT LIB
 from audiotagger.core import paths
 from audiotagger.data import fields, loader
+from audiotagger.util import audiotagger_logger
 
 # ALIAS
 fld = fields.Fields
-logger = rq.initialize_logger(paths.audiotagger_log_dir(),
-                              "test_audiotagger_loader.log")
+logger = audiotagger_logger.get_logger(name="test_audiotagger_loader.log")
 
 
 @pytest.fixture
 def src_files():
-    """Returns an Excel file path."""
+    """Returns an Excel file path.
+
+    """
     return os.path.join(paths.audiotagger_test_dir(), "test_files")
 
 

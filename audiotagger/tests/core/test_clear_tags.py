@@ -3,42 +3,12 @@ import pandas as pd
 import pytest
 
 # PROJECT LIB
-from audiotagger.data import fields
-from audiotagger.data import input as at_in
+from audiotagger.core import clear_tags
+from audiotagger.data import fields, input as at_in
 from audiotagger.util import audiotagger_logger
 
-# ALIAS
-fld = fields.Fields()
-
-logger = audiotagger_logger.get_logger(name="test_audiotagger_input.log")
-
-
-@pytest.fixture
-def raw_input_object():
-    """Returns an unmodified input instance.
-
-    This has no data in it.
-
-    """
-    return at_in.AudioTaggerInput(logger)
-
-
-def test_set_metadata_with_incorrect_metadata_df(raw_input_object):
-    with pytest.raises(ValueError):
-        df = pd.DataFrame()
-        raw_input_object.set_metadata(df)
-
-
-def test_set_metadata_with_correct_metadata_df(raw_input_object):
-    df = pd.DataFrame(columns=fld.BASE_METADATA_COLS)
-    raw_input_object.set_metadata(df)
-    assert set(fld.BASE_METADATA_COLS).difference(df.columns) == set()
-
-
-def test_get_metadata_raises_if_metadata_not_set():
-    with pytest.raises(AttributeError):
-        input_obj = at_in.AudioTaggerInput(logger)
-        input_obj.get_metadata()
+fld = fields.Fields
+logger = audiotagger_logger.get_logger(name="test_audiotagger_clear_tags.log")
 
 
 @pytest.fixture
@@ -56,6 +26,17 @@ def input_object():
     return input_obj
 
 
-def test_get_metadata_can_retrieve_data(input_object):
-    out = input_object.get_metadata()
-    assert set(fld.BASE_METADATA_COLS).difference(out.columns) == set()
+def test_clear_all_tags(input_object):
+    ct = clear_tags.ClearTags(input_data=input_object, logger=logger)
+    df = ct.execute(clear_type="all")
+
+    reference = input_object.get_metadata()[fld.PATH_COLS]
+    assert df.equals(reference)
+
+
+def test_clear_excess_tags(input_object):
+    ct = clear_tags.ClearTags(input_data=input_object, logger=logger)
+    df = ct.execute(clear_type="excess")
+
+    reference = input_object.get_metadata()[fld.BASE_METADATA_COLS]
+    assert df.equals(reference)
