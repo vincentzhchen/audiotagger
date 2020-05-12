@@ -7,11 +7,30 @@ from mutagen.easymp4 import MP4
 
 
 def get_file_extension(path_to_some_file):
+    """Get file extension of a given filepath.
+
+    Args:
+        path_to_some_file (str): filepath.
+
+    Returns:
+        file_extension (str): Returns the file extension.
+    """
     filename, file_extension = os.path.splitext(path_to_some_file)
     return file_extension
 
 
 def _is_audio_file_ext(path_to_some_file, extension):
+    """Helper method to check if audio file extension.
+
+    Args:
+        path_to_some_file (str): filepath.
+        extension (str): an audio file extension, e.g. ".wav", to compare
+            against.
+
+    Returns:
+        anonymous (bool): Returns True if the path extension matches
+            the given extension.
+    """
     file_extension = get_file_extension(path_to_some_file)
     return True if file_extension == extension else False
 
@@ -30,18 +49,35 @@ def is_xlsx(path_to_some_file):
 
 
 def is_wav(path_to_some_file):
+    """Check if file is a wav file.
+
+    """
     return _is_audio_file_ext(path_to_some_file, ".wav")
 
 
 def is_m4a(path_to_some_file):
+    """Check if file is a m4a file.
+
+    """
     return _is_audio_file_ext(path_to_some_file, ".m4a")
 
 
 def is_flac(path_to_some_file):
+    """Check if file is a flac file.
+
+    """
     return _is_audio_file_ext(path_to_some_file, ".flac")
 
 
 def filter_wav_files(arg):
+    """Get back a list of wav files.
+
+    Args:
+        arg (str or list of str): a list of audio filepaths.
+
+    Returns:
+        anonymous (list): Returns a list of all wav files found in arg.
+    """
     if isinstance(arg, str):
         arg = [arg]
 
@@ -49,6 +85,14 @@ def filter_wav_files(arg):
 
 
 def filter_m4a_files(arg):
+    """Get back a list of m4a files.
+
+    Args:
+        arg (str or list of str): a list of audio filepaths.
+
+    Returns:
+        anonymous (list): Returns a list of all m4a files found in arg.
+    """
     if isinstance(arg, str):
         arg = [arg]
 
@@ -56,6 +100,14 @@ def filter_m4a_files(arg):
 
 
 def filter_flac_files(arg):
+    """Get back a list of flac files.
+
+    Args:
+        arg (str or list of str): a list of audio filepaths.
+
+    Returns:
+        anonymous (list): Returns a list of all flac files found in arg.
+    """
     if isinstance(arg, str):
         arg = [arg]
 
@@ -63,15 +115,17 @@ def filter_flac_files(arg):
 
 
 def _generate_metadata_records_from_m4a(path):
-    d = dict(MP4(path).tags, **{"PATH_SRC": [path], "PATH_DST": [path]})
+    """Get a dictionary of metadata records from m4a filepath.
 
+    """
+    d = dict(MP4(path).tags, **{"PATH_SRC": [path], "PATH_DST": [path]})
     return d
 
 
 def generate_metadata_records_from_m4a(m4a_file_paths):
     """Generate a list of metadata records from m4a file paths.
 
-    Also append the file path into the tags.
+    This creates the tags using parallel processing.
 
     Args:
         m4a_file_paths (list of str): m4a file paths.
@@ -81,11 +135,17 @@ def generate_metadata_records_from_m4a(m4a_file_paths):
     """
     with ProcessPoolExecutor() as executor:
         out = executor.map(_generate_metadata_records_from_m4a,
-                           m4a_file_paths, chunksize=10)
+                           m4a_file_paths,
+                           chunksize=10)
     return list(out)
 
 
 def generate_metadata_records(file_paths, extension="m4a"):
+    """Wrapper to generate metadata records.
+
+    This can be extended to work with various file types.
+
+    """
     if extension == "m4a":
         return generate_metadata_records_from_m4a(file_paths)
 
