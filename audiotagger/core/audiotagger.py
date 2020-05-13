@@ -3,7 +3,7 @@
 """
 
 # PROJECT LIB
-from audiotagger.data.fields import Fields as fld
+from audiotagger.data import fields as fld
 from audiotagger.modifier.audiotagger_modifier import AudioTaggerModifier as atm
 from audiotagger.util import audiotagger_logger
 

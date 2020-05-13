@@ -2,7 +2,7 @@ import os
 import warnings
 from mutagen.mp4 import MP4Tags, MP4Cover
 
-from audiotagger.data.fields import Fields as fld
+from audiotagger.data import fields as fld
 
 
 def enforce_dtypes(df, io_type):
@@ -121,15 +121,15 @@ def build_track_and_disc_tuples(df, drop_components=True):
 
     """
     if (fld.TRACK_NO.CID in df) and (fld.TOTAL_TRACKS.CID in df):
-        df[fld.TRACK_NO_TUPLE.CID] = tuple(zip(
-            df[fld.TRACK_NO.CID], df[fld.TOTAL_TRACKS.CID]))
+        df[fld.TRACK_NO_TUPLE.CID] = tuple(
+            zip(df[fld.TRACK_NO.CID], df[fld.TOTAL_TRACKS.CID]))
 
         if drop_components:
             df = df.drop(columns=[fld.TRACK_NO.CID, fld.TOTAL_TRACKS.CID])
 
     if (fld.DISC_NO.CID in df) and (fld.TOTAL_DISCS.CID in df):
-        df[fld.DISC_NO_TUPLE.CID] = tuple(zip(
-            df[fld.DISC_NO.CID], df[fld.TOTAL_DISCS.CID]))
+        df[fld.DISC_NO_TUPLE.CID] = tuple(
+            zip(df[fld.DISC_NO.CID], df[fld.TOTAL_DISCS.CID]))
 
         if drop_components:
             df = df.drop(columns=[fld.DISC_NO.CID, fld.TOTAL_DISCS.CID])
@@ -141,9 +141,10 @@ def sort_metadata(df):
     """Given a metadata dataframe, sort the dataframe.
 
     """
-    df = df.sort_values(
-        [fld.ALBUM_ARTIST.CID, fld.YEAR.CID, fld.ALBUM.CID,
-         fld.DISC_NO.CID, fld.TRACK_NO.CID, fld.TITLE.CID])
+    df = df.sort_values([
+        fld.ALBUM_ARTIST.CID, fld.YEAR.CID, fld.ALBUM.CID, fld.DISC_NO.CID,
+        fld.TRACK_NO.CID, fld.TITLE.CID
+    ])
 
     excess_cols = [c for c in df if c not in fld.BASE_METADATA_COLS]
     cols = fld.BASE_METADATA_COLS + excess_cols
@@ -214,8 +215,8 @@ def construct_cover_object(df):
     # if cover tag exists, and there is no cover file, keep original metadata
     # otherwise take potential cover from cover file
     if fld.COVER.CID in df:
-        df[fld.COVER.CID] = df["TMP_COVER"].where(
-            df["TMP_COVER"].notnull(), df[fld.COVER.CID])
+        df[fld.COVER.CID] = df["TMP_COVER"].where(df["TMP_COVER"].notnull(),
+                                                  df[fld.COVER.CID])
     else:
         df[fld.COVER.CID] = df["TMP_COVER"]
 

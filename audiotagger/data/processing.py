@@ -3,11 +3,8 @@
 """
 
 # PROJECT LIB
-from audiotagger.data import fields
+from audiotagger.data import fields as fld
 from audiotagger.util import (audiotagger_logger, tag_util as tutil)
-
-# ALIAS
-fld = fields.Fields
 
 
 class RawDataProcessor():

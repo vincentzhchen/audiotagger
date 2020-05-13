@@ -7,12 +7,9 @@ import os
 import pandas as pd
 
 # PROJECT LIB
-from audiotagger.data import fields
+from audiotagger.data import fields as fld
 from audiotagger.util import (audiotagger_logger, file_util as futil, tag_util
                               as tutil)
-
-# ALIAS
-fld = fields.Fields
 
 
 class AudioTaggerMetadataLoader():

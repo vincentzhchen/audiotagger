@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import sqlite3
 
-from audiotagger.data.fields import Fields as fld
+from audiotagger.data import fields as fld
 from audiotagger.util import file_util as futil
 
 
@@ -37,6 +37,6 @@ class CreatePlaylist(object):
         return df.loc[df["ADD"] == 1, "FILE_SIZE"].sum()
 
     def _determine_file_size(self, df_metadata):
-        df_metadata["FILE_SIZE"] = df_metadata[
-            fld.PATH_SRC.CID].apply(self.get_file_size)
+        df_metadata["FILE_SIZE"] = df_metadata[fld.PATH_SRC.CID].apply(
+            self.get_file_size)
         return df_metadata

@@ -1,413 +1,303 @@
 # TODO: remove the class Fields, it is not necessary
 
+
+class Field():
+    id3_to_field = {}
+    field_to_id3 = {}
+
+    def __init__(self, id3, cid, input_type, output_type):
+        self._id3 = id3
+        self._cid = cid
+        self._input_type = input_type
+        self._output_type = output_type
+
+        # cache
+        self.id3_to_field[self.ID3] = self.CID
+        self.field_to_id3[self.CID] = self.ID3
+
+    @property
+    def ID3(self):
+        return self._id3
+
+    @property
+    def CID(self):
+        return self._cid
+
+    @property
+    def INPUT_TYPE(self):
+        return self._input_type
+
+    @property
+    def OUTPUT_TYPE(self):
+        return self._output_type
+
+    @staticmethod
+    def ID3_to_field():
+        # TODO: deprecate
+        return Field.TO_FIELD()
+
+    @staticmethod
+    def Field_to_ID3():
+        # TODO: deprecate
+        return Field.TO_ID3()
+
+    @staticmethod
+    def TO_ID3():
+        return Field.field_to_id3
+
+    @staticmethod
+    def TO_FIELD():
+        return Field.id3_to_field
+
+
 class Fields(object):
-    # PATH COLS
-    PATH_SRC = type(
-        "PATH_SRC", (),
-        {
-            "ID3": "PATH_SRC",
-            "CID": "PATH_SRC",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": str
-        }
-    )
-
-    PATH_DST = type(
-        "PATH_DST", (),
-        {
-            "ID3": "PATH_DST",
-            "CID": "PATH_DST",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": str
-        }
-    )
-
-    PATH_COLS = [PATH_SRC.CID, PATH_DST.CID]
-
-    # COVER COLS
-    COVER_SRC = type(
-        "COVER_SRC", (),
-        {
-            "ID3": "COVER_SRC",
-            "CID": "COVER_SRC",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": str
-        }
-    )
-
-    COVER_DST = type(
-        "COVER_DST", (),
-        {
-            "ID3": "COVER_DST",
-            "CID": "COVER_DST",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": str
-        }
-    )
-
-    COVER = type(
-        "COVER", (),
-        {
-            "ID3": "covr",
-            "CID": "COVER",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": None
-        }
-    )
-
-    COVER_COLS = [COVER_SRC.CID, COVER_DST.CID, COVER.CID]
-
-    # BASE METADATA COLS
-    TITLE = type(
-        "TITLE", (),
-        {
-            "ID3": "\xa9nam",
-            "CID": "TITLE",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": str
-        }
-    )
-
-    # custom field for easier editing
-    TRACK_NO = type(
-        "TRACK_NO", (),
-        {
-            "ID3": "TRACK_NO",
-            "CID": "TRACK_NO",
-            "INPUT_TYPE": int,
-            "OUTPUT_TYPE": int
-        }
-    )
-
-    # custom field for easier editing
-    TOTAL_TRACKS = type(
-        "TOTAL_TRACKS", (),
-        {
-            "ID3": "TOTAL_TRACKS",
-            "CID": "TOTAL_TRACKS",
-            "INPUT_TYPE": int,
-            "OUTPUT_TYPE": int
-        }
-    )
-
-    # this field is the one going into the audio file
-    TRACK_NO_TUPLE = type(
-        "TRACK_NO_TUPLE", (),
-        {
-            "ID3": "trkn",
-            "CID": "TRACK_NO_TUPLE",
-            "INPUT_TYPE": tuple,  # tuple of integer
-            "OUTPUT_TYPE": tuple  # tuple of integer
-        }
-    )
-
-    # custom field for easier editing
-    DISC_NO = type(
-        "DISC_NO", (),
-        {
-            "ID3": "DISC_NO",
-            "CID": "DISC_NO",
-            "INPUT_TYPE": int,
-            "OUTPUT_TYPE": int
-        }
-    )
-
-    # custom field for easier editing
-    TOTAL_DISCS = type(
-        "TOTAL_DISCS", (),
-        {
-            "ID3": "TOTAL_DISCS",
-            "CID": "TOTAL_DISCS",
-            "INPUT_TYPE": int,
-            "OUTPUT_TYPE": int
-        }
-    )
-
-    # this field is the one going into the audio file
-    DISC_NO_TUPLE = type(
-        "DISC_NO_TUPLE", (),
-        {
-            "ID3": "disk",
-            "CID": "DISC_NO_TUPLE",
-            "INPUT_TYPE": tuple,  # tuple of integer
-            "OUTPUT_TYPE": tuple  # tuple of integer
-        }
-    )
-
-    ARTIST = type(
-        "ARTIST", (),
-        {
-            "ID3": "\xa9ART",
-            "CID": "ARTIST",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": str
-        }
-    )
-
-    ALBUM_ARTIST = type(
-        "ALBUM_ARTIST", (),
-        {
-            "ID3": "aART",
-            "CID": "ALBUM_ARTIST",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": str
-        }
-    )
-
-    YEAR = type(
-        "YEAR", (), {
-            "ID3": "\xa9day",
-            "CID": "YEAR",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": str
-        }
-    )
-
-    ALBUM = type(
-        "ALBUM", (),
-        {
-            "ID3": "\xa9alb",
-            "CID": "ALBUM",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": str
-        }
-    )
-
-    GENRE = type(
-        "GENRE", (),
-        {
-            "ID3": "\xa9gen",
-            "CID": "GENRE",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": str
-        }
-    )
-
-    RATING = type(
-        "RATING", (),
-        {
-            "ID3": "----:com.apple.iTunes:rating",
-            "CID": "RATING",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": "utf-8"
-        }
-    )
-
-    BASE_METADATA_COLS = PATH_COLS + [
-        TITLE.CID, TRACK_NO.CID, TOTAL_TRACKS.CID,
-        DISC_NO.CID, TOTAL_DISCS.CID, ARTIST.CID, ALBUM_ARTIST.CID,
-        YEAR.CID, ALBUM.CID, GENRE.CID, RATING.CID]
 
     # ADDITIONAL METADATA COLS
-    COMPOSER = type(
-        "COMPOSER", (),
-        {
-            "ID3": "\xa9wrt",
-            "CID": "COMPOSER",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": str
-        }
-    )
+    COMPOSER = type("COMPOSER", (), {
+        "ID3": "\xa9wrt",
+        "CID": "COMPOSER",
+        "INPUT_TYPE": str,
+        "OUTPUT_TYPE": str
+    })
 
-    COMMENT = type(
-        "COMMENT", (),
-        {
-            "ID3": "\xa9cmt",
-            "CID": "COMMENT",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": str
-        }
-    )
+    COMMENT = type("COMMENT", (), {
+        "ID3": "\xa9cmt",
+        "CID": "COMMENT",
+        "INPUT_TYPE": str,
+        "OUTPUT_TYPE": str
+    })
 
-    WORK = type(
-        "WORK", (),
-        {
-            "ID3": "\xa9wrk",
-            "CID": "WORK",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": str
-        }
-    )
+    WORK = type("WORK", (), {
+        "ID3": "\xa9wrk",
+        "CID": "WORK",
+        "INPUT_TYPE": str,
+        "OUTPUT_TYPE": str
+    })
 
-    MOVEMENT = type(
-        "MOVEMENT", (),
-        {
-            "ID3": "\xa9mvn",
-            "CID": "MOVEMENT",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": str
-        }
-    )
+    MOVEMENT = type("MOVEMENT", (), {
+        "ID3": "\xa9mvn",
+        "CID": "MOVEMENT",
+        "INPUT_TYPE": str,
+        "OUTPUT_TYPE": str
+    })
 
     ADDED_TIMESTAMP = type(
-        "ADDED_TIMESTAMP", (),
-        {
+        "ADDED_TIMESTAMP", (), {
             "ID3": "----:com.apple.iTunes:added_timestamp",
             "CID": "ADDED_TIMESTAMP",
             "INPUT_TYPE": str,
             "OUTPUT_TYPE": "utf-8"
-        }
-    )
+        })
 
     FIRST_PLAYED_TIMESTAMP = type(
-        "FIRST_PLAYED_TIMESTAMP", (),
-        {
+        "FIRST_PLAYED_TIMESTAMP", (), {
             "ID3": "----:com.apple.iTunes:first_played_timestamp",
             "CID": "FIRST_PLAYED_TIMESTAMP",
             "INPUT_TYPE": str,
             "OUTPUT_TYPE": "utf-8"
-        }
-    )
+        })
 
     LAST_PLAYED_TIMESTAMP = type(
-        "LAST_PLAYED_TIMESTAMP", (),
-        {
+        "LAST_PLAYED_TIMESTAMP", (), {
             "ID3": "----:com.apple.iTunes:last_played_timestamp",
             "CID": "LAST_PLAYED_TIMESTAMP",
             "INPUT_TYPE": str,
             "OUTPUT_TYPE": "utf-8"
-        }
-    )
+        })
 
     PLAY_COUNT = type(
-        "PLAY_COUNT", (),
-        {
+        "PLAY_COUNT", (), {
             "ID3": "----:com.apple.iTunes:play_count",
             "CID": "PLAY_COUNT",
             "INPUT_TYPE": str,
             "OUTPUT_TYPE": "utf-8"
-        }
-    )
+        })
 
     REPLAYGAIN_ALBUM_GAIN = type(
-        "REPLAYGAIN_ALBUM_GAIN", (),
-        {
+        "REPLAYGAIN_ALBUM_GAIN", (), {
             "ID3": "----:com.apple.iTunes:replaygain_album_gain",
             "CID": "REPLAYGAIN_ALBUM_GAIN",
             "INPUT_TYPE": str,
             "OUTPUT_TYPE": "utf-8"
-        }
-    )
+        })
 
     REPLAYGAIN_ALBUM_PEAK = type(
-        "REPLAYGAIN_ALBUM_PEAK", (),
-        {
+        "REPLAYGAIN_ALBUM_PEAK", (), {
             "ID3": "----:com.apple.iTunes:replaygain_album_peak",
             "CID": "REPLAYGAIN_ALBUM_PEAK",
             "INPUT_TYPE": str,
             "OUTPUT_TYPE": "utf-8"
-        }
-    )
+        })
 
     REPLAYGAIN_TRACK_GAIN = type(
-        "REPLAYGAIN_TRACK_GAIN", (),
-        {
+        "REPLAYGAIN_TRACK_GAIN", (), {
             "ID3": "----:com.apple.iTunes:replaygain_track_gain",
             "CID": "REPLAYGAIN_TRACK_GAIN",
             "INPUT_TYPE": str,
             "OUTPUT_TYPE": "utf-8"
-        }
-    )
+        })
 
     REPLAYGAIN_TRACK_PEAK = type(
-        "REPLAYGAIN_TRACK_PEAK", (),
-        {
+        "REPLAYGAIN_TRACK_PEAK", (), {
             "ID3": "----:com.apple.iTunes:replaygain_track_peak",
             "CID": "REPLAYGAIN_TRACK_PEAK",
             "INPUT_TYPE": str,
             "OUTPUT_TYPE": "utf-8"
-        }
-    )
+        })
 
     ACCURATE_RIP_DISC_ID = type(
-        "ACCURATE_RIP_DISC_ID", (),
-        {
+        "ACCURATE_RIP_DISC_ID", (), {
             "ID3": "----:com.apple.iTunes:AccurateRipDiscID",
             "CID": "ACCURATE_RIP_DISC_ID",
             "INPUT_TYPE": str,
             "OUTPUT_TYPE": "utf-8"
-        }
-    )
+        })
 
     ACCURATE_RIP_RESULT = type(
-        "ACCURATE_RIP_RESULT", (),
-        {
+        "ACCURATE_RIP_RESULT", (), {
             "ID3": "----:com.apple.iTunes:AccurateRipResult",
             "CID": "ACCURATE_RIP_RESULT",
             "INPUT_TYPE": str,
             "OUTPUT_TYPE": "utf-8"
-        }
-    )
+        })
 
     ENCODER_SETTINGS = type(
-        "ENCODER_SETTINGS", (),
-        {
+        "ENCODER_SETTINGS", (), {
             "ID3": "----:com.apple.iTunes:Encoder Settings",
             "CID": "ENCODER_SETTINGS",
             "INPUT_TYPE": str,
             "OUTPUT_TYPE": "utf-8"
-        }
-    )
+        })
 
     ENCODED_BY = type(
-        "ENCODED_BY", (),
-        {
+        "ENCODED_BY", (), {
             "ID3": "\xa9too",
             "CID": "ENCODED_BY",
             "INPUT_TYPE": str,
             "OUTPUT_TYPE": str
-        }
-    )
+        })
 
     ENCODER_APPLE = type(
-        "ENCODER_APPLE", (),
-        {
+        "ENCODER_APPLE", (), {
             "ID3": "----:com.apple.iTunes:Encoder",
             "CID": "ENCODER_APPLE",
             "INPUT_TYPE": str,
             "OUTPUT_TYPE": "utf-8"
-        }
-    )
+        })
 
     # TODO: should the CID be ENCODED_BY?
     ENCODER_ID3 = type(
-        "ENCODER_ID3", (),
-        {
+        "ENCODER_ID3", (), {
             "ID3": "\xa9enc",
             "CID": "ENCODER_ID3",
             "INPUT_TYPE": str,
             "OUTPUT_TYPE": str
-        }
-    )
+        })
 
     SOURCE = type(
-        "SOURCE", (),
-        {
+        "SOURCE", (), {
             "ID3": "----:com.apple.iTunes:Source",
             "CID": "SOURCE",
             "INPUT_TYPE": str,
             "OUTPUT_TYPE": "utf-8"
-        }
-    )
+        })
 
-    # CUSTOM COLS (non-metadata)
-    CUSTOM_COLS = [TRACK_NO.CID, TOTAL_TRACKS.CID, COVER_SRC.CID, COVER_DST.CID,
-                   DISC_NO.CID, TOTAL_DISCS.CID] + PATH_COLS
 
-    # MAPS (initialize to empty dicts)
-    ID3_to_field = {}
-    field_to_ID3 = {}
+# PATH COLS
+PATH_SRC = Field(id3="PATH_SRC",
+                 cid="PATH_SRC",
+                 input_type=str,
+                 output_type=str)
 
+PATH_DST = Field(id3="PATH_DST",
+                 cid="PATH_DST",
+                 input_type=str,
+                 output_type=str)
+
+PATH_COLS = [PATH_SRC.CID, PATH_DST.CID]
+
+# COVER COLS
+COVER_SRC = Field(id3="COVER_SRC",
+                  cid="COVER_SRC",
+                  input_type=str,
+                  output_type=str)
+
+COVER_DST = Field(id3="COVER_DST",
+                  cid="COVER_DST",
+                  input_type=str,
+                  output_type=str)
+
+COVER = Field(id3="covr", cid="COVER", input_type=str, output_type=None)
+
+COVER_COLS = [COVER_SRC.CID, COVER_DST.CID, COVER.CID]
+
+# BASE METADATA COLS
+TITLE = Field(id3="\xa9nam", cid="TITLE", input_type=str, output_type=str)
+
+# custom field for easier editing
+TRACK_NO = Field(id3="TRACK_NO",
+                 cid="TRACK_NO",
+                 input_type=int,
+                 output_type=int)
+
+# custom field for easier editing
+TOTAL_TRACKS = Field(id3="TOTAL_TRACKS",
+                     cid="TOTAL_TRACKS",
+                     input_type=int,
+                     output_type=int)
+
+# this field is the one going into the audio file
+TRACK_NO_TUPLE = Field(
+    id3="trkn",
+    cid="TRACK_NO_TUPLE",
+    input_type=tuple,  # tuple of integer
+    output_type=tuple)  # tuple of integer
+
+# custom field for easier editing
+DISC_NO = Field(id3="DISC_NO", cid="DISC_NO", input_type=int, output_type=int)
+
+# custom field for easier editing
+TOTAL_DISCS = Field(id3="TOTAL_DISCS",
+                    cid="TOTAL_DISCS",
+                    input_type=int,
+                    output_type=int)
+
+# this field is the one going into the audio file
+DISC_NO_TUPLE = Field(
+    id3="disk",
+    cid="DISC_NO_TUPLE",
+    input_type=tuple,  # tuple of integer
+    output_type=tuple)  # tuple of integer
+
+ARTIST = Field(id3="\xa9ART", cid="ARTIST", input_type=str, output_type=str)
+
+ALBUM_ARTIST = Field(id3="aART",
+                     cid="ALBUM_ARTIST",
+                     input_type=str,
+                     output_type=str)
+
+YEAR = Field(id3="\xa9day", cid="YEAR", input_type=str, output_type=str)
+
+ALBUM = Field(id3="\xa9alb", cid="ALBUM", input_type=str, output_type=str)
+
+GENRE = Field(id3="\xa9gen", cid="GENRE", input_type=str, output_type=str)
+
+RATING = Field(id3="----:com.apple.iTunes:rating",
+               cid="RATING",
+               input_type=str,
+               output_type="utf-8")
+
+BASE_METADATA_COLS = PATH_COLS + [
+    TITLE.CID, TRACK_NO.CID, TOTAL_TRACKS.CID, DISC_NO.CID, TOTAL_DISCS.CID,
+    ARTIST.CID, ALBUM_ARTIST.CID, YEAR.CID, ALBUM.CID, GENRE.CID, RATING.CID
+]
+
+# CUSTOM COLS (non-metadata)
+CUSTOM_COLS = [
+    TRACK_NO.CID, TOTAL_TRACKS.CID, COVER_SRC.CID, COVER_DST.CID, DISC_NO.CID,
+    TOTAL_DISCS.CID
+] + PATH_COLS
 
 # MAPS
-#   Generate maps after the class has been made and set
-#   them back as attributes.
-ID3_to_field = {eval(f"Fields.{f}.ID3"): eval(f"Fields.{f}.CID")
-                for f in dir(Fields) if
-                (not eval(f"Fields.{f}.__class__") != type) and ("__" not in f)}
-setattr(Fields, "ID3_to_field", ID3_to_field)
-
-field_to_ID3 = {eval(f"Fields.{f}.CID"): eval(f"Fields.{f}.ID3")
-                for f in dir(Fields) if
-                (not eval(f"Fields.{f}.__class__") != type) and ("__" not in f)}
-setattr(Fields, "field_to_ID3", field_to_ID3)
+ID3_to_field = Field.ID3_to_field()
+field_to_ID3 = Field.Field_to_ID3()

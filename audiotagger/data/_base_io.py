@@ -7,11 +7,8 @@ import abc
 import pandas as pd
 
 # PROJECT LIB
-from audiotagger.data import fields
+from audiotagger.data import fields as fld
 from audiotagger.util import audiotagger_logger
-
-# ALIAS
-fld = fields.Fields
 
 
 class AudioTaggerBaseInputOutput(abc.ABC):
