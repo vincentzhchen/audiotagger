@@ -1,3 +1,7 @@
+"""Input structure for all project data.
+
+"""
+
 # PROJECT LIB
 from audiotagger.data import _base_io, loader, processing
 from audiotagger.util import input_output_util as ioutil
@@ -29,6 +33,7 @@ class AudioTaggerInput(_base_io.AudioTaggerBaseInputOutput):
         Returns:
             void
         """
+        self.logger.info("Loading from %s", src)
         ldr = loader.AudioTaggerMetadataLoader(src=src, logger=self.logger)
         raw_data = ldr.load_metadata_df()
 
