@@ -1,16 +1,21 @@
+"""Loaders for various sources.
+
+"""
+
 # STANDARD LIB
 import os
 import pandas as pd
 
 # PROJECT LIB
 from audiotagger.data import fields
-from audiotagger.util import file_util as futil, tag_util as tutil
+from audiotagger.util import (audiotagger_logger, file_util as futil, tag_util
+                              as tutil)
 
 # ALIAS
 fld = fields.Fields
 
 
-class AudioTaggerMetadataLoader(object):
+class AudioTaggerMetadataLoader():
     """Loads all metadata from source.
 
     This should be separated from AudioTaggerInput
@@ -19,14 +24,13 @@ class AudioTaggerMetadataLoader(object):
     would set as needed.
 
     """
-
-    def __init__(self, src, logger):
+    def __init__(self, src, logger=None):
         if not isinstance(src, str):
             raise Exception("INVALID SOURCE")
-        else:
-            self.src = src
 
-        self.log = logger
+        self.src = src
+        self.logger = logger if (
+            logger is not None) else audiotagger_logger.get_logger()
 
     def load_metadata_df(self):
         """Loads metadata dataframe.
@@ -77,52 +81,18 @@ class AudioTaggerMetadataLoader(object):
             metadata (pd.DataFrame): Returns a metadata dataframe.
         """
         m4a_file_paths = futil.traverse_directory(self.src, "m4a")
-        self.log.info(f"LOADED {len(m4a_file_paths)} file paths.")
+        self.logger.info("LOADED %s file paths.", len(m4a_file_paths))
         if not m4a_file_paths:
             raise Exception("No m4a files found, exiting program.")
 
         metadata_records = futil.generate_metadata_records(m4a_file_paths)
-        self.log.info(f"LOADED {len(metadata_records)} records.")
+        self.logger.info("LOADED %s records.", len(metadata_records))
 
         metadata = pd.DataFrame(metadata_records)
-        metadata = metadata.rename(columns={"PATH_SRC": fld.PATH_SRC.CID,
-                                            "PATH_DST": fld.PATH_DST.CID, })
-        self.log.info(f"LOADED raw metadata df, shape: {metadata.shape}.")
+        metadata = metadata.rename(columns={
+            "PATH_SRC": fld.PATH_SRC.CID,
+            "PATH_DST": fld.PATH_DST.CID,
+        })
+        self.logger.info("LOADED raw metadata df, shape: %s.", metadata.shape)
 
-        metadata = metadata.rename(columns=fld.ID3_to_field)
-        skip_cols = [c for c in metadata if c not in fld.ID3_to_field.values()]
-        if skip_cols:
-            self.log.info(f"SKIPPED these fields: {skip_cols}.")
-        existing_cols = [c for c in metadata if c in fld.ID3_to_field.values()]
-        metadata = metadata[existing_cols]
-
-        # flatten list metadata records; missing values are NaN from pandas
-        metadata = metadata.applymap(
-            lambda x: x[0] if not isinstance(x, float) else x)
-        self.log.debug(f"Flattened list metadata records.")
-
-        metadata = tutil.split_track_and_disc_tuples(df=metadata)
-        self.log.debug(f"Split track and disc tuples.")
-
-        # TODO: hack to fill missing disc numbers
-        if fld.DISC_NO not in metadata:
-            metadata[fld.DISC_NO.CID] = 1
-            metadata[fld.TOTAL_DISCS.CID] = 1
-        metadata[fld.DISC_NO.CID].fillna(1, inplace=True)
-        metadata[fld.TOTAL_DISCS.CID].fillna(1, inplace=True)
-
-        metadata = tutil.enforce_dtypes(df=metadata,
-                                        io_type="INPUT_FROM_AUDIO_FILE")
-        self.log.debug(f"Enforced data types.")
-
-        # if missing base metadata col, add it back
-        missing = [c for c in fld.BASE_METADATA_COLS if c not in metadata]
-        for c in missing:
-            self.log.debug(f"{c} is a missing base metadata column -- "
-                           f"setting it with empty string.")
-
-            # everything is str except for disc and track no.
-            metadata[c] = ""
-
-        metadata = tutil.sort_metadata(metadata)
         return metadata

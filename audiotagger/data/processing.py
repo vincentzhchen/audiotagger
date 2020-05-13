@@ -1,0 +1,69 @@
+"""Process loaded data here.
+
+"""
+
+# PROJECT LIB
+from audiotagger.data import fields
+from audiotagger.util import (audiotagger_logger, tag_util as tutil)
+
+# ALIAS
+fld = fields.Fields
+
+
+class RawDataProcessor():
+    def __init__(self, logger=None):
+        self.logger = logger if (
+            logger is not None) else audiotagger_logger.get_logger()
+
+    def process_loaded_data(self, metadata):
+        metadata = self._rename_raw_columns(metadata)
+
+        metadata = self._clean_data(metadata)
+
+        metadata = self._guarantee_base_metadata_cols(metadata)
+
+        metadata = tutil.sort_metadata(metadata)
+        return metadata
+
+    def _rename_raw_columns(self, metadata):
+        metadata = metadata.rename(columns=fld.ID3_to_field)
+        skip_cols = [c for c in metadata if c not in fld.ID3_to_field.values()]
+        if skip_cols:
+            self.logger.info("SKIPPED these fields: %s.", skip_cols)
+        existing_cols = [c for c in metadata if c in fld.ID3_to_field.values()]
+        metadata = metadata[existing_cols]
+        return metadata
+
+    def _clean_data(self, metadata):
+        # flatten list metadata records; missing values are NaN from pandas
+        metadata = metadata.applymap(lambda x: x[0]
+                                     if not isinstance(x, float) else x)
+        self.logger.debug("Flattened list metadata records.")
+
+        metadata = tutil.split_track_and_disc_tuples(df=metadata)
+        self.logger.debug("Split track and disc tuples.")
+
+        # TODO: hack to fill missing disc numbers
+        if fld.DISC_NO not in metadata:
+            metadata[fld.DISC_NO.CID] = 1
+            metadata[fld.TOTAL_DISCS.CID] = 1
+        metadata[fld.DISC_NO.CID].fillna(1, inplace=True)
+        metadata[fld.TOTAL_DISCS.CID].fillna(1, inplace=True)
+
+        metadata = tutil.enforce_dtypes(df=metadata,
+                                        io_type="INPUT_FROM_AUDIO_FILE")
+        self.logger.debug("Enforced data types.")
+
+        return metadata
+
+    def _guarantee_base_metadata_cols(self, metadata):
+        # if missing base metadata col, add it back
+        missing = [c for c in fld.BASE_METADATA_COLS if c not in metadata]
+        for c in missing:
+            self.logger.debug(
+                "%s is a missing base metadata column -- "
+                "setting it with empty string.", c)
+
+            # everything is str except for disc and track no.
+            metadata[c] = ""
+        return metadata
