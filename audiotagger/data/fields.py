@@ -1,6 +1,3 @@
-# TODO: remove the class Fields, it is not necessary
-
-
 class Field():
     id3_to_field = {}
     field_to_id3 = {}
@@ -48,159 +45,6 @@ class Field():
     @staticmethod
     def TO_FIELD():
         return Field.id3_to_field
-
-
-class Fields(object):
-
-    # ADDITIONAL METADATA COLS
-    COMPOSER = type("COMPOSER", (), {
-        "ID3": "\xa9wrt",
-        "CID": "COMPOSER",
-        "INPUT_TYPE": str,
-        "OUTPUT_TYPE": str
-    })
-
-    COMMENT = type("COMMENT", (), {
-        "ID3": "\xa9cmt",
-        "CID": "COMMENT",
-        "INPUT_TYPE": str,
-        "OUTPUT_TYPE": str
-    })
-
-    WORK = type("WORK", (), {
-        "ID3": "\xa9wrk",
-        "CID": "WORK",
-        "INPUT_TYPE": str,
-        "OUTPUT_TYPE": str
-    })
-
-    MOVEMENT = type("MOVEMENT", (), {
-        "ID3": "\xa9mvn",
-        "CID": "MOVEMENT",
-        "INPUT_TYPE": str,
-        "OUTPUT_TYPE": str
-    })
-
-    ADDED_TIMESTAMP = type(
-        "ADDED_TIMESTAMP", (), {
-            "ID3": "----:com.apple.iTunes:added_timestamp",
-            "CID": "ADDED_TIMESTAMP",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": "utf-8"
-        })
-
-    FIRST_PLAYED_TIMESTAMP = type(
-        "FIRST_PLAYED_TIMESTAMP", (), {
-            "ID3": "----:com.apple.iTunes:first_played_timestamp",
-            "CID": "FIRST_PLAYED_TIMESTAMP",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": "utf-8"
-        })
-
-    LAST_PLAYED_TIMESTAMP = type(
-        "LAST_PLAYED_TIMESTAMP", (), {
-            "ID3": "----:com.apple.iTunes:last_played_timestamp",
-            "CID": "LAST_PLAYED_TIMESTAMP",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": "utf-8"
-        })
-
-    PLAY_COUNT = type(
-        "PLAY_COUNT", (), {
-            "ID3": "----:com.apple.iTunes:play_count",
-            "CID": "PLAY_COUNT",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": "utf-8"
-        })
-
-    REPLAYGAIN_ALBUM_GAIN = type(
-        "REPLAYGAIN_ALBUM_GAIN", (), {
-            "ID3": "----:com.apple.iTunes:replaygain_album_gain",
-            "CID": "REPLAYGAIN_ALBUM_GAIN",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": "utf-8"
-        })
-
-    REPLAYGAIN_ALBUM_PEAK = type(
-        "REPLAYGAIN_ALBUM_PEAK", (), {
-            "ID3": "----:com.apple.iTunes:replaygain_album_peak",
-            "CID": "REPLAYGAIN_ALBUM_PEAK",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": "utf-8"
-        })
-
-    REPLAYGAIN_TRACK_GAIN = type(
-        "REPLAYGAIN_TRACK_GAIN", (), {
-            "ID3": "----:com.apple.iTunes:replaygain_track_gain",
-            "CID": "REPLAYGAIN_TRACK_GAIN",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": "utf-8"
-        })
-
-    REPLAYGAIN_TRACK_PEAK = type(
-        "REPLAYGAIN_TRACK_PEAK", (), {
-            "ID3": "----:com.apple.iTunes:replaygain_track_peak",
-            "CID": "REPLAYGAIN_TRACK_PEAK",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": "utf-8"
-        })
-
-    ACCURATE_RIP_DISC_ID = type(
-        "ACCURATE_RIP_DISC_ID", (), {
-            "ID3": "----:com.apple.iTunes:AccurateRipDiscID",
-            "CID": "ACCURATE_RIP_DISC_ID",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": "utf-8"
-        })
-
-    ACCURATE_RIP_RESULT = type(
-        "ACCURATE_RIP_RESULT", (), {
-            "ID3": "----:com.apple.iTunes:AccurateRipResult",
-            "CID": "ACCURATE_RIP_RESULT",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": "utf-8"
-        })
-
-    ENCODER_SETTINGS = type(
-        "ENCODER_SETTINGS", (), {
-            "ID3": "----:com.apple.iTunes:Encoder Settings",
-            "CID": "ENCODER_SETTINGS",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": "utf-8"
-        })
-
-    ENCODED_BY = type(
-        "ENCODED_BY", (), {
-            "ID3": "\xa9too",
-            "CID": "ENCODED_BY",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": str
-        })
-
-    ENCODER_APPLE = type(
-        "ENCODER_APPLE", (), {
-            "ID3": "----:com.apple.iTunes:Encoder",
-            "CID": "ENCODER_APPLE",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": "utf-8"
-        })
-
-    # TODO: should the CID be ENCODED_BY?
-    ENCODER_ID3 = type(
-        "ENCODER_ID3", (), {
-            "ID3": "\xa9enc",
-            "CID": "ENCODER_ID3",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": str
-        })
-
-    SOURCE = type(
-        "SOURCE", (), {
-            "ID3": "----:com.apple.iTunes:Source",
-            "CID": "SOURCE",
-            "INPUT_TYPE": str,
-            "OUTPUT_TYPE": "utf-8"
-        })
 
 
 # PATH COLS
@@ -297,6 +141,103 @@ CUSTOM_COLS = [
     TRACK_NO.CID, TOTAL_TRACKS.CID, COVER_SRC.CID, COVER_DST.CID, DISC_NO.CID,
     TOTAL_DISCS.CID
 ] + PATH_COLS
+
+# ADDITIONAL METADATA COLS
+COMPOSER = Field(id3="\xa9wrt",
+                 cid="COMPOSER",
+                 input_type=str,
+                 output_type=str)
+
+COMMENT = Field(id3="\xa9cmt", cid="COMMENT", input_type=str, output_type=str)
+
+WORK = Field(id3="\xa9wrk", cid="WORK", input_type=str, output_type=str)
+
+MOVEMENT = Field(id3="\xa9mvn",
+                 cid="MOVEMENT",
+                 input_type=str,
+                 output_type=str)
+
+ADDED_TIMESTAMP = Field(id3="----:com.apple.iTunes:added_timestamp",
+                        cid="ADDED_TIMESTAMP",
+                        input_type=str,
+                        output_type="utf-8")
+
+FIRST_PLAYED_TIMESTAMP = Field(
+    id3="----:com.apple.iTunes:first_played_timestamp",
+    cid="FIRST_PLAYED_TIMESTAMP",
+    input_type=str,
+    output_type="utf-8")
+
+LAST_PLAYED_TIMESTAMP = Field(
+    id3="----:com.apple.iTunes:last_played_timestamp",
+    cid="LAST_PLAYED_TIMESTAMP",
+    input_type=str,
+    output_type="utf-8")
+
+PLAY_COUNT = Field(id3="----:com.apple.iTunes:play_count",
+                   cid="PLAY_COUNT",
+                   input_type=str,
+                   output_type="utf-8")
+
+REPLAYGAIN_ALBUM_GAIN = Field(
+    id3="----:com.apple.iTunes:replaygain_album_gain",
+    cid="REPLAYGAIN_ALBUM_GAIN",
+    input_type=str,
+    output_type="utf-8")
+
+REPLAYGAIN_ALBUM_PEAK = Field(
+    id3="----:com.apple.iTunes:replaygain_album_peak",
+    cid="REPLAYGAIN_ALBUM_PEAK",
+    input_type=str,
+    output_type="utf-8")
+
+REPLAYGAIN_TRACK_GAIN = Field(
+    id3="----:com.apple.iTunes:replaygain_track_gain",
+    cid="REPLAYGAIN_TRACK_GAIN",
+    input_type=str,
+    output_type="utf-8")
+
+REPLAYGAIN_TRACK_PEAK = Field(
+    id3="----:com.apple.iTunes:replaygain_track_peak",
+    cid="REPLAYGAIN_TRACK_PEAK",
+    input_type=str,
+    output_type="utf-8")
+
+ACCURATE_RIP_DISC_ID = Field(id3="----:com.apple.iTunes:AccurateRipDiscID",
+                             cid="ACCURATE_RIP_DISC_ID",
+                             input_type=str,
+                             output_type="utf-8")
+
+ACCURATE_RIP_RESULT = Field(id3="----:com.apple.iTunes:AccurateRipResult",
+                            cid="ACCURATE_RIP_RESULT",
+                            input_type=str,
+                            output_type="utf-8")
+
+ENCODER_SETTINGS = Field(id3="----:com.apple.iTunes:Encoder Settings",
+                         cid="ENCODER_SETTINGS",
+                         input_type=str,
+                         output_type="utf-8")
+
+ENCODED_BY = Field(id3="\xa9too",
+                   cid="ENCODED_BY",
+                   input_type=str,
+                   output_type=str)
+
+ENCODER_APPLE = Field(id3="----:com.apple.iTunes:Encoder",
+                      cid="ENCODER_APPLE",
+                      input_type=str,
+                      output_type="utf-8")
+
+ENCODER_ID3 = Field(
+    id3="\xa9enc",
+    cid="ENCODER_ID3",  # TODO: should the CID be ENCODED_BY?
+    input_type=str,
+    output_type=str)
+
+SOURCE = Field(id3="----:com.apple.iTunes:Source",
+               cid="SOURCE",
+               input_type=str,
+               output_type="utf-8")
 
 # MAPS
 ID3_to_field = Field.ID3_to_field()

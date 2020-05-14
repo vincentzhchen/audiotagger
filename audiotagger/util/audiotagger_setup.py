@@ -9,11 +9,8 @@ import pandas as pd
 
 # PROJECT LIB
 from audiotagger.core import paths
-from audiotagger.data import fields
+from audiotagger.data import fields as fld
 from audiotagger.util import audiotagger_logger
-
-# ALIAS
-fld = fields.Fields()
 
 
 def generate_config():

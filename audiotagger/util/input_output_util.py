@@ -4,10 +4,7 @@ import pandas as pd
 
 # PROJECT LIB
 from audiotagger.core import paths
-from audiotagger.data import fields
-
-# ALIAS
-fld = fields.Fields()
+from audiotagger.data import fields as fld
 
 
 def generate_excel_path(context):
@@ -33,8 +30,7 @@ def write_to_excel(df, file_path, sheet_name="metadata"):
                             date_format="YYYY-MM-DD",
                             datetime_format="YYYY-MM-DD")
 
-    df.to_excel(writer, sheet_name=sheet_name,
-                index=False, encoding="utf-8")
+    df.to_excel(writer, sheet_name=sheet_name, index=False, encoding="utf-8")
 
     writer.save()
 
