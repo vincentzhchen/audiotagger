@@ -4,10 +4,9 @@ import pytest
 
 # PROJECT LIB
 from audiotagger.core import clear_tags
-from audiotagger.data import fields, input as at_in
+from audiotagger.data import fields as fld, input as at_in
 from audiotagger.util import audiotagger_logger
 
-fld = fields.Fields
 logger = audiotagger_logger.get_logger(name="test_audiotagger_clear_tags.log")
 
 

@@ -4,11 +4,9 @@ import pytest
 
 # PROJECT LIB
 from audiotagger.core import paths
-from audiotagger.data import fields, loader
+from audiotagger.data import fields as fld, loader
 from audiotagger.util import audiotagger_logger
 
-# ALIAS
-fld = fields.Fields
 logger = audiotagger_logger.get_logger(name="test_audiotagger_loader.log")
 
 
