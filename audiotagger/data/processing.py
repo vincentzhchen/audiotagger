@@ -8,6 +8,13 @@ from audiotagger.util import (audiotagger_logger, tag_util as tutil)
 
 
 class RawDataProcessor():
+    """For cleaning up data per metadata structure requirements.
+
+    There should be a different processor for different types of
+    loaded data (e.g. data loaded from an m4a needs to be processed
+    differently than data loaded from a metadata file).
+
+    """
     def __init__(self, logger=None):
         self.logger = logger if (
             logger is not None) else audiotagger_logger.get_logger()
