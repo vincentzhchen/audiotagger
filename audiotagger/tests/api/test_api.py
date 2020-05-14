@@ -20,5 +20,5 @@ def api_instance():
     return at
 
 
-def test_dry_run(api_instance):
+def test_api_instantiation(api_instance):
     api_instance.run()
