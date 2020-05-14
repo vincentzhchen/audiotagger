@@ -12,13 +12,16 @@ class RawDataProcessor():
         self.logger = logger if (
             logger is not None) else audiotagger_logger.get_logger()
 
-    def process_loaded_data(self, metadata):
+    def process_loaded_m4a_data(self, metadata):
         metadata = self._rename_raw_columns(metadata)
-
         metadata = self._clean_data(metadata)
-
+        metadata = self._enforce_dtypes(metadata)
         metadata = self._guarantee_base_metadata_cols(metadata)
+        metadata = tutil.sort_metadata(metadata)
+        return metadata
 
+    def process_loaded_metadatafile_data(self, metadata):
+        metadata = self._enforce_dtypes(metadata)
         metadata = tutil.sort_metadata(metadata)
         return metadata
 
@@ -47,10 +50,12 @@ class RawDataProcessor():
         metadata[fld.DISC_NO.CID].fillna(1, inplace=True)
         metadata[fld.TOTAL_DISCS.CID].fillna(1, inplace=True)
 
+        return metadata
+
+    def _enforce_dtypes(self, metadata):
         metadata = tutil.enforce_dtypes(df=metadata,
                                         io_type="INPUT_FROM_AUDIO_FILE")
         self.logger.debug("Enforced data types.")
-
         return metadata
 
     def _guarantee_base_metadata_cols(self, metadata):

@@ -7,7 +7,7 @@ import os
 import pandas as pd
 
 # PROJECT LIB
-from audiotagger.data import fields as fld
+from audiotagger.data import fields as fld, processing
 from audiotagger.util import (audiotagger_logger, file_util as futil, tag_util
                               as tutil)
 
@@ -66,9 +66,12 @@ class AudioTaggerMetadataLoader():
             metadata (pd.DataFrame): Returns a metadata dataframe.
         """
         metadata = pd.read_excel(self.src, sheet_name="metadata", dtype=str)
-        metadata = tutil.enforce_dtypes(df=metadata,
-                                        io_type="INPUT_FROM_METADATA_FILE")
-        metadata = tutil.sort_metadata(metadata)
+
+        # let external processor figure out how to clean the data and
+        # get it into the correct form
+        processor = processing.RawDataProcessor(self.logger)
+        metadata = processor.process_loaded_metadatafile_data(metadata)
+
         return metadata
 
     def _load_all_m4a_files_into_df_from_path(self):
@@ -91,5 +94,10 @@ class AudioTaggerMetadataLoader():
             "PATH_DST": fld.PATH_DST.CID,
         })
         self.logger.info("LOADED raw metadata df, shape: %s.", metadata.shape)
+
+        # let external processor figure out how to clean the data and
+        # get it into the correct form
+        processor = processing.RawDataProcessor(self.logger)
+        metadata = processor.process_loaded_m4a_data(metadata)
 
         return metadata

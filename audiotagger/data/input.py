@@ -3,7 +3,7 @@
 """
 
 # PROJECT LIB
-from audiotagger.data import _base_io, loader, processing
+from audiotagger.data import _base_io, loader
 from audiotagger.util import input_output_util as ioutil
 
 
@@ -35,10 +35,7 @@ class AudioTaggerInput(_base_io.AudioTaggerBaseInputOutput):
         """
         self.logger.info("Loading from %s", src)
         ldr = loader.AudioTaggerMetadataLoader(src=src, logger=self.logger)
-        raw_data = ldr.load_metadata_df()
-
-        processor = processing.RawDataProcessor(self.logger)
-        data = processor.process_loaded_data(raw_data)
+        data = ldr.load_metadata_df()
         self.set_metadata(data)
 
     def get_metadata(self):

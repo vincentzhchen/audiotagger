@@ -1,9 +1,20 @@
+"""Tag name support switching between human-readable names and tag names.
+
+"""
+
+
 class Field():
+    """A field describes an audio tag.
+
+    Fields are more than just tag names, they also contain information
+    about any ID3 keys, the data type of the tag, etc.
+
+    """
     id3_to_field = {}
     field_to_id3 = {}
 
-    def __init__(self, id3, cid, input_type, output_type):
-        self._id3 = id3
+    def __init__(self, tag_key, cid, input_type, output_type):
+        self._tag_key = tag_key
         self._cid = cid
         self._input_type = input_type
         self._output_type = output_type
@@ -13,47 +24,47 @@ class Field():
         self.field_to_id3[self.CID] = self.ID3
 
     @property
-    def ID3(self):
-        return self._id3
+    def ID3(self):  # pylint: disable=invalid-name
+        return self._tag_key
 
     @property
-    def CID(self):
+    def CID(self):  # pylint: disable=invalid-name
         return self._cid
 
     @property
-    def INPUT_TYPE(self):
+    def INPUT_TYPE(self):  # pylint: disable=invalid-name
         return self._input_type
 
     @property
-    def OUTPUT_TYPE(self):
+    def OUTPUT_TYPE(self):  # pylint: disable=invalid-name
         return self._output_type
 
     @staticmethod
-    def ID3_to_field():
+    def ID3_to_field():  # pylint: disable=invalid-name
         # TODO: deprecate
         return Field.TO_FIELD()
 
     @staticmethod
-    def Field_to_ID3():
+    def Field_to_ID3():  # pylint: disable=invalid-name
         # TODO: deprecate
         return Field.TO_ID3()
 
     @staticmethod
-    def TO_ID3():
+    def TO_ID3():  # pylint: disable=invalid-name
         return Field.field_to_id3
 
     @staticmethod
-    def TO_FIELD():
+    def TO_FIELD():  # pylint: disable=invalid-name
         return Field.id3_to_field
 
 
 # PATH COLS
-PATH_SRC = Field(id3="PATH_SRC",
+PATH_SRC = Field(tag_key="PATH_SRC",
                  cid="PATH_SRC",
                  input_type=str,
                  output_type=str)
 
-PATH_DST = Field(id3="PATH_DST",
+PATH_DST = Field(tag_key="PATH_DST",
                  cid="PATH_DST",
                  input_type=str,
                  output_type=str)
@@ -61,72 +72,78 @@ PATH_DST = Field(id3="PATH_DST",
 PATH_COLS = [PATH_SRC.CID, PATH_DST.CID]
 
 # COVER COLS
-COVER_SRC = Field(id3="COVER_SRC",
+COVER_SRC = Field(tag_key="COVER_SRC",
                   cid="COVER_SRC",
                   input_type=str,
                   output_type=str)
 
-COVER_DST = Field(id3="COVER_DST",
+COVER_DST = Field(tag_key="COVER_DST",
                   cid="COVER_DST",
                   input_type=str,
                   output_type=str)
 
-COVER = Field(id3="covr", cid="COVER", input_type=str, output_type=None)
+COVER = Field(tag_key="covr", cid="COVER", input_type=str, output_type=None)
 
 COVER_COLS = [COVER_SRC.CID, COVER_DST.CID, COVER.CID]
 
 # BASE METADATA COLS
-TITLE = Field(id3="\xa9nam", cid="TITLE", input_type=str, output_type=str)
+TITLE = Field(tag_key="\xa9nam", cid="TITLE", input_type=str, output_type=str)
 
 # custom field for easier editing
-TRACK_NO = Field(id3="TRACK_NO",
+TRACK_NO = Field(tag_key="TRACK_NO",
                  cid="TRACK_NO",
                  input_type=int,
                  output_type=int)
 
 # custom field for easier editing
-TOTAL_TRACKS = Field(id3="TOTAL_TRACKS",
+TOTAL_TRACKS = Field(tag_key="TOTAL_TRACKS",
                      cid="TOTAL_TRACKS",
                      input_type=int,
                      output_type=int)
 
 # this field is the one going into the audio file
 TRACK_NO_TUPLE = Field(
-    id3="trkn",
+    tag_key="trkn",
     cid="TRACK_NO_TUPLE",
     input_type=tuple,  # tuple of integer
     output_type=tuple)  # tuple of integer
 
 # custom field for easier editing
-DISC_NO = Field(id3="DISC_NO", cid="DISC_NO", input_type=int, output_type=int)
+DISC_NO = Field(tag_key="DISC_NO",
+                cid="DISC_NO",
+                input_type=int,
+                output_type=int)
 
 # custom field for easier editing
-TOTAL_DISCS = Field(id3="TOTAL_DISCS",
+TOTAL_DISCS = Field(tag_key="TOTAL_DISCS",
                     cid="TOTAL_DISCS",
                     input_type=int,
                     output_type=int)
 
 # this field is the one going into the audio file
 DISC_NO_TUPLE = Field(
-    id3="disk",
+    tag_key="disk",
     cid="DISC_NO_TUPLE",
     input_type=tuple,  # tuple of integer
     output_type=tuple)  # tuple of integer
 
-ARTIST = Field(id3="\xa9ART", cid="ARTIST", input_type=str, output_type=str)
+ARTIST = Field(tag_key="\xa9ART",
+               cid="ARTIST",
+               input_type=str,
+               output_type=str)
 
-ALBUM_ARTIST = Field(id3="aART",
+ALBUM_ARTIST = Field(tag_key="aART",
                      cid="ALBUM_ARTIST",
                      input_type=str,
                      output_type=str)
 
-YEAR = Field(id3="\xa9day", cid="YEAR", input_type=str, output_type=str)
+YEAR = Field(tag_key="\xa9day", cid="YEAR", input_type=str, output_type=str)
 
-ALBUM = Field(id3="\xa9alb", cid="ALBUM", input_type=str, output_type=str)
+ALBUM = Field(tag_key="\xa9alb", cid="ALBUM", input_type=str, output_type=str)
 
-GENRE = Field(id3="\xa9gen", cid="GENRE", input_type=str, output_type=str)
+GENRE = Field(tag_key="\xa9gen", cid="GENRE", input_type=str, output_type=str)
 
-RATING = Field(id3="----:com.apple.iTunes:rating",
+RATING = Field(tag_key="----:com.apple.iTunes:rating",
                cid="RATING",
                input_type=str,
                output_type="utf-8")
@@ -143,98 +160,101 @@ CUSTOM_COLS = [
 ] + PATH_COLS
 
 # ADDITIONAL METADATA COLS
-COMPOSER = Field(id3="\xa9wrt",
+COMPOSER = Field(tag_key="\xa9wrt",
                  cid="COMPOSER",
                  input_type=str,
                  output_type=str)
 
-COMMENT = Field(id3="\xa9cmt", cid="COMMENT", input_type=str, output_type=str)
+COMMENT = Field(tag_key="\xa9cmt",
+                cid="COMMENT",
+                input_type=str,
+                output_type=str)
 
-WORK = Field(id3="\xa9wrk", cid="WORK", input_type=str, output_type=str)
+WORK = Field(tag_key="\xa9wrk", cid="WORK", input_type=str, output_type=str)
 
-MOVEMENT = Field(id3="\xa9mvn",
+MOVEMENT = Field(tag_key="\xa9mvn",
                  cid="MOVEMENT",
                  input_type=str,
                  output_type=str)
 
-ADDED_TIMESTAMP = Field(id3="----:com.apple.iTunes:added_timestamp",
+ADDED_TIMESTAMP = Field(tag_key="----:com.apple.iTunes:added_timestamp",
                         cid="ADDED_TIMESTAMP",
                         input_type=str,
                         output_type="utf-8")
 
 FIRST_PLAYED_TIMESTAMP = Field(
-    id3="----:com.apple.iTunes:first_played_timestamp",
+    tag_key="----:com.apple.iTunes:first_played_timestamp",
     cid="FIRST_PLAYED_TIMESTAMP",
     input_type=str,
     output_type="utf-8")
 
 LAST_PLAYED_TIMESTAMP = Field(
-    id3="----:com.apple.iTunes:last_played_timestamp",
+    tag_key="----:com.apple.iTunes:last_played_timestamp",
     cid="LAST_PLAYED_TIMESTAMP",
     input_type=str,
     output_type="utf-8")
 
-PLAY_COUNT = Field(id3="----:com.apple.iTunes:play_count",
+PLAY_COUNT = Field(tag_key="----:com.apple.iTunes:play_count",
                    cid="PLAY_COUNT",
                    input_type=str,
                    output_type="utf-8")
 
 REPLAYGAIN_ALBUM_GAIN = Field(
-    id3="----:com.apple.iTunes:replaygain_album_gain",
+    tag_key="----:com.apple.iTunes:replaygain_album_gain",
     cid="REPLAYGAIN_ALBUM_GAIN",
     input_type=str,
     output_type="utf-8")
 
 REPLAYGAIN_ALBUM_PEAK = Field(
-    id3="----:com.apple.iTunes:replaygain_album_peak",
+    tag_key="----:com.apple.iTunes:replaygain_album_peak",
     cid="REPLAYGAIN_ALBUM_PEAK",
     input_type=str,
     output_type="utf-8")
 
 REPLAYGAIN_TRACK_GAIN = Field(
-    id3="----:com.apple.iTunes:replaygain_track_gain",
+    tag_key="----:com.apple.iTunes:replaygain_track_gain",
     cid="REPLAYGAIN_TRACK_GAIN",
     input_type=str,
     output_type="utf-8")
 
 REPLAYGAIN_TRACK_PEAK = Field(
-    id3="----:com.apple.iTunes:replaygain_track_peak",
+    tag_key="----:com.apple.iTunes:replaygain_track_peak",
     cid="REPLAYGAIN_TRACK_PEAK",
     input_type=str,
     output_type="utf-8")
 
-ACCURATE_RIP_DISC_ID = Field(id3="----:com.apple.iTunes:AccurateRipDiscID",
+ACCURATE_RIP_DISC_ID = Field(tag_key="----:com.apple.iTunes:AccurateRipDiscID",
                              cid="ACCURATE_RIP_DISC_ID",
                              input_type=str,
                              output_type="utf-8")
 
-ACCURATE_RIP_RESULT = Field(id3="----:com.apple.iTunes:AccurateRipResult",
+ACCURATE_RIP_RESULT = Field(tag_key="----:com.apple.iTunes:AccurateRipResult",
                             cid="ACCURATE_RIP_RESULT",
                             input_type=str,
                             output_type="utf-8")
 
-ENCODER_SETTINGS = Field(id3="----:com.apple.iTunes:Encoder Settings",
+ENCODER_SETTINGS = Field(tag_key="----:com.apple.iTunes:Encoder Settings",
                          cid="ENCODER_SETTINGS",
                          input_type=str,
                          output_type="utf-8")
 
-ENCODED_BY = Field(id3="\xa9too",
+ENCODED_BY = Field(tag_key="\xa9too",
                    cid="ENCODED_BY",
                    input_type=str,
                    output_type=str)
 
-ENCODER_APPLE = Field(id3="----:com.apple.iTunes:Encoder",
+ENCODER_APPLE = Field(tag_key="----:com.apple.iTunes:Encoder",
                       cid="ENCODER_APPLE",
                       input_type=str,
                       output_type="utf-8")
 
 ENCODER_ID3 = Field(
-    id3="\xa9enc",
+    tag_key="\xa9enc",
     cid="ENCODER_ID3",  # TODO: should the CID be ENCODED_BY?
     input_type=str,
     output_type=str)
 
-SOURCE = Field(id3="----:com.apple.iTunes:Source",
+SOURCE = Field(tag_key="----:com.apple.iTunes:Source",
                cid="SOURCE",
                input_type=str,
                output_type="utf-8")

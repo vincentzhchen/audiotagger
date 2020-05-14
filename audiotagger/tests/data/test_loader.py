@@ -45,6 +45,7 @@ def test_loading_metadata_from_nonexistent_audio_file():
         ldr.load_metadata_df()
 
 
+@pytest.mark.skip(reason="will test this later when data is ready")
 def test_loading_metadata_from_files(src_files):
     ldr = loader.AudioTaggerMetadataLoader(src=src_files, logger=logger)
     out = ldr.load_metadata_df()
