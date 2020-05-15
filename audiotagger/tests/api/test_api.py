@@ -20,5 +20,5 @@ def api_instance():
     return at
 
 
-def test_api_instantiation(api_instance):
+def test_default_run(api_instance):
     api_instance.run()

@@ -1,10 +1,12 @@
 # STANDARD LIB
 import os
+import pathlib
 import pytest
+from unittest import mock
 
 # PROJECT LIB
 from audiotagger.core import paths
-from audiotagger.data import fields as fld, loader
+from audiotagger.data import fields as fld, loader, processing
 from audiotagger.util import audiotagger_logger
 
 logger = audiotagger_logger.get_logger(name="test_audiotagger_loader.log")
@@ -45,8 +47,34 @@ def test_loading_metadata_from_nonexistent_audio_file():
         ldr.load_metadata_df()
 
 
-@pytest.mark.skip(reason="will test this later when data is ready")
-def test_loading_metadata_from_files(src_files):
-    ldr = loader.AudioTaggerMetadataLoader(src=src_files, logger=logger)
+def mock_m4a_processing(df):
+    """Don't process raw loaded data.
+
+    """
+    return df
+
+
+@mock.patch(
+    "audiotagger.data.processing.RawDataProcessor.process_loaded_m4a_data")
+def test_loading_metadata_from_m4a_file(mocker):
+    test_dir = pathlib.Path(__file__).parent.parent
+    src = os.path.join(test_dir, "sample_data/Better Days.m4a")
+
+    mocker.side_effect = mock_m4a_processing
+
+    ldr = loader.AudioTaggerMetadataLoader(src=src, logger=logger)
     out = ldr.load_metadata_df()
-    assert set(fld.BASE_METADATA_COLS).difference(out.columns) == set()
+    assert "\u00a9nam" in out
+
+
+@mock.patch(
+    "audiotagger.data.processing.RawDataProcessor.process_loaded_m4a_data")
+def test_loading_metadata_from_dir_of_m4a_files(mocker):
+    test_dir = pathlib.Path(__file__).parent.parent
+    src = os.path.join(test_dir, "sample_data")
+
+    mocker.side_effect = mock_m4a_processing
+
+    ldr = loader.AudioTaggerMetadataLoader(src=src, logger=logger)
+    out = ldr.load_metadata_df()
+    assert "\u00a9nam" in out
