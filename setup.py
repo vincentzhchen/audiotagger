@@ -1,3 +1,9 @@
+"""Keep all setup information here.
+
+App version should only reside here as well.
+
+"""
+
 import os
 from setuptools import setup, find_packages
 
@@ -13,7 +19,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        "pandas>=0.18.0", "mutagen>=1.41.1", "openpyxl>2.5.11", "redquill"
+        "pandas>=0.18.0", "mutagen>=1.41.1", "openpyxl>2.5.11", "xlrd>=1.20"
     ],
     setup_requires=["pytest-runner"],
     tests_require=["pytest-cov"],
