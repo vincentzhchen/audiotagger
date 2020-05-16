@@ -46,6 +46,11 @@ class AudioTaggerMetadataLoader():
             # load metadata
             metadata = self._load_all_m4a_files_into_df_from_excel()
 
+            # let external processor figure out how to clean the data and
+            # get it into the correct form
+            processor = processing.RawDataProcessor(self.logger)
+            metadata = processor.process_loaded_metadatafile_data(metadata)
+
         # for directory of audio files or a single audio file
         elif os.path.isdir(self.src) or os.path.isfile(self.src):
             if not os.path.exists(self.src):
@@ -53,6 +58,11 @@ class AudioTaggerMetadataLoader():
 
             # load metadata
             metadata = self._load_all_m4a_files_into_df_from_path()
+
+            # let external processor figure out how to clean the data and
+            # get it into the correct form
+            processor = processing.RawDataProcessor(self.logger)
+            metadata = processor.process_loaded_m4a_data(metadata)
 
         else:
             raise Exception("INVALID SOURCE")
@@ -66,12 +76,6 @@ class AudioTaggerMetadataLoader():
             metadata (pd.DataFrame): Returns a metadata dataframe.
         """
         metadata = pd.read_excel(self.src, sheet_name="metadata", dtype=str)
-
-        # let external processor figure out how to clean the data and
-        # get it into the correct form
-        processor = processing.RawDataProcessor(self.logger)
-        metadata = processor.process_loaded_metadatafile_data(metadata)
-
         return metadata
 
     def _load_all_m4a_files_into_df_from_path(self):
@@ -94,10 +98,5 @@ class AudioTaggerMetadataLoader():
             "PATH_DST": fld.PATH_DST.CID,
         })
         self.logger.info("LOADED raw metadata df, shape: %s.", metadata.shape)
-
-        # let external processor figure out how to clean the data and
-        # get it into the correct form
-        processor = processing.RawDataProcessor(self.logger)
-        metadata = processor.process_loaded_m4a_data(metadata)
 
         return metadata

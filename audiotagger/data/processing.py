@@ -20,6 +20,9 @@ class RawDataProcessor():
             logger is not None) else audiotagger_logger.get_logger()
 
     def process_loaded_m4a_data(self, metadata):
+        """Assumes metadata is from m4a file.
+
+        """
         metadata = self._rename_raw_columns(metadata)
         metadata = self._clean_data(metadata)
         metadata = self._enforce_dtypes(metadata)
@@ -28,11 +31,20 @@ class RawDataProcessor():
         return metadata
 
     def process_loaded_metadatafile_data(self, metadata):
+        """Assumes metadata is from cleaned metadata file.
+
+        Since the data has already been processed into the correct
+        format, there should be minimal work to be done here.
+
+        """
         metadata = self._enforce_dtypes(metadata)
         metadata = tutil.sort_metadata(metadata)
         return metadata
 
     def _rename_raw_columns(self, metadata):
+        """Conform raw tag names to audiotagger fields.
+
+        """
         metadata = metadata.rename(columns=fld.ID3_to_field)
         skip_cols = [c for c in metadata if c not in fld.ID3_to_field.values()]
         if skip_cols:
