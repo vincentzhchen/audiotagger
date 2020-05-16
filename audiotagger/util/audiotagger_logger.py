@@ -1,8 +1,6 @@
 """Logging for audiotagger.
 
 """
-
-# STANDARD LIB
 import logging
 import os
 import sys

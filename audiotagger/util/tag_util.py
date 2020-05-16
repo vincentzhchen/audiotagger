@@ -1,5 +1,6 @@
 import os
 import warnings
+
 from mutagen.mp4 import MP4Tags, MP4Cover
 
 from audiotagger.data import fields as fld

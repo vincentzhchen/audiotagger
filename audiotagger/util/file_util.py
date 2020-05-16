@@ -1,8 +1,8 @@
+from concurrent.futures import ProcessPoolExecutor
 import glob
 import os
 import shutil
 
-from concurrent.futures import ProcessPoolExecutor
 from mutagen.easymp4 import MP4
 
 

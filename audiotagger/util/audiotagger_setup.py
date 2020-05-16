@@ -1,13 +1,11 @@
 """General setup methods.
 
 """
-
-# STANDARD LIB
 import os
 import shutil
+
 import pandas as pd
 
-# PROJECT LIB
 from audiotagger.core import paths
 from audiotagger.data import fields as fld
 from audiotagger.util import audiotagger_logger

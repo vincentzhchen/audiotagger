@@ -1,8 +1,7 @@
-# STANDARD LIB
 import os
+
 import pandas as pd
 
-# PROJECT LIB
 from audiotagger.core import paths
 from audiotagger.data import fields as fld
 
