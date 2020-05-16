@@ -4,13 +4,10 @@
 
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-# STANDARD LIB
 import argparse
 import os
 import sys
 
-# PROJECT LIB
 from audiotagger.core import paths
 from audiotagger.util import audiotagger_logger, audiotagger_setup
 

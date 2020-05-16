@@ -1,8 +1,10 @@
-# STANDARD LIB
+# pylint: disable=missing-module-docstring
+# pylint: disable=redefined-outer-name
+# pylint: disable=line-too-long
+# pylint: disable=invalid-name
 import pandas as pd
 import pytest
 
-# PROJECT LIB
 from audiotagger.data import fields as fld, input as at_in
 from audiotagger.util import audiotagger_logger
 

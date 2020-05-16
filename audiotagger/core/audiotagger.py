@@ -1,10 +1,8 @@
 """All tagging takes place here.
 
 """
-
-# PROJECT LIB
 from audiotagger.data import fields as fld
-from audiotagger.modifier.audiotagger_modifier import AudioTaggerModifier as atm
+from audiotagger.modifier import audiotagger_modifier
 from audiotagger.util import audiotagger_logger
 
 
@@ -35,6 +33,7 @@ class AudioTagger():
         str_cols = [c for c in cols if eval(f"fld.{c}.INPUT_TYPE") == str]
 
         # apply standard modifiers
+        atm = audiotagger_modifier.AudioTaggerModifier()
         metadata.loc[:, str_cols] = atm.strip_str(metadata.loc[:, str_cols])
         metadata.loc[:, str_cols] = atm.create_spacing_for_characters(
             metadata.loc[:, str_cols])

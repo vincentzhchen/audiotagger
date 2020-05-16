@@ -1,12 +1,15 @@
-# STANDARD LIB
+# pylint: disable=missing-module-docstring
+# pylint: disable=redefined-outer-name
+# pylint: disable=line-too-long
+# pylint: disable=invalid-name
+from unittest import mock
 import os
 import pathlib
-import pytest
-from unittest import mock
 
-# PROJECT LIB
+import pytest
+
 from audiotagger.core import paths
-from audiotagger.data import fields as fld, loader, processing
+from audiotagger.data import loader
 from audiotagger.util import audiotagger_logger
 
 logger = audiotagger_logger.get_logger(name="test_audiotagger_loader.log")

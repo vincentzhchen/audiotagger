@@ -1,8 +1,6 @@
 """API into audiotagger.
 
 """
-
-# PROJECT LIB
 from audiotagger.core import (audiotagger, clear_tags, copy_file,
                               create_playlist)
 from audiotagger.data import input as at_in, output as at_out

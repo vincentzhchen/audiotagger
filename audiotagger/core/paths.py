@@ -1,8 +1,6 @@
 """All necessary application paths.
 
 """
-
-# STANDARD LIB
 import os
 
 

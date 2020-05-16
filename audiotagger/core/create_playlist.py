@@ -1,6 +1,7 @@
 import os
-import pandas as pd
 import sqlite3
+
+import pandas as pd
 
 from audiotagger.data import fields as fld
 from audiotagger.util import audiotagger_logger, file_util as futil

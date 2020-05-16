@@ -1,7 +1,11 @@
-# STANDARD LIB
+"""Handles all file copying and moving.
+
+TODO: need better module name.
+
+"""
+
 import os
 
-# PROJECT LIB
 from audiotagger.data import fields as fld
 from audiotagger.settings import settings as at_settings
 from audiotagger.util import audiotagger_logger, file_util as futil

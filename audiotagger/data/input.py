@@ -1,8 +1,6 @@
 """Input structure for all project data.
 
 """
-
-# PROJECT LIB
 from audiotagger.data import _base_io, loader
 from audiotagger.util import input_output_util as ioutil
 

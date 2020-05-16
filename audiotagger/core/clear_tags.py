@@ -1,8 +1,6 @@
 """Handles all deletion of tags.
 
 """
-
-# PROJECT LIB
 from audiotagger.data import fields as fld
 from audiotagger.util import audiotagger_logger
 

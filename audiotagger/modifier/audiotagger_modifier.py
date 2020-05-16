@@ -1,7 +1,12 @@
 import pandas as pd
 
 
-class AudioTaggerModifier(object):
+class AudioTaggerModifier():
+    """TODO: what is point of this class?
+
+    Why not just make module of methods?
+
+    """
     @classmethod
     def strip_str(cls, arg):
         """Removes leading trailing spaces from a string.

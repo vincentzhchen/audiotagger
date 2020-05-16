@@ -1,12 +1,13 @@
-# STANDARD LIB
+# pylint: disable=missing-module-docstring
+# pylint: disable=redefined-outer-name
+# pylint: disable=line-too-long
+# pylint: disable=invalid-name
 import os
-import pandas as pd
 import pathlib
+
 import pytest
 
-# PROJECT LIB
 from audiotagger.api import api
-from audiotagger.data import fields as fld, input as at_in
 from audiotagger.util import audiotagger_logger
 
 logger = audiotagger_logger.get_logger(name="test_audiotagger_api.log")

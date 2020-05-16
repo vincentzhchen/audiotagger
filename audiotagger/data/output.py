@@ -1,9 +1,7 @@
-# STANDARD LIB
 import copy
 import os
 import shutil
 
-# PROJECT LIB
 from audiotagger.data import fields as fld
 from audiotagger.util import (audiotagger_logger, file_util as futil, tag_util
                               as tutil, input_output_util as ioutil)

@@ -1,9 +1,7 @@
-# STANDARD LIB
 import importlib.util
 import os
 import sys
 
-# PROJECT LIB
 from audiotagger.core import paths
 
 config_path = paths.audiotagger_config_path()

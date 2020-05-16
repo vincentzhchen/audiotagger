@@ -1,12 +1,10 @@
 """Base structure for input / output.
 
 """
-
-# STANDARD LIB
 import abc
+
 import pandas as pd
 
-# PROJECT LIB
 from audiotagger.data import fields as fld
 from audiotagger.util import audiotagger_logger
 
