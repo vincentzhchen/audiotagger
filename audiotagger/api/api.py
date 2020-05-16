@@ -9,7 +9,10 @@ from audiotagger.data import input as at_in, output as at_out
 from audiotagger.util import audiotagger_logger
 
 
-class AudioTaggerAPI(object):
+class AudioTaggerAPI():
+    """Main API to load up metadata and delegate tasks to appropriate classes.
+
+    """
     def __init__(self, src, input_to_excel=False, **kwargs):
         self.logger = audiotagger_logger.get_logger()
 
@@ -27,7 +30,8 @@ class AudioTaggerAPI(object):
             tag_file=False,
             rename_and_copy=False,
             playlist_query=None,
-            output_to_excel=False):
+            output_to_excel=False,
+            dst_dir=None):
         """Delegate here to the class that will handle the action.
 
         Args:
@@ -42,22 +46,17 @@ class AudioTaggerAPI(object):
         if delete_tags is not None:
             # Deletes tags from audio files by overwriting with blank tags.
             metadata = clear_tags.ClearTags(
-                input_data=self.input_data).execute(clear_type=delete_tags)
+                self.input_data).execute(delete_tags)
 
-            out = at_out.AudioTaggerOutput(metadata=metadata,
-                                           logger=self.logger,
-                                           to_excel=output_to_excel)
+            out = at_out.AudioTaggerOutput(metadata, to_excel=output_to_excel)
             out.save()
 
         if tag_file:
             # Given a metadata dataframe, tag the audio files listed
             # by the paths in the dataframe.
-            metadata = audiotagger.AudioTagger(input_data=self.input_data,
-                                               logger=self.logger).execute()
+            metadata = audiotagger.AudioTagger(self.input_data).execute()
 
-            out = at_out.AudioTaggerOutput(metadata=metadata,
-                                           logger=self.logger,
-                                           to_excel=output_to_excel)
+            out = at_out.AudioTaggerOutput(metadata, to_excel=output_to_excel)
             out.save()
 
         if rename_and_copy:
@@ -65,22 +64,16 @@ class AudioTaggerAPI(object):
             # If a destination directory is passed, the renamed file
             # will be saved into the destination, leaving the original
             # file untouched.
-            metadata = copy_file.CopyFile(input_data=self.input_data,
-                                          logger=self.logger,
-                                          options=self.options).execute()
+            metadata = copy_file.CopyFile(self.input_data).execute(dst_dir)
 
-            out = at_out.AudioTaggerOutput(metadata=metadata,
-                                           logger=self.logger,
-                                           to_excel=output_to_excel)
+            out = at_out.AudioTaggerOutput(metadata, to_excel=output_to_excel)
             out.copy()
 
         if playlist_query is not None:
             # Creates a playlist from the source directory using the given
             # query and writes the files into the destination directory.
             metadata = create_playlist.CreatePlaylist(
-                input_data=self.input_data,
-                logger=self.logger,
-                options=self.options).execute()
+                self.input_data).execute(playlist_query)
 
             out = at_out.AudioTaggerOutput(metadata=metadata,
                                            logger=self.logger,

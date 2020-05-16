@@ -39,7 +39,7 @@ class AudioTaggerOutput(object):
             self.logger.info(f"Saving {dict_for_log} to {k}")
             tag_dict[k].save(k)
 
-    def copy(self, to_file):
+    def copy(self, to_file=False):
         # TODO: this does not belong here; move to copy class
         if to_file:
             self.copy_files()

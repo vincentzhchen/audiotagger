@@ -7,7 +7,7 @@ from audiotagger.data import fields as fld
 from audiotagger.util import audiotagger_logger
 
 
-class ClearTags(object):
+class ClearTags():
     """Remove tags from audio files.
 
     The implementation overwrites existing tags with a tag metadata dataframe.

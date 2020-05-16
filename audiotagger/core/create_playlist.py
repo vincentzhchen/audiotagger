@@ -3,29 +3,29 @@ import pandas as pd
 import sqlite3
 
 from audiotagger.data import fields as fld
-from audiotagger.util import file_util as futil
+from audiotagger.util import audiotagger_logger, file_util as futil
 
 
-class CreatePlaylist(object):
-    def __init__(self, input_data, logger, options):
+class CreatePlaylist():
+    def __init__(self, input_data, logger=None):
         self.input_data = input_data
-        self.log = logger
-        self.options = options
+        self.logger = logger if (
+            logger is not None) else audiotagger_logger.get_logger()
 
-    def execute(self):
+    def execute(self, playlist_query, base_dir=None):
         metadata = self.input_data.get_metadata()
-        metadata[fld.PATH_DST.CID] = self.options.dst
+        metadata[fld.PATH_DST.CID] = base_dir
 
         # create in-memory DB to run SQL queries against
         connection = sqlite3.connect(":memory:")
         metadata.to_sql("METADATA", con=connection)
 
         # get query
-        if os.path.exists(self.options.playlist_query):
-            query = futil.parse_sql_query(self.options.playlist_query)
+        if os.path.exists(playlist_query):
+            query = futil.parse_sql_query(playlist_query)
         else:
-            query = self.options.playlist_query
-        self.log.info("Execute the following query: \n" + query)
+            query = playlist_query
+        self.logger.info("Execute the following query: \n" + query)
 
         # query dataframe
         metadata = pd.read_sql_query(query, con=connection)

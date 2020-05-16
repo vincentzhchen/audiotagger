@@ -135,5 +135,6 @@ if __name__ == "__main__":
     from audiotagger.api import api  # keep this lazy in case there is no config
     api.AudioTaggerAPI(logger=logger,
                        src=args.src,
-                       to_excel=args.write_to_excel).run()
+                       to_excel=args.write_to_excel,
+                       dst_dir=args.dst).run()
     logger.info("Done.")

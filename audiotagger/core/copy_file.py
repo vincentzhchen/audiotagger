@@ -4,19 +4,18 @@ import os
 # PROJECT LIB
 from audiotagger.data import fields as fld
 from audiotagger.settings import settings as at_settings
-from audiotagger.util import file_util as futil
+from audiotagger.util import audiotagger_logger, file_util as futil
 
 
-class CopyFile(object):
-    def __init__(self, input_data, logger, options):
+class CopyFile():
+    def __init__(self, input_data, logger=None):
         self.input_data = input_data
-        self.log = logger
-        self.options = options
+        self.logger = logger if (
+            logger is not None) else audiotagger_logger.get_logger()
 
-    def execute(self):
+    def execute(self, base_dir):
         metadata = self.input_data.get_metadata()
 
-        base_dir = self.options.dst
         metadata = self.generate_new_file_path_from_metadata(
             metadata, base_dir)
 
