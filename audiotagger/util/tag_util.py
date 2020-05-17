@@ -22,26 +22,33 @@ def enforce_dtypes(df, io_type):
             df = df.drop(columns=cols)
 
         for col in df:
-            t = eval(f"fld.{col}.OUTPUT_TYPE")
-            if t == "utf-8":
+            out_type = getattr(fld, col).OUTPUT_TYPE
+            if out_type == "utf-8":
+                # if the output type is utf-8, assume it is
+                # loaded as utf-8 too and decode it
                 df[col] = df[col].str.decode("utf-8")
-            df[col] = df[col].astype(eval(f"fld.{col}.INPUT_TYPE"))
-        df = df.replace("nan", "")
+
+            in_type = getattr(fld, col).INPUT_TYPE
+            df[col] = df[col].astype(in_type)
+        df = df.replace("nan", "")  # TODO: why is this needed
 
     elif io_type == "INPUT_FROM_METADATA_FILE":
         for col in df:
-            df[col] = df[col].astype(eval(f"fld.{col}.INPUT_TYPE"))
-        df = df.replace("nan", "")
+            in_type = getattr(fld, col).INPUT_TYPE
+            df[col] = df[col].astype(in_type)
+        df = df.replace("nan", "")  # TODO: why is this needed
 
     elif io_type == "OUTPUT_TYPE":
         for col in df:
-            t = eval(f"fld.{col}.OUTPUT_TYPE")
-            if t == "utf-8":
+            out_type = getattr(fld, col).OUTPUT_TYPE
+            if out_type == "utf-8":
+                # encode utf-8 if needed
                 df[col] = df[col].str.encode("utf-8")
-            elif t is None:
+            elif out_type is None:
+                # TODO: what does this mean
                 continue
             else:
-                df[col] = df[col].astype(t)
+                df[col] = df[col].astype(out_type)
 
     return df
 
@@ -84,8 +91,8 @@ def metadata_to_tags(df):
     metadata_dicts = df.to_dict(orient="records")
     for d in metadata_dicts:
         # TODO: remove empty covers
-        if d.get(fld.COVER.ID3, None)[0] is None:
-            d.pop(fld.COVER.ID3, None)
+        if d.get(fld.COVER.KEY, None)[0] is None:
+            d.pop(fld.COVER.KEY, None)
         path_src = d[fld.PATH_SRC.CID][0]
         d = remove_non_metadata_fields_from_metadata_dict(d)
         d = dict_to_mp4tag(d)
@@ -171,8 +178,8 @@ def generate_cover_art_path(df):
         df (dataframe): Returns dataframe with cover art paths.
     """
     def _generate_album_art_path(path):
-        dir = os.path.dirname(path)
-        jpg_path = os.path.join(dir, "cover.jpg")
+        cover_dir = os.path.dirname(path)
+        jpg_path = os.path.join(cover_dir, "cover.jpg")
         return jpg_path
 
     if fld.COVER_SRC.CID not in df:
@@ -202,8 +209,8 @@ def construct_cover_object(df):
             constructed cover object.
     """
     def construct_mutagen_mp4_cover(path):
-        # return None if there is no path or the path doesnt exist
-        if path is "" or not os.path.exists(path):
+        # return None if there is no path or the path doesn't exist
+        if (path == "") or not os.path.exists(path):
             return None
 
         with open(path, "rb") as f:
