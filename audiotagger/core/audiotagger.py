@@ -30,7 +30,7 @@ class AudioTagger():
         cols = [c for c in metadata if c not in fld.PATH_COLS + fld.COVER_COLS]
 
         # modify str cols only
-        str_cols = [c for c in cols if eval(f"fld.{c}.INPUT_TYPE") == str]
+        str_cols = [c for c in cols if getattr(fld, c).INPUT_TYPE == str]
 
         # apply standard modifiers
         atm = audiotagger_modifier.AudioTaggerModifier()

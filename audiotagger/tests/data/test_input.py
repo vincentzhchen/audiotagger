@@ -5,7 +5,7 @@
 import pandas as pd
 import pytest
 
-from audiotagger.data import fields as fld, input as at_in
+from audiotagger.data import fields as fld, at_input as at_in
 from audiotagger.util import audiotagger_logger
 
 logger = audiotagger_logger.get_logger(name="test_audiotagger_input.log")

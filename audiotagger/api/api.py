@@ -3,7 +3,7 @@
 """
 from audiotagger.core import (audiotagger, clear_tags, copy_file,
                               create_playlist)
-from audiotagger.data import input as at_in, output as at_out
+from audiotagger.data import at_input as at_in, at_output as at_out
 from audiotagger.util import audiotagger_logger
 
 
