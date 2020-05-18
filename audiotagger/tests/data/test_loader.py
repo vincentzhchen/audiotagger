@@ -12,7 +12,7 @@ from audiotagger.core import paths
 from audiotagger.data import loader
 from audiotagger.util import audiotagger_logger
 
-logger = audiotagger_logger.get_logger(name="test_audiotagger_loader.log")
+logger = audiotagger_logger.get_logger(name="test_audiotagger.log")
 
 
 @pytest.fixture

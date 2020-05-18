@@ -10,7 +10,7 @@ import pytest
 from audiotagger.api import api
 from audiotagger.util import audiotagger_logger
 
-logger = audiotagger_logger.get_logger(name="test_audiotagger_api.log")
+logger = audiotagger_logger.get_logger(name="test_audiotagger.log")
 
 
 @pytest.fixture

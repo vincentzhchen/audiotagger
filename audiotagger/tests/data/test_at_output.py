@@ -16,7 +16,7 @@ def output_object():
 
     """
     test_dir = pathlib.Path(__file__).parent.parent
-    src = os.path.join(test_dir, "sample_data/Better Days.m4a")
+    src = os.path.join(test_dir, "sample_data/test_metadata.xlsx")
     ldr = loader.AudioTaggerMetadataLoader(src)
     metadata = ldr.load_metadata_df()
     out = at_out.AudioTaggerOutput()
