@@ -15,9 +15,13 @@ logger = audiotagger_logger.get_logger(name="test_audiotagger.log")
 
 @pytest.fixture
 def loaded_m4a_data():
+    """Raw m4a data before any processing.
+
+    """
     test_dir = pathlib.Path(__file__).parent.parent
     src = os.path.join(test_dir, "sample_data")
     ldr = loader.AudioTaggerMetadataLoader(src=src, logger=logger)
+    # pylint: disable=protected-access
     df = ldr._load_all_m4a_files_into_df_from_path()
     return df
 
