@@ -2,42 +2,47 @@ import copy
 import os
 import shutil
 
-from audiotagger.data import fields as fld
+from audiotagger.data import _base_io, fields as fld
 from audiotagger.util import (audiotagger_logger, file_util as futil, tag_util
                               as tutil, input_output_util as ioutil)
 
 
-class AudioTaggerOutput(object):
-    def __init__(self, metadata, logger=None, to_excel=False):
-        self.metadata = metadata
-        self.logger = logger if (
-            logger is not None) else audiotagger_logger.get_logger()
+class AudioTaggerOutput(_base_io.AudioTaggerBaseInputOutput):
+    def write_to_excel(self):
+        file_path = ioutil.generate_excel_path("audiotagger_output")
+        ioutil.write_metadata_to_excel(self.metadata, file_path=file_path)
+        self.logger.info("Saved output metadata to %s", file_path)
 
-        if to_excel:
-            file_path = ioutil.generate_excel_path("audiotagger_output")
-            ioutil.write_to_excel(df=metadata, file_path=file_path)
-            self.logger.info(f"Saved output metadata to {file_path}")
+    def write_to_csv(self):
+        raise NotImplementedError
 
+    def set_metadata(self, df):
+        self.logger.info("Setting metadata in input object.")
+        super().set_metadata(df)
+
+    def save(self, to_excel=False, save_tags=False):
         # at this point, handle cover art
         self.metadata = tutil.generate_cover_art_path(df=self.metadata)
         self.metadata = tutil.construct_cover_object(df=self.metadata)
 
-    def save(self, to_file=False):
-        if to_file:
+        if to_excel:
+            self.write_to_excel()
+
+        if save_tags:
             self.save_tags_to_audio_files()
         else:
-            self.logger.info("DRY RUN -- no files were modified.")
+            self.logger.info("DRY RUN -- no audio files were modified.")
 
     def save_tags_to_audio_files(self):
         metadata = self.metadata
         tag_dict = tutil.metadata_to_tags(df=metadata)
         for k in tag_dict:
             dict_for_log = copy.deepcopy(tag_dict[k])
-            dict_for_log.pop(fld.COVER.ID3, None)
-            self.logger.info(f"Saving {dict_for_log} to {k}")
+            dict_for_log.pop(fld.COVER.KEY, None)
+            self.logger.info("Saving %s to %s", dict_for_log, k)
             tag_dict[k].save(k)
 
-    def copy(self, to_file=False):
+    def copy(self, to_excel=False, to_file=False):
         # TODO: this does not belong here; move to copy class
         if to_file:
             self.copy_files()

@@ -13,7 +13,7 @@ class AudioTaggerBaseInputOutput(abc.ABC):
     """Contains all the methods that an input / output would need to implement.
 
     """
-    def __init__(self, logger):
+    def __init__(self, logger=None):
         self.logger = logger if (
             logger is not None) else audiotagger_logger.get_logger()
 
@@ -38,7 +38,7 @@ class AudioTaggerBaseInputOutput(abc.ABC):
         """Use a setter to enforce the metadata dataframe structure.
 
         """
-        cols = set(fld.BASE_METADATA_COLS).difference(df.columns)
+        cols = set(fld.BASE_METADATA_COLS).difference(df)
         if cols == set():
             self.metadata = df
         else:

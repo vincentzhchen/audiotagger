@@ -25,15 +25,21 @@ class AudioTaggerAPI():
 
     def run(self,
             delete_tags=None,
-            tag_file=False,
+            modify_tags=False,
             rename_and_copy=False,
             playlist_query=None,
+            save_tags=False,
             output_to_excel=False,
             dst_dir=None):
         """Delegate here to the class that will handle the action.
 
         Args:
-            delete_tags (str, default None): A method to delete tags.
+            delete_tags (str, default None): A method to delete tags.  If
+                None, no tags will be deleted.
+            modify_tags (bool, default False): If True, modify the metadata.
+            save_tags (bool, default False): If True, write tags to audio file.
+            output_to_excel(bool, default False): If True, write metadata
+                to Excel file.
 
         """
         if self.input_data.get_metadata().empty:
@@ -46,16 +52,18 @@ class AudioTaggerAPI():
             metadata = clear_tags.ClearTags(
                 self.input_data).execute(delete_tags)
 
-            out = at_out.AudioTaggerOutput(metadata, to_excel=output_to_excel)
-            out.save()
+            out = at_out.AudioTaggerOutput()
+            out.set_metadata(metadata)
+            out.save(to_excel=output_to_excel, save_tags=save_tags)
 
-        if tag_file:
+        if modify_tags:
             # Given a metadata dataframe, tag the audio files listed
             # by the paths in the dataframe.
             metadata = audiotagger.AudioTagger(self.input_data).execute()
 
-            out = at_out.AudioTaggerOutput(metadata, to_excel=output_to_excel)
-            out.save()
+            out = at_out.AudioTaggerOutput()
+            out.set_metadata(metadata)
+            out.save(to_excel=output_to_excel, save_tags=save_tags)
 
         if rename_and_copy:
             # Renames the audio file path using a pre-defined format.
@@ -64,7 +72,8 @@ class AudioTaggerAPI():
             # file untouched.
             metadata = copy_file.CopyFile(self.input_data).execute(dst_dir)
 
-            out = at_out.AudioTaggerOutput(metadata, to_excel=output_to_excel)
+            out = at_out.AudioTaggerOutput()
+            out.set_metadata(metadata)
             out.copy()
 
         if playlist_query is not None:
@@ -73,7 +82,6 @@ class AudioTaggerAPI():
             metadata = create_playlist.CreatePlaylist(
                 self.input_data).execute(playlist_query)
 
-            out = at_out.AudioTaggerOutput(metadata=metadata,
-                                           logger=self.logger,
-                                           to_excel=output_to_excel)
+            out = at_out.AudioTaggerOutput()
+            out.set_metadata(metadata)
             out.copy()
