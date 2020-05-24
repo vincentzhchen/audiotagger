@@ -2,7 +2,7 @@
 
 """
 from audiotagger.data import fields as fld
-from audiotagger.modifier import audiotagger_modifier
+from audiotagger.modifier import audiotagger_modifier as atm
 from audiotagger.util import audiotagger_logger
 
 
@@ -33,7 +33,6 @@ class AudioTagger():
         str_cols = [c for c in cols if getattr(fld, c).INPUT_TYPE == str]
 
         # apply standard modifiers
-        atm = audiotagger_modifier.AudioTaggerModifier()
         metadata.loc[:, str_cols] = atm.strip_str(metadata.loc[:, str_cols])
         metadata.loc[:, str_cols] = atm.create_spacing_for_characters(
             metadata.loc[:, str_cols])

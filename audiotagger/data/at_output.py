@@ -3,8 +3,8 @@ import os
 import shutil
 
 from audiotagger.data import _base_io, fields as fld
-from audiotagger.util import (audiotagger_logger, file_util as futil, tag_util
-                              as tutil, input_output_util as ioutil)
+from audiotagger.util import (file_util as futil, tag_util as tutil,
+                              input_output_util as ioutil)
 
 
 class AudioTaggerOutput(_base_io.AudioTaggerBaseInputOutput):

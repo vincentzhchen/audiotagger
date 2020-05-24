@@ -1,103 +1,111 @@
+"""All tools to modify tags are here.
+
+"""
 import pandas as pd
 
 
-class AudioTaggerModifier():
-    """TODO: what is point of this class?
+def strip_str(arg):
+    """Removes leading trailing spaces from a string.
 
-    Why not just make module of methods?
+    Args:
+        arg (str, dataframe of str, series of str): TITLE, ARTIST, etc.
+
+    Returns:
+        arg (input type): Returns input data with stripped strings.
+    """
+    if isinstance(arg, str):
+        arg = arg.strip()
+
+    elif isinstance(arg, pd.Series):
+        arg = arg.str.strip()
+
+    elif isinstance(arg, pd.DataFrame):
+        for col in arg:
+            arg[col] = arg[col].str.strip()
+
+    return arg
+
+
+def _create_spacing_for_characters(arg):
+    """Helper method to add spacings in a string.
+
+    Args:
+        arg (str): A string tag such as <title> or <artist>.
+
+    Returns:
+        arg (str): Returns the modified argument.
+    """
+    left = ["(", "["]
+    right = [")", "]"]
+    both = ["/"]
+
+    for c in left:
+        if c in arg:
+            # e.g. foo(bar) -> foo (bar)
+            arg = arg.replace(c, " " + c)
+
+    for c in right:
+        if c in arg:
+            # e.g. (foo)bar -> (foo) bar
+            arg = arg.replace(c, c + " ")
+
+    for c in both:
+        if c in arg:
+            # e.g. foo/bar -> foo / bar
+            arg = arg.replace(c, " " + c + " ")
+
+    return arg
+
+
+def create_spacing_for_characters(arg):
+    """Create spaces next to special characters.
+
+    Args:
+        arg (str, dataframe of str, series of str): TITLE, ARTIST, etc.
+
+    Returns:
+        arg (input type): Returns cleaned input.
+    """
+    if isinstance(arg, str):
+        arg = _create_spacing_for_characters(arg)
+
+    elif isinstance(arg, pd.Series):
+        arg = arg.apply(_create_spacing_for_characters)
+
+    elif isinstance(arg, pd.DataFrame):
+        for col in arg:
+            arg[col] = arg[col].apply(_create_spacing_for_characters)
+
+    return arg
+
+
+def _remove_multiple_whitespace(arg):
+    """Helper method to remove multiple white spaces in a string.
 
     """
-    @classmethod
-    def strip_str(cls, arg):
-        """Removes leading trailing spaces from a string.
+    return " ".join(arg.split())
 
-        Args:
-            arg (str, dataframe of str, series of str): TITLE, ARTIST, etc.
 
-        Returns:
-            anonymous (input type): Returns input data with stripped strings.
-        """
-        if arg.__class__ == str:
-            arg = arg.strip()
+def remove_multiple_whitespace(arg):
+    """Removes multiple whitespaces in the middle of a string.
 
-        elif arg.__class__ == pd.Series:
-            arg = arg.str.strip()
+    This implementation also removes all whitespace characters (e.g.
+    tab, newline, return, etc.)
 
-        elif arg.__class__ == pd.DataFrame:
-            for col in arg:
-                arg[col] = arg[col].str.strip()
+    Args:
+        arg (str, dataframe of str, series of str): TITLE, ARTIST, etc.
 
-        return arg
+    Returns:
+        anonymous (input type): Returns cleaned input.
+    """
+    if isinstance(arg, str):
+        arg = _remove_multiple_whitespace(arg)
 
-    @classmethod
-    def _create_spacing_for_characters(cls, arg):
-        left = ["(", "["]
-        right = [")", "]"]
-        both = ["/"]
+    elif isinstance(arg, pd.Series):
+        arg = arg.apply(_remove_multiple_whitespace)
 
-        for c in left:
-            if c in arg:
-                arg = arg.replace(c, " " + c)
+    elif isinstance(arg, pd.DataFrame):
+        for col in arg:
+            arg[col] = arg[col].apply(_remove_multiple_whitespace)
 
-        for c in right:
-            if c in arg:
-                arg = arg.replace(c, c + " ")
-
-        for c in both:
-            if c in arg:
-                arg = arg.replace(c, " " + c + " ")
-
-        return arg
-
-    @classmethod
-    def create_spacing_for_characters(cls, arg):
-        """Create spaces next to special characters.
-
-        Args:
-            arg (str, dataframe of str, series of str): TITLE, ARTIST, etc.
-
-        Returns:
-            anonymous (input type): Returns cleaned input.
-        """
-        if arg.__class__ == str:
-            arg = AudioTaggerModifier._create_spacing_for_characters(arg)
-
-        elif arg.__class__ == pd.Series:
-            arg = arg.apply(AudioTaggerModifier._create_spacing_for_characters)
-
-        elif arg.__class__ == pd.DataFrame:
-            for col in arg:
-                arg[col] = arg[col].apply(
-                    AudioTaggerModifier._create_spacing_for_characters)
-
-        return arg
-
-    @classmethod
-    def _remove_multiple_whitespace(cls, arg):
-        return " ".join(arg.split())
-
-    @classmethod
-    def remove_multiple_whitespace(cls, arg):
-        """Removes multiple whitespaces in the middle of a string.
-
-        This implementation also removes all whitespace characters (e.g.
-        tab, newline, return, etc.)
-
-        Args:
-            arg (str, dataframe of str, series of str): TITLE, ARTIST, etc.
-
-        Returns:
-            anonymous (input type): Returns cleaned input.
-        """
-        if arg.__class__ == str:
-            arg = AudioTaggerModifier._remove_multiple_whitespace(arg)
-
-        elif arg.__class__ == pd.Series:
-            arg = arg.apply(AudioTaggerModifier._remove_multiple_whitespace)
-
-        elif arg.__class__ == pd.DataFrame:
-            for col in arg:
-                arg[col] = arg[col].apply(
-                    AudioTaggerModifier._remove_multiple_whitespace)
-
-        return arg
+    return arg
