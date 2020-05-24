@@ -32,21 +32,29 @@ class AudioTagger():
         # modify str cols only
         str_cols = [c for c in cols if getattr(fld, c).INPUT_TYPE == str]
 
+        metadata = self._apply_standard_modifiers(metadata, str_cols)
+
+        if modifier is not None:
+            # apply other modifier methods here
+            raise NotImplementedError
+
+        return metadata
+
+    def _apply_standard_modifiers(self, metadata, str_cols):
+        """Standard tag modifications done here.
+
+        """
         # apply standard modifiers
+        self.logger.info("Stripping whitespaces from string cols.")
         metadata.loc[:, str_cols] = atm.strip_str(metadata.loc[:, str_cols])
+
+        self.logger.info("Add spacing for brackets and other special chars.")
         metadata.loc[:, str_cols] = atm.create_spacing_for_characters(
             metadata.loc[:, str_cols])
 
         # do this last after all the space insertions above
+        self.logger.info("Remove extra spaces between words.")
         metadata.loc[:, str_cols] = atm.remove_multiple_whitespace(
             metadata.loc[:, str_cols])
-
-        # return metadata as is if there are no modifiers specified
-        if modifier is None:
-            return metadata
-
-        if modifier is not None:
-            # TODO: apply modifiers here
-            pass
 
         return metadata
