@@ -19,7 +19,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        "pandas>=0.18.0", "mutagen>=1.41.1", "openpyxl>2.5.11", "xlrd>=1.20"
+        "pandas>=0.18.0", "mutagen>=1.41.1", "openpyxl>2.5.11", "xlrd>=1.2.0"
     ],
     setup_requires=["pytest-runner"],
     tests_require=["pytest-cov"],
