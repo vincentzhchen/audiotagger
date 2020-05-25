@@ -1,0 +1,8 @@
+[html]
+directory = build/coverage/html
+
+[run]
+branch = True
+source = audiotagger
+omit =
+    */tests/*
