@@ -4,8 +4,6 @@
 # pylint: disable=invalid-name
 import pytest
 
-from audiotagger.core.paths import (audiotagger_config_dir,
-                                    audiotagger_config_path)
 from audiotagger.util import file_util as futil
 
 
@@ -16,17 +14,17 @@ from audiotagger.util import file_util as futil
         pytest.param("/fake/path", -1, marks=pytest.mark.xfail),
 
         # real directory
-        pytest.param(audiotagger_config_dir(), 0),
+        pytest.param("./", 0),
 
         # fake path
         pytest.param("/fake/path/test.txt", -1, marks=pytest.mark.xfail),
 
         # real path
-        pytest.param(audiotagger_config_path(), 0),
+        pytest.param("./", 0),
     ])
 def test_traverse_directory(src, min_output_length):
     all_file_paths = futil.traverse_directory(src)
-    assert all_file_paths.__class__ == list
+    assert isinstance(all_file_paths, list)
     assert len(all_file_paths) > min_output_length
 
 
