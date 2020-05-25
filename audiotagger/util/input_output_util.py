@@ -8,6 +8,8 @@ from audiotagger.data import fields as fld
 
 def generate_excel_path(context):
     base_dir = paths.audiotagger_data_dir()
+    if not os.path.isdir(base_dir):
+        base_dir = "./"
     now = now = pd.to_datetime("today").strftime("%Y%m%d_%H%M%S")
     context += f"_{now}.xlsx"
     file_path = os.path.join(base_dir, context)
