@@ -7,7 +7,6 @@ TODO: need better module name.
 import os
 
 from audiotagger.data import fields as fld
-from audiotagger.settings import settings as at_settings
 from audiotagger.util import audiotagger_logger, file_util as futil
 
 
@@ -38,11 +37,6 @@ class CopyFile():
         Returns:
             anonymous (str): Returns a destination path for the file.
         """
-        if base_dir is not None:
-            base_dst_dir = base_dir
-        else:
-            base_dst_dir = at_settings.AUDIO_DIRECTORY
-
         def join_metadata_path(metadata_tuple):
             """Helper function to create a path.
 
@@ -61,7 +55,7 @@ class CopyFile():
             album = futil.replace_invalid_characters(album)
             title = futil.replace_invalid_characters(title)
 
-            path = os.path.join(base_dst_dir, album_artist, year + " " + album,
+            path = os.path.join(base_dir, album_artist, year + " " + album,
                                 disc + "." + track + " " + title + file_ext)
             return path
 
