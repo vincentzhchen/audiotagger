@@ -1,8 +1,6 @@
-"""Keep all setup information here.
+# SPDX-License-Identifier: GPL-3.0-or-later
 
-App version should only reside here as well.
-
-"""
+# pylint: disable=missing-module-docstring
 
 import os
 from setuptools import setup, find_packages
@@ -21,8 +19,7 @@ setup(
     install_requires=[
         "pandas>=0.18.0", "mutagen>=1.41.1", "openpyxl>2.5.11", "xlrd>=1.2.0"
     ],
-    setup_requires=["pytest-runner"],
-    tests_require=["pytest-cov"],
+    tests_require=["pytest", "pytest-cov"],
     python_requires=">=3.6",
 
     # metadata to display on PyPI
