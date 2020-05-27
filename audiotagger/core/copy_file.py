@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
 """Handles all file copying and moving.
 
 TODO: need better module name.

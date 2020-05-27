@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # pylint: disable=missing-module-docstring
 # pylint: disable=redefined-outer-name
 # pylint: disable=line-too-long

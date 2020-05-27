@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
 """Tag name support switching between human-readable names and tag names.
 
 """
