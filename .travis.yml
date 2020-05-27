@@ -1,15 +1,13 @@
-sudo: false
-# Trusty doesn't support Python 3.7 yet.
 dist: xenial
 language: python
-matrix:
-  include:
-    - python: "3.6"
-      env: TOXENV=py36
-    - python: "3.7"
-      env: TOXENV=py37
-    - python: "3.7"
-      env: TOXENV=coverage
+os:
+  - linux
+  - osx
+  - windows
+python:
+  - "3.6"
+  - "3.7"
+  - "3.8"
 install: pip install tox-travis codecov
 script: tox
 after_success: codecov
