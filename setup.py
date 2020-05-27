@@ -19,7 +19,7 @@ setup(
     install_requires=[
         "pandas>=0.18.0", "mutagen>=1.41.1", "openpyxl>2.5.11", "xlrd>=1.2.0"
     ],
-    tests_require=["pytest", "pytest-cov"],
+    tests_require=["pytest", "pytest-cov", "pytest-runner"],
     python_requires=">=3.6",
 
     # metadata to display on PyPI
