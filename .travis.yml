@@ -2,8 +2,8 @@ dist: xenial
 language: python
 os:
   - linux
-  - osx
-  - windows
+  # python is not supported in osx build environment
+  # python is not supported in windows build environment
 python:
   - "3.6"
   - "3.7"
