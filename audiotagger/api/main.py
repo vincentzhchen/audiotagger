@@ -136,6 +136,6 @@ if __name__ == "__main__":
                        input_to_excel=args.write_to_excel,
                        ).run(modify_tags=args.tag_file,
                              output_to_excel=args.write_to_excel,
-                             save_tags=args.tag_file,
+                             save_tags=args.write_to_file,
                              dst_dir=args.dst)
     logger.info("Done.")
