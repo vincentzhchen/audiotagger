@@ -25,11 +25,11 @@ class RawDataProcessor():
         metadata = self._rename_raw_columns(metadata)
         metadata = self._clean_data(metadata)
         metadata = self._enforce_dtypes(metadata)
-        metadata = self._guarantee_base_metadata_cols(metadata)
         metadata = tutil.sort_metadata(metadata)
         return metadata
 
     def process_loaded_metadatafile_data(self, metadata):
+        # pylint: disable=invalid-name
         """Assumes metadata is from cleaned metadata file.
 
         Since the data has already been processed into the correct
@@ -53,6 +53,11 @@ class RawDataProcessor():
         return metadata
 
     def _clean_data(self, metadata):
+        """Standard processing applied to loaded audio file data.
+
+        All default values are set here as well.
+
+        """
         # flatten list metadata records; missing values are NaN from pandas
         metadata = metadata.applymap(lambda x: x[0]
                                      if not isinstance(x, float) else x)
@@ -61,29 +66,47 @@ class RawDataProcessor():
         metadata = tutil.split_track_and_disc_tuples(df=metadata)
         self.logger.debug("Split track and disc tuples.")
 
-        # TODO: hack to fill missing disc numbers
-        if fld.DISC_NO not in metadata:
-            metadata[fld.DISC_NO.CID] = 1
-            metadata[fld.TOTAL_DISCS.CID] = 1
+        metadata = self._guarantee_base_metadata_cols(metadata)
+
+        # these values cannot be NULL
+        metadata[fld.TRACK_NO.CID].fillna(1, inplace=True)
+        metadata[fld.TOTAL_TRACKS.CID].fillna(1, inplace=True)
         metadata[fld.DISC_NO.CID].fillna(1, inplace=True)
         metadata[fld.TOTAL_DISCS.CID].fillna(1, inplace=True)
-
         return metadata
 
     def _enforce_dtypes(self, metadata):
+        """dtype enforcement assumes input has valid values.
+
+        For example, if the disc number is a NoneType or NaN, it will
+        fail to enforce to int.  Fill this before hand.
+
+        """
         metadata = tutil.enforce_dtypes(df=metadata,
                                         io_type="INPUT_FROM_AUDIO_FILE")
         self.logger.debug("Enforced data types.")
         return metadata
 
     def _guarantee_base_metadata_cols(self, metadata):
-        # if missing base metadata col, add it back
-        missing = [c for c in fld.BASE_METADATA_COLS if c not in metadata]
-        for c in missing:
-            self.logger.debug(
-                "%s is a missing base metadata column -- "
-                "setting it with empty string.", c)
+        """Set default values here and include missing metadata.
 
-            # everything is str except for disc and track no.
-            metadata[c] = ""
+        """
+        # if missing base metadata col, add it back
+        missing = (c for c in fld.BASE_METADATA_COLS if c not in metadata)
+        for c in missing:
+            if c in [
+                    fld.TRACK_NO.CID, fld.TOTAL_TRACKS.CID, fld.DISC_NO.CID,
+                    fld.TOTAL_DISCS.CID
+            ]:
+                self.logger.debug(
+                    "%s is a missing base metadata column -- "
+                    "setting it with 1.", c)
+                metadata[c] = 1
+            else:
+                self.logger.debug(
+                    "%s is a missing base metadata column -- "
+                    "setting it with empty string.", c)
+                # everything is str except for disc and track no.
+                metadata[c] = ""
+
         return metadata
