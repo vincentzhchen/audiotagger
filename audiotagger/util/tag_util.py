@@ -15,11 +15,11 @@ def enforce_dtypes(df, io_type):
 
     """
     if io_type == "INPUT_FROM_AUDIO_FILE":
-        missing_fields = [c for c in df if c not in fld.field_to_ID3.keys()]
+        missing_fields = [c for c in df if c not in fld.TO_ID3.keys()]
         if len(missing_fields) > 0:
             warnings.warn(f"THESE FIELDS do not exist... {missing_fields} "
                           f"... removing them to continue.")
-            cols = [c for c in df if c not in fld.field_to_ID3.keys()]
+            cols = [c for c in df if c not in fld.TO_ID3.keys()]
             df = df.drop(columns=cols)
 
         for col in df:
@@ -85,7 +85,7 @@ def metadata_to_tags(df):
     df = df.applymap(lambda x: [x])
 
     # convert all fields to ID3 values for MP4Tags
-    df = df.rename(columns=fld.field_to_ID3)
+    df = df.rename(columns=fld.TO_ID3)
 
     tag_dict = {}
     # generate the metadata tag dictionaries

@@ -11,8 +11,8 @@ class Field():
     about any ID3 keys, the data type of the tag, etc.
 
     """
-    id3_to_field = {}
-    field_to_id3 = {}
+    id3_to_field = {}  # cache this
+    field_to_id3 = {}  # cache this
 
     def __init__(self, tag_key, tag_name, input_type, output_type):
         self._tag_key = tag_key
@@ -80,28 +80,10 @@ class Field():
         This is tag data type stored in the audio file.  For example,
         "----:com.apple.iTunes:replaygain_track_gain" was modified
         as a string type inside of audiotagger, but when storing the
-        value back into the m4a file, it needs to be utf-8.
+        value back into the m4a file it needs to be utf-8.
 
         """
         return self._output_type
-
-    @staticmethod
-    def ID3_to_field():  # pylint: disable=invalid-name
-        # TODO: deprecate
-        return Field.TO_FIELD()
-
-    @staticmethod
-    def Field_to_ID3():  # pylint: disable=invalid-name
-        # TODO: deprecate
-        return Field.TO_ID3()
-
-    @staticmethod
-    def TO_ID3():  # pylint: disable=invalid-name
-        return Field.field_to_id3
-
-    @staticmethod
-    def TO_FIELD():  # pylint: disable=invalid-name
-        return Field.id3_to_field
 
 
 # PATH COLS
@@ -324,5 +306,5 @@ SOURCE = Field(tag_key="----:com.apple.iTunes:Source",
                output_type="utf-8")
 
 # MAPS
-ID3_to_field = Field.ID3_to_field()
-field_to_ID3 = Field.Field_to_ID3()
+TO_FIELD = Field.id3_to_field
+TO_ID3 = Field.field_to_id3

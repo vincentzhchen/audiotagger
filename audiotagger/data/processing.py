@@ -44,11 +44,11 @@ class RawDataProcessor():
         """Conform raw tag names to audiotagger fields.
 
         """
-        metadata = metadata.rename(columns=fld.ID3_to_field)
-        skip_cols = [c for c in metadata if c not in fld.ID3_to_field.values()]
+        metadata = metadata.rename(columns=fld.TO_FIELD)
+        skip_cols = [c for c in metadata if c not in fld.TO_FIELD.values()]
         if skip_cols:
             self.logger.info("SKIPPED these fields: %s.", skip_cols)
-        existing_cols = [c for c in metadata if c in fld.ID3_to_field.values()]
+        existing_cols = [c for c in metadata if c in fld.TO_FIELD.values()]
         metadata = metadata[existing_cols]
         return metadata
 
