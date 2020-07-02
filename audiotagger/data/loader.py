@@ -8,8 +8,7 @@ import pandas as pd
 
 # PROJECT LIB
 from audiotagger.data import fields as fld, processing
-from audiotagger.util import (audiotagger_logger, file_util as futil, tag_util
-                              as tutil)
+from audiotagger.util import (audiotagger_logger, file_util as futil)
 
 
 class AudioTaggerMetadataLoader():

@@ -12,8 +12,11 @@ class AudioTaggerAPI():
     """Main API to load up metadata and delegate tasks to appropriate classes.
 
     """
-    def __init__(self, src, input_to_excel=False, **kwargs):
-        self.logger = audiotagger_logger.get_logger()
+    def __init__(self, src, input_to_excel=False, logger=None):
+        if logger is not None:
+            self.logger = logger
+        else:
+            self.logger = audiotagger_logger.get_logger()
 
         input_data = at_in.AudioTaggerInput(logger=self.logger)
         # load data -- singleton to be modified continuously as needed.

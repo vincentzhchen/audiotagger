@@ -43,7 +43,7 @@ class AudioTaggerOutput(_base_io.AudioTaggerBaseInputOutput):
             self.logger.info("Saving %s to %s", dict_for_log, k)
             tag_dict[k].save(k)
 
-    def copy(self, to_excel=False, to_file=False):
+    def copy(self, to_file=False):
         # TODO: this does not belong here; move to copy class
         if to_file:
             self.copy_files()
@@ -61,10 +61,10 @@ class AudioTaggerOutput(_base_io.AudioTaggerBaseInputOutput):
 
         gb = df.groupby("ROOT")
         no_space = (gb["FILE_SIZE"].sum() > gb["FREE_SPACE"].max())
-        if not no_space.loc[no_space == True].empty:
+        if not no_space.loc[no_space].empty:
             raise Exception(f"The following file systems do not have enough "
                             f"free space for copying: \n"
-                            f"{no_space.loc[no_space == True].index.tolist()}")
+                            f"{no_space.loc[no_space].index.tolist()}")
 
         # BEGIN copy process
         pairs = list(zip(df[fld.PATH_SRC.CID], df[fld.PATH_DST.CID]))

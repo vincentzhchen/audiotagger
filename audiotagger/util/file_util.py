@@ -16,7 +16,8 @@ def get_file_extension(path_to_some_file):
     Returns:
         file_extension (str): Returns the file extension.
     """
-    filename, file_extension = os.path.splitext(path_to_some_file)
+    root_ext_tuple = os.path.splitext(path_to_some_file)
+    file_extension = root_ext_tuple[1]
     return file_extension
 
 
@@ -33,7 +34,7 @@ def _is_audio_file_ext(path_to_some_file, extension):
             the given extension.
     """
     file_extension = get_file_extension(path_to_some_file)
-    return True if file_extension == extension else False
+    return bool(file_extension == extension)
 
 
 def is_xlsx(path_to_some_file):
@@ -46,7 +47,7 @@ def is_xlsx(path_to_some_file):
         Returns True if the file is an xlsx file else False.
     """
     file_extension = get_file_extension(path_to_some_file)
-    return True if file_extension == ".xlsx" else False
+    return bool(file_extension == ".xlsx")
 
 
 def is_wav(path_to_some_file):
@@ -150,8 +151,7 @@ def generate_metadata_records(file_paths, extension="m4a"):
     if extension == "m4a":
         return generate_metadata_records_from_m4a(file_paths)
 
-    else:
-        raise NotImplementedError("Only support for m4a at this time.")
+    raise NotImplementedError("Only support for m4a at this time.")
 
 
 def traverse_directory(src, filter_extension=None):
@@ -201,8 +201,8 @@ def parse_sql_query(sql_file):
 def get_file_size(path, unit="GB"):
     if unit.upper() == "GB":
         return os.path.getsize(path) / 1e9
-    else:
-        raise ValueError(f"UNIT {unit} is not supported.")
+
+    raise ValueError(f"UNIT {unit} is not supported.")
 
 
 def get_free_space(path):

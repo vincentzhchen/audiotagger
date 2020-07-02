@@ -1,3 +1,4 @@
+# pylint: disable=W,C,R
 # SPDX-License-Identifier: GPL-3.0-or-later
 import importlib.util
 import os
