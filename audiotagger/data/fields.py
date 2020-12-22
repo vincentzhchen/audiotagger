@@ -5,85 +5,85 @@
 
 
 class Field():
-    """A field describes an audio tag.
+  """A field describes an audio tag.
 
-    Fields are more than just tag names, they also contain information
-    about any ID3 keys, the data type of the tag, etc.
+  Fields are more than just tag names, they also contain information
+  about any ID3 keys, the data type of the tag, etc.
+
+  """
+  id3_to_field = {}  # cache this
+  field_to_id3 = {}  # cache this
+
+  def __init__(self, tag_key, tag_name, input_type, output_type):
+    self._tag_key = tag_key
+    self._tag_name = tag_name
+    self._input_type = input_type
+    self._output_type = output_type
+
+    # cache
+    self.id3_to_field[self.KEY] = self.CID
+    self.field_to_id3[self.CID] = self.KEY
+
+  @property
+  def KEY(self):  # pylint: disable=invalid-name
+    """Original key for the tag field.
+
+    Examples:
+      Field: Title
+      KEY: "\u00a9nam"
+
+      Field: Album Artist
+      KEY: "aART"
+
+      Field: Rating
+      KEY: "----:com.apple.iTunes:rating"
 
     """
-    id3_to_field = {}  # cache this
-    field_to_id3 = {}  # cache this
+    return self._tag_key
 
-    def __init__(self, tag_key, tag_name, input_type, output_type):
-        self._tag_key = tag_key
-        self._tag_name = tag_name
-        self._input_type = input_type
-        self._output_type = output_type
+  @property
+  def CID(self):  # pylint: disable=invalid-name
+    """Column ID for the system.
 
-        # cache
-        self.id3_to_field[self.KEY] = self.CID
-        self.field_to_id3[self.CID] = self.KEY
+    The value of this is a human-readable name for the tag field.
 
-    @property
-    def KEY(self):  # pylint: disable=invalid-name
-        """Original key for the tag field.
+    Example:
+      Field: Title
+      CID: "TITLE"
 
-        Examples:
-            Field: Title
-            KEY: "\u00a9nam"
+      Field: Album Artist
+      CID: "ALBUM_ARTIST"
 
-            Field: Album Artist
-            KEY: "aART"
+      Field: Rating
+      CID: "RATING"
 
-            Field: Rating
-            KEY: "----:com.apple.iTunes:rating"
+    """
+    return self._tag_name
 
-        """
-        return self._tag_key
+  @property
+  def INPUT_TYPE(self):  # pylint: disable=invalid-name
+    """The data type needed for application input.
 
-    @property
-    def CID(self):  # pylint: disable=invalid-name
-        """Column ID for the system.
+    This is how the application treats the tag data type, regardless
+    of the actual data type of the tag.  For example,
+    "----:com.apple.iTunes:replaygain_track_gain" is loaded from the
+    file as a MP4FreeForm object with utf-8 encoding, but the
+    audiotagger reads and treats it as a string.
 
-        The value of this is a human-readable name for the tag field.
+    """
+    return self._input_type
 
-        Example:
-            Field: Title
-            CID: "TITLE"
+  @property
+  def OUTPUT_TYPE(self):  # pylint: disable=invalid-name
+    """The data type needed by the tag for the audio file.
 
-            Field: Album Artist
-            CID: "ALBUM_ARTIST"
+    This is tag data type stored in the audio file.  For example,
+    "----:com.apple.iTunes:replaygain_track_gain" was modified
+    as a string type inside of audiotagger, but when storing the
+    value back into the m4a file it needs to be utf-8.
 
-            Field: Rating
-            CID: "RATING"
-
-        """
-        return self._tag_name
-
-    @property
-    def INPUT_TYPE(self):  # pylint: disable=invalid-name
-        """The data type needed for application input.
-
-        This is how the application treats the tag data type, regardless
-        of the actual data type of the tag.  For example,
-        "----:com.apple.iTunes:replaygain_track_gain" is loaded from the
-        file as a MP4FreeForm object with utf-8 encoding, but the
-        audiotagger reads and treats it as a string.
-
-        """
-        return self._input_type
-
-    @property
-    def OUTPUT_TYPE(self):  # pylint: disable=invalid-name
-        """The data type needed by the tag for the audio file.
-
-        This is tag data type stored in the audio file.  For example,
-        "----:com.apple.iTunes:replaygain_track_gain" was modified
-        as a string type inside of audiotagger, but when storing the
-        value back into the m4a file it needs to be utf-8.
-
-        """
-        return self._output_type
+    """
+    return self._output_type
 
 
 # PATH COLS

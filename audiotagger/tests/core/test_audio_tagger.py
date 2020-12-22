@@ -18,22 +18,22 @@ logger = audiotagger_logger.get_logger(name="test_audiotagger.log")
 
 @pytest.fixture
 def input_object():
-    """Returns an input instance with metadata structure.
+  """Returns an input instance with metadata structure.
 
-    """
-    test_dir = pathlib.Path(__file__).parent.parent
-    src = os.path.join(test_dir, "sample_data/test_metadata.xlsx")
-    ldr = loader.AudioTaggerMetadataLoader(src)
-    metadata = ldr.load_metadata_df()
+  """
+  test_dir = pathlib.Path(__file__).parent.parent
+  src = os.path.join(test_dir, "sample_data/test_metadata.xlsx")
+  ldr = loader.AudioTaggerMetadataLoader(src)
+  metadata = ldr.load_metadata_df()
 
-    input_obj = at_in.AudioTaggerInput()
-    input_obj.set_metadata(metadata)
-    return input_obj
+  input_obj = at_in.AudioTaggerInput()
+  input_obj.set_metadata(metadata)
+  return input_obj
 
 
 def test_audiotagger(input_object):
-    at = audiotagger.AudioTagger(input_object, logger=logger)
-    df = at.execute()
+  at = audiotagger.AudioTagger(input_object, logger=logger)
+  df = at.execute()
 
-    reference = input_object.get_metadata()
-    assert df.equals(reference)
+  reference = input_object.get_metadata()
+  assert df.equals(reference)

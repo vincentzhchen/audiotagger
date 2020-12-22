@@ -25,9 +25,9 @@ from audiotagger.util import file_util as futil
         pytest.param("./", 0),
     ])
 def test_traverse_directory(src, min_output_length):
-    all_file_paths = futil.traverse_directory(src)
-    assert isinstance(all_file_paths, list)
-    assert len(all_file_paths) > min_output_length
+  all_file_paths = futil.traverse_directory(src)
+  assert isinstance(all_file_paths, list)
+  assert len(all_file_paths) > min_output_length
 
 
 @pytest.mark.parametrize(
@@ -43,4 +43,4 @@ def test_traverse_directory(src, min_output_length):
         pytest.param("~/file.csv", False),
     ])
 def test_is_xlsx(input_path, expected_result):
-    assert futil.is_xlsx(input_path) == expected_result
+  assert futil.is_xlsx(input_path) == expected_result
