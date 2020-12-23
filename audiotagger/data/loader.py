@@ -75,7 +75,10 @@ class AudioTaggerMetadataLoader():
     Returns:
       metadata (pd.DataFrame): Returns a metadata dataframe.
     """
-    metadata = pd.read_excel(self.src, sheet_name="metadata", dtype=str)
+    metadata = pd.read_excel(self.src,
+                             sheet_name="metadata",
+                             dtype=str,
+                             engine="openpyxl")
     return metadata
 
   def _load_all_m4a_files_into_df_from_path(self):

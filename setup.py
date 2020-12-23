@@ -7,7 +7,7 @@ from setuptools import setup, find_packages
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(HERE, "README.md")) as f:
-    README = f.read()
+  README = f.read()
 
 URL = "https://github.com/vincentzhchen/audiotagger"
 
@@ -16,9 +16,7 @@ setup(
     version="0.0.1",
     packages=find_packages(),
     include_package_data=True,
-    install_requires=[
-        "pandas>=0.18.0", "mutagen>=1.41.1", "openpyxl>2.5.11", "xlrd>=1.2.0"
-    ],
+    install_requires=["pandas>=0.18.0", "mutagen>=1.41.1", "openpyxl>2.5.11"],
     tests_require=["pytest"],
     setup_requires=["pytest-runner"],
     python_requires=">=3.6",
