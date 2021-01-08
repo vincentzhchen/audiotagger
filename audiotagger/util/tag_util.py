@@ -8,226 +8,227 @@ from audiotagger.data import fields as fld
 
 
 def enforce_dtypes(df, io_type):
-  """Enforces the field type from input metadata dataframe.
+    """Enforces the field type from input metadata dataframe.
 
-  This implementation assumes that the column name is the same as
-  the field variable name.
+    This implementation assumes that the column name is the same as
+    the field variable name.
 
-  """
-  if io_type == "INPUT_FROM_AUDIO_FILE":
-    missing_fields = [c for c in df if c not in fld.TO_ID3.keys()]
-    if len(missing_fields) > 0:
-      warnings.warn(f"THESE FIELDS do not exist... {missing_fields} "
-                    f"... removing them to continue.")
-      cols = [c for c in df if c not in fld.TO_ID3.keys()]
-      df = df.drop(columns=cols)
+    """
+    if io_type == "INPUT_FROM_AUDIO_FILE":
+        missing_fields = [c for c in df if c not in fld.TO_ID3.keys()]
+        if len(missing_fields) > 0:
+            warnings.warn(f"THESE FIELDS do not exist... {missing_fields} "
+                          f"... removing them to continue.")
+            cols = [c for c in df if c not in fld.TO_ID3.keys()]
+            df = df.drop(columns=cols)
 
-    for col in df:
-      out_type = getattr(fld, col).OUTPUT_TYPE
-      if out_type == "utf-8":
-        # if the output type is utf-8, assume it is
-        # loaded as utf-8 too and decode it
-        df[col] = df[col].str.decode("utf-8")
+        for col in df:
+            out_type = getattr(fld, col).OUTPUT_TYPE
+            if out_type == "utf-8":
+                # if the output type is utf-8, assume it is
+                # loaded as utf-8 too and decode it
+                df[col] = df[col].str.decode("utf-8")
 
-      in_type = getattr(fld, col).INPUT_TYPE
-      df[col] = df[col].astype(in_type)
-    df = df.replace("nan", "")  # TODO: why is this needed
+            in_type = getattr(fld, col).INPUT_TYPE
+            df[col] = df[col].astype(in_type)
+        df = df.replace("nan", "")  # TODO: why is this needed
 
-  elif io_type == "INPUT_FROM_METADATA_FILE":
-    for col in df:
-      in_type = getattr(fld, col).INPUT_TYPE
-      df[col] = df[col].astype(in_type)
-    df = df.replace("nan", "")  # TODO: why is this needed
+    elif io_type == "INPUT_FROM_METADATA_FILE":
+        for col in df:
+            in_type = getattr(fld, col).INPUT_TYPE
+            df[col] = df[col].astype(in_type)
+        df = df.replace("nan", "")  # TODO: why is this needed
 
-  elif io_type == "OUTPUT_TYPE":
-    for col in df:
-      out_type = getattr(fld, col).OUTPUT_TYPE
-      if out_type == "utf-8":
-        # encode utf-8 if needed
-        df[col] = df[col].str.encode("utf-8")
-      elif out_type is None:
-        # TODO: what does this mean
-        continue
-      else:
-        df[col] = df[col].astype(out_type)
+    elif io_type == "OUTPUT_TYPE":
+        for col in df:
+            out_type = getattr(fld, col).OUTPUT_TYPE
+            if out_type == "utf-8":
+                # encode utf-8 if needed
+                df[col] = df[col].str.encode("utf-8")
+            elif out_type is None:
+                # TODO: what does this mean
+                continue
+            else:
+                df[col] = df[col].astype(out_type)
 
-  return df
+    return df
 
 
 def remove_non_metadata_fields_from_metadata_dict(metadata_dict):
-  """Removes custom fields from a metadata dict.
+    """Removes custom fields from a metadata dict.
 
-  The metadata dict is of the form {metadata_field: [value], ...}
+    The metadata dict is of the form {metadata_field: [value], ...}
 
-  """
-  for col in fld.CUSTOM_COLS:
-    metadata_dict.pop(col, None)
-  return metadata_dict
+    """
+    for col in fld.CUSTOM_COLS:
+        metadata_dict.pop(col, None)
+    return metadata_dict
 
 
 def dict_to_mp4tag(d):
-  """Convert python dictionary to MP4Tag object.
+    """Convert python dictionary to MP4Tag object.
 
-  """
-  tags = MP4Tags()
-  tags.update(d)
-  return tags
+    """
+    tags = MP4Tags()
+    tags.update(d)
+    return tags
 
 
 def metadata_to_tags(df):
-  # only want to have tuples right before building the tag object
-  df = build_track_and_disc_tuples(df=df)
+    # only want to have tuples right before building the tag object
+    df = build_track_and_disc_tuples(df=df)
 
-  # convert to correct output data type
-  df = enforce_dtypes(df=df, io_type="OUTPUT_TYPE")
+    # convert to correct output data type
+    df = enforce_dtypes(df=df, io_type="OUTPUT_TYPE")
 
-  # put all values into a list for MP4Tags
-  df = df.applymap(lambda x: [x])
+    # put all values into a list for MP4Tags
+    df = df.applymap(lambda x: [x])
 
-  # convert all fields to ID3 values for MP4Tags
-  df = df.rename(columns=fld.TO_ID3)
+    # convert all fields to ID3 values for MP4Tags
+    df = df.rename(columns=fld.TO_ID3)
 
-  tag_dict = {}
-  # generate the metadata tag dictionaries
-  metadata_dicts = df.to_dict(orient="records")
-  for d in metadata_dicts:
-    # TODO: remove empty covers
-    if d.get(fld.COVER.KEY, None)[0] is None:
-      d.pop(fld.COVER.KEY, None)
-    path_src = d[fld.PATH_SRC.CID][0]
-    d = remove_non_metadata_fields_from_metadata_dict(d)
-    d = dict_to_mp4tag(d)
-    tag_dict.update({path_src: d})
-  return tag_dict
+    tag_dict = {}
+    # generate the metadata tag dictionaries
+    metadata_dicts = df.to_dict(orient="records")
+    for d in metadata_dicts:
+        # TODO: remove empty covers
+        if d.get(fld.COVER.KEY, None)[0] is None:
+            d.pop(fld.COVER.KEY, None)
+        path_src = d[fld.PATH_SRC.CID][0]
+        d = remove_non_metadata_fields_from_metadata_dict(d)
+        d = dict_to_mp4tag(d)
+        tag_dict.update({path_src: d})
+    return tag_dict
 
 
 def split_track_and_disc_tuples(df, drop_original=True):
-  """Given a metadata dataframe, split any track / disc tuples.
+    """Given a metadata dataframe, split any track / disc tuples.
 
-  """
-  part = lambda x: x[0] if isinstance(x, tuple) else x
-  total = lambda x: x[1] if isinstance(x, tuple) else x
+    """
+    part = lambda x: x[0] if isinstance(x, tuple) else x
+    total = lambda x: x[1] if isinstance(x, tuple) else x
 
-  if fld.TRACK_NO_TUPLE.CID in df.columns:
-    df[fld.TRACK_NO.CID] = df[fld.TRACK_NO_TUPLE.CID].apply(part)
-    df[fld.TOTAL_TRACKS.CID] = df[fld.TRACK_NO_TUPLE.CID].apply(total)
+    if fld.TRACK_NO_TUPLE.CID in df.columns:
+        df[fld.TRACK_NO.CID] = df[fld.TRACK_NO_TUPLE.CID].apply(part)
+        df[fld.TOTAL_TRACKS.CID] = df[fld.TRACK_NO_TUPLE.CID].apply(total)
 
-    if drop_original:
-      df = df.drop(columns=fld.TRACK_NO_TUPLE.CID)
+        if drop_original:
+            df = df.drop(columns=fld.TRACK_NO_TUPLE.CID)
 
-  if fld.DISC_NO_TUPLE.CID in df.columns:
-    df[fld.DISC_NO.CID] = df[fld.DISC_NO_TUPLE.CID].apply(part)
-    df[fld.TOTAL_DISCS.CID] = df[fld.DISC_NO_TUPLE.CID].apply(total)
+    if fld.DISC_NO_TUPLE.CID in df.columns:
+        df[fld.DISC_NO.CID] = df[fld.DISC_NO_TUPLE.CID].apply(part)
+        df[fld.TOTAL_DISCS.CID] = df[fld.DISC_NO_TUPLE.CID].apply(total)
 
-    if drop_original:
-      df = df.drop(columns=fld.DISC_NO_TUPLE.CID)
+        if drop_original:
+            df = df.drop(columns=fld.DISC_NO_TUPLE.CID)
 
-  return df
+    return df
 
 
 def build_track_and_disc_tuples(df, drop_components=True):
-  """Given a metadata dataframe, construct track / disc tuples.
+    """Given a metadata dataframe, construct track / disc tuples.
 
-  """
-  if (fld.TRACK_NO.CID in df) and (fld.TOTAL_TRACKS.CID in df):
-    df[fld.TRACK_NO_TUPLE.CID] = tuple(
-        zip(df[fld.TRACK_NO.CID], df[fld.TOTAL_TRACKS.CID]))
+    """
+    if (fld.TRACK_NO.CID in df) and (fld.TOTAL_TRACKS.CID in df):
+        df[fld.TRACK_NO_TUPLE.CID] = tuple(
+            zip(df[fld.TRACK_NO.CID], df[fld.TOTAL_TRACKS.CID]))
 
-    if drop_components:
-      df = df.drop(columns=[fld.TRACK_NO.CID, fld.TOTAL_TRACKS.CID])
+        if drop_components:
+            df = df.drop(columns=[fld.TRACK_NO.CID, fld.TOTAL_TRACKS.CID])
 
-  if (fld.DISC_NO.CID in df) and (fld.TOTAL_DISCS.CID in df):
-    df[fld.DISC_NO_TUPLE.CID] = tuple(
-        zip(df[fld.DISC_NO.CID], df[fld.TOTAL_DISCS.CID]))
+    if (fld.DISC_NO.CID in df) and (fld.TOTAL_DISCS.CID in df):
+        df[fld.DISC_NO_TUPLE.CID] = tuple(
+            zip(df[fld.DISC_NO.CID], df[fld.TOTAL_DISCS.CID]))
 
-    if drop_components:
-      df = df.drop(columns=[fld.DISC_NO.CID, fld.TOTAL_DISCS.CID])
+        if drop_components:
+            df = df.drop(columns=[fld.DISC_NO.CID, fld.TOTAL_DISCS.CID])
 
-  return df
+    return df
 
 
 def sort_metadata(df):
-  """Given a metadata dataframe, sort the dataframe.
+    """Given a metadata dataframe, sort the dataframe.
 
-  """
-  df = df.sort_values([
-      fld.ALBUM_ARTIST.CID, fld.YEAR.CID, fld.ALBUM.CID, fld.DISC_NO.CID,
-      fld.TRACK_NO.CID, fld.TITLE.CID
-  ])
+    """
+    df = df.sort_values([
+        fld.ALBUM_ARTIST.CID, fld.YEAR.CID, fld.ALBUM.CID, fld.DISC_NO.CID,
+        fld.TRACK_NO.CID, fld.TITLE.CID
+    ])
 
-  excess_cols = [c for c in df if c not in fld.BASE_METADATA_COLS]
-  cols = fld.BASE_METADATA_COLS + excess_cols
-  df = df[cols]
-  return df
+    excess_cols = [c for c in df if c not in fld.BASE_METADATA_COLS]
+    cols = fld.BASE_METADATA_COLS + excess_cols
+    df = df[cols]
+    return df
 
 
 def generate_cover_art_path(df):
-  """Generate cover art file paths.
+    """Generate cover art file paths.
 
-  Notes:
-    The paths are generated assuming that all albums have a "cover.jpg"
-    file in the same directory level as the audio files.  Invalid paths
-    will be generated if the image file does not exist.
+    Notes:
+      The paths are generated assuming that all albums have a "cover.jpg"
+      file in the same directory level as the audio files.  Invalid paths
+      will be generated if the image file does not exist.
 
-    You can choose to have a custom cover source location if you are
-    generating the paths from a metadata file.
+      You can choose to have a custom cover source location if you are
+      generating the paths from a metadata file.
 
-  Args:
-    df (dataframe): Metadata dataframe.
+    Args:
+      df (dataframe): Metadata dataframe.
 
-  Returns:
-    df (dataframe): Returns dataframe with cover art paths.
-  """
+    Returns:
+      df (dataframe): Returns dataframe with cover art paths.
+    """
 
-  def _generate_album_art_path(path):
-    cover_dir = os.path.dirname(path)
-    jpg_path = os.path.join(cover_dir, "cover.jpg")
-    return jpg_path
+    def _generate_album_art_path(path):
+        cover_dir = os.path.dirname(path)
+        jpg_path = os.path.join(cover_dir, "cover.jpg")
+        return jpg_path
 
-  if fld.COVER_SRC.CID not in df:
-    # assume cover source path is in same location as audio file path
-    # if it is not provided
-    df[fld.COVER_SRC.CID] = df[fld.PATH_SRC.CID].apply(_generate_album_art_path)
+    if fld.COVER_SRC.CID not in df:
+        # assume cover source path is in same location as audio file path
+        # if it is not provided
+        df[fld.COVER_SRC.CID] = df[fld.PATH_SRC.CID].apply(
+            _generate_album_art_path)
 
-  df[fld.COVER_DST.CID] = df[fld.PATH_DST.CID].apply(_generate_album_art_path)
+    df[fld.COVER_DST.CID] = df[fld.PATH_DST.CID].apply(_generate_album_art_path)
 
-  return df
+    return df
 
 
 def construct_cover_object(df):
-  """Construct all MP4Cover objects.
+    """Construct all MP4Cover objects.
 
-  Notes:
-    If the cover source column exists but there is no valid source,
-    the cover object column will be NULL.
+    Notes:
+      If the cover source column exists but there is no valid source,
+      the cover object column will be NULL.
 
-  Args:
-    df (dataframe): Metadata dataframe.
+    Args:
+      df (dataframe): Metadata dataframe.
 
-  Returns:
-    anonymous (dataframe): Returns a dataframe with potentially
-      constructed cover object.
-  """
+    Returns:
+      anonymous (dataframe): Returns a dataframe with potentially
+        constructed cover object.
+    """
 
-  def construct_mutagen_mp4_cover(path):
-    # return None if there is no path or the path doesn't exist
-    if (path == "") or not os.path.exists(path):
-      return None
+    def construct_mutagen_mp4_cover(path):
+        # return None if there is no path or the path doesn't exist
+        if (path == "") or not os.path.exists(path):
+            return None
 
-    with open(path, "rb") as f:
-      cover_byte_str = f.read()
-    return MP4Cover(cover_byte_str)
+        with open(path, "rb") as f:
+            cover_byte_str = f.read()
+        return MP4Cover(cover_byte_str)
 
-  # make a temporary column to decide what to use
-  df["TMP_COVER"] = df[fld.COVER_SRC.CID].apply(construct_mutagen_mp4_cover)
+    # make a temporary column to decide what to use
+    df["TMP_COVER"] = df[fld.COVER_SRC.CID].apply(construct_mutagen_mp4_cover)
 
-  # if cover tag exists, and there is no cover file, keep original metadata
-  # otherwise take potential cover from cover file
-  if fld.COVER.CID in df:
-    df[fld.COVER.CID] = df["TMP_COVER"].where(df["TMP_COVER"].notnull(),
-                                              df[fld.COVER.CID])
-  else:
-    df[fld.COVER.CID] = df["TMP_COVER"]
+    # if cover tag exists, and there is no cover file, keep original metadata
+    # otherwise take potential cover from cover file
+    if fld.COVER.CID in df:
+        df[fld.COVER.CID] = df["TMP_COVER"].where(df["TMP_COVER"].notnull(),
+                                                  df[fld.COVER.CID])
+    else:
+        df[fld.COVER.CID] = df["TMP_COVER"]
 
-  df = df.drop(columns="TMP_COVER")
-  return df
+    df = df.drop(columns="TMP_COVER")
+    return df
