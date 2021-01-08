@@ -18,30 +18,30 @@ logger = audiotagger_logger.get_logger(name="test_audiotagger.log")
 
 @pytest.fixture
 def input_object():
-  """Returns an input instance with metadata structure.
+    """Returns an input instance with metadata structure.
 
-  """
-  test_dir = pathlib.Path(__file__).parent.parent
-  src = os.path.join(test_dir, "sample_data/test_metadata.xlsx")
-  ldr = loader.AudioTaggerMetadataLoader(src)
-  metadata = ldr.load_metadata_df()
+    """
+    test_dir = pathlib.Path(__file__).parent.parent
+    src = os.path.join(test_dir, "sample_data/test_metadata.xlsx")
+    ldr = loader.AudioTaggerMetadataLoader(src)
+    metadata = ldr.load_metadata_df()
 
-  input_obj = at_in.AudioTaggerInput()
-  input_obj.set_metadata(metadata)
-  return input_obj
+    input_obj = at_in.AudioTaggerInput()
+    input_obj.set_metadata(metadata)
+    return input_obj
 
 
 def test_clear_all_tags(input_object):
-  ct = clear_tags.ClearTags(input_data=input_object, logger=logger)
-  df = ct.execute(clear_type="all")
+    ct = clear_tags.ClearTags(input_data=input_object, logger=logger)
+    df = ct.execute(clear_type="all")
 
-  reference = input_object.get_metadata()[fld.PATH_COLS]
-  assert df.equals(reference)
+    reference = input_object.get_metadata()[fld.PATH_COLS]
+    assert df.equals(reference)
 
 
 def test_clear_excess_tags(input_object):
-  ct = clear_tags.ClearTags(input_data=input_object, logger=logger)
-  df = ct.execute(clear_type="excess")
+    ct = clear_tags.ClearTags(input_data=input_object, logger=logger)
+    df = ct.execute(clear_type="excess")
 
-  reference = input_object.get_metadata()[fld.BASE_METADATA_COLS]
-  assert df.equals(reference)
+    reference = input_object.get_metadata()[fld.BASE_METADATA_COLS]
+    assert df.equals(reference)
