@@ -40,7 +40,7 @@ def is_xlsx(path_to_some_file):
     """Checks if a file is an Excel (.xlsx) file.
 
     """
-    _is_audio_file_ext(path_to_some_file, ".xlsx")
+    return _is_audio_file_ext(path_to_some_file, ".xlsx")
 
 
 def is_wav(path_to_some_file):
