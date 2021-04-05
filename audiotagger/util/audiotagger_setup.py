@@ -39,7 +39,7 @@ def generate_config():
         config_file = paths.audiotagger_config_path()
         with open(config_file, "w") as f:
             f.write(f"AUDIO_DIRECTORY=None"
-                    '\n'
+                    f"\n"
                     f"DATA_DIRECTORY='{paths.audiotagger_data_dir()}'\n")
         logger.info("Generated config at %s", paths.audiotagger_config_path())
     else:

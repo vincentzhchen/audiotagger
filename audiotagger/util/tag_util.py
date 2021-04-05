@@ -1,4 +1,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
+"""All functions to help with tagging.
+
+"""
+
 import os
 import warnings
 

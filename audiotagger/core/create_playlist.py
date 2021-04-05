@@ -1,4 +1,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
+"""Playlist generation.
+
+"""
+
 import os
 import sqlite3
 
@@ -9,6 +13,12 @@ from audiotagger.util import audiotagger_logger, file_util as futil
 
 
 class CreatePlaylist():
+    """Creates a playlist using SQL quieries.
+
+    The metadata input structure is loaded into an in-memory SQL database
+    for users to query against.
+
+    """
 
     def __init__(self, input_data, logger=None):
         self.input_data = input_data
