@@ -1,3 +1,7 @@
+"""All functions related to actual audio file.
+
+"""
+
 # SPDX-License-Identifier: GPL-3.0-or-later
 from concurrent.futures import ProcessPoolExecutor
 import glob
@@ -5,6 +9,8 @@ import os
 import shutil
 
 from mutagen.easymp4 import MP4
+
+from audiotagger.data import fields as fld
 
 
 def get_file_extension(path_to_some_file):
@@ -207,3 +213,56 @@ def get_mount_point(path):
     while not os.path.ismount(path):
         path = os.path.dirname(path)
     return path
+
+
+def generate_new_file_path_from_metadata(df, dst_dir=None):
+    """Create new destination path from metadata.
+
+    Args:
+        df (pd.DataFrame): Metadata dataframe.
+        dst_dir (str, optional): The destination directory of the output audio
+            file.  If None, it will be the same as the base directory.
+
+    Returns:
+        anonymous (str): Returns a destination path for the file.
+    """
+
+    def join_metadata_path(metadata_tuple):
+        """Helper function to create a path.
+
+        Args:
+            metadata_tuple (tuple of str): A tuple in the form
+            (dst_dir, album_artist, year, album, disc, track, title, file_ext)
+
+        Returns:
+            path (str): Returns output audio file path.
+        """
+        # this is the default structure
+        (dst_dir, album_artist, year, album, disc, track, title,
+         file_ext) = metadata_tuple
+
+        # fix invalid characters
+        album_artist = replace_invalid_characters(album_artist)
+        album = replace_invalid_characters(album)
+        title = replace_invalid_characters(title)
+
+        path = os.path.join(dst_dir, album_artist, year + " " + album,
+                            disc + "." + track + " " + title + file_ext)
+        return path
+
+    if dst_dir:
+        dst_dir = [dst_dir] * len(df)
+    else:
+        dst_dir = df[fld.PATH_SRC.CID].apply(os.path.dirname)
+
+    df[fld.PATH_DST.CID] = tuple(
+        zip(
+            dst_dir, df[fld.ALBUM_ARTIST.CID], df[fld.YEAR.CID],
+            df[fld.ALBUM.CID], df[fld.DISC_NO.CID].astype(str),
+            df[fld.TRACK_NO.CID].astype(str).str.pad(2,
+                                                     side="left",
+                                                     fillchar="0"),
+            df[fld.TITLE.CID], df[fld.PATH_SRC.CID].apply(get_file_extension)))
+    df[fld.PATH_DST.CID] = df[fld.PATH_DST.CID].apply(join_metadata_path)
+    df = df.sort_values(fld.PATH_DST.CID)
+    return df

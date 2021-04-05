@@ -75,11 +75,7 @@ class AudioTaggerAPI():
             # If a destination directory is passed, the renamed file
             # will be saved into the destination, leaving the original
             # file untouched.
-            metadata = copy_file.CopyFile(self.input_data).execute(dst_dir)
-
-            out = at_out.AudioTaggerOutput()
-            out.set_metadata(metadata)
-            out.copy()
+            copy_file.CopyFile(self.input_data).execute(dst_dir)
 
         if playlist_query is not None:
             # Creates a playlist from the source directory using the given
