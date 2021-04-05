@@ -16,7 +16,9 @@ setup(
     version="0.0.1",
     packages=find_packages(),
     include_package_data=True,
-    install_requires=["pandas>=0.18.0", "mutagen>=1.41.1", "openpyxl>2.5.11"],
+    install_requires=[
+        "pandas>=0.18.0,<=1.0.1", "mutagen>=1.41.1", "openpyxl>2.5.11"
+    ],
     tests_require=["pytest"],
     setup_requires=["pytest-runner"],
     python_requires=">=3.6",
